@@ -64,7 +64,11 @@ public:
 	{
 		[!if FRAMELISTENER_YES]
 		// clamp to terrain
+		[!if FRAMEWORK_OWN]
+		bool ret = BaseFrameListener::frameStarted(evt);
+		[!else]
 		bool ret = ExampleFrameListener::frameStarted(evt);
+		[!endif]
 		static Ray updateRay;
 		updateRay.setOrigin(mCamera->getPosition());
 		updateRay.setDirection(Vector3::NEGATIVE_UNIT_Y);

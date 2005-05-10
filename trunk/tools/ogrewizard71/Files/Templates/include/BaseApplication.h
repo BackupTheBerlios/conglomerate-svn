@@ -1,25 +1,14 @@
 /*
 -----------------------------------------------------------------------------
 This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
+(Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2002 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free Software
-Foundation; either version 2 of the License, or (at your option) any later
-version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place - Suite 330, Boston, MA 02111-1307, USA, or go to
-http://www.gnu.org/copyleft/lesser.txt.
+You may use this sample code for anything you like, it is not covered by the
+LGPL like the rest of the engine.
 -----------------------------------------------------------------------------
 */
 /*
@@ -67,6 +56,9 @@ public:
             return;
 
         mRoot->startRendering();
+
+        // clean up
+        destroyScene();
     }
 
 protected:
@@ -92,9 +84,14 @@ protected:
         createViewports();
 
         // Set default mipmap level (NB some APIs ignore this)
-        TextureManager::getSingleton().setDefaultNumMipMaps(5);
+        TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-        // Create the scene
+		// Create any resource listeners (for loading screens)
+		createResourceListener();
+		// Load resources
+		loadResources();
+
+		// Create the scene
         createScene();
 
         createFrameListener();
@@ -147,11 +144,17 @@ protected:
 
     virtual void createScene(void) = 0;    // pure virtual - this has to be overridden
 
+    virtual void destroyScene(void){}    // Optional to override this
+
     virtual void createViewports(void)
     {
         // Create one viewport, entire window
         Viewport* vp = mWindow->addViewport(mCamera);
         vp->setBackgroundColour(ColourValue(0,0,0));
+
+        // Alter the camera aspect ratio to match the viewport
+        mCamera->setAspectRatio(
+            Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
     }
 
     /// Method which will define the source of resources (other than current folder)
@@ -161,17 +164,39 @@ protected:
         ConfigFile cf;
         cf.load("resources.cfg");
 
-        // Go through all settings in the file
-        ConfigFile::SettingsIterator i = cf.getSettingsIterator();
+        // Go through all sections & settings in the file
+        ConfigFile::SectionIterator seci = cf.getSectionIterator();
 
-        String typeName, archName;
-        while (i.hasMoreElements())
+        String secName, typeName, archName;
+        while (seci.hasMoreElements())
         {
-            typeName = i.peekNextKey();
-            archName = i.getNext();
-            ResourceManager::addCommonArchiveEx( archName, typeName );
+            secName = seci.peekNextKey();
+            ConfigFile::SettingsMultiMap *settings = seci.getNext();
+            ConfigFile::SettingsMultiMap::iterator i;
+            for (i = settings->begin(); i != settings->end(); ++i)
+            {
+                typeName = i->first;
+                archName = i->second;
+                ResourceGroupManager::getSingleton().addResourceLocation(
+                    archName, typeName, secName);
+            }
         }
     }
+
+	/// Optional override method where you can create resource listeners (e.g. for loading screens)
+	virtual void createResourceListener(void)
+	{
+
+	}
+
+	/// Optional override method where you can perform resource group loading
+	/// Must at least do ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+	virtual void loadResources(void)
+	{
+		// Initialise, parse scripts etc
+		ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+	}
 
 
 

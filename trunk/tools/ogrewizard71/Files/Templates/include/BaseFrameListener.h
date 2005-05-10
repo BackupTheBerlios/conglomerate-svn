@@ -4,41 +4,31 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2002 The OGRE Team
+Copyright (c) 2000-2005 The OGRE Team
 Also see acknowledgements in Readme.html
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free Software
-Foundation; either version 2 of the License, or (at your option) any later
-version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place - Suite 330, Boston, MA 02111-1307, USA, or go to
-http://www.gnu.org/copyleft/lesser.txt.
+You may use this sample code for anything you like, it is not covered by the
+LGPL like the rest of the engine.
 -----------------------------------------------------------------------------
 */
 /*
 -----------------------------------------------------------------------------
 Filename:    BaseFrameListener.h
 Description: Defines an example frame listener which responds to frame events.
-             This frame listener just moves a specified camera around based on
-             keyboard and mouse movements.
-             Mouse:    Freelook
-             W or Up:  Forward
-             S or Down:Backward
-             A:        Step left
-             D:        Step right
+This frame listener just moves a specified camera around based on
+keyboard and mouse movements.
+Mouse:    Freelook
+W or Up:  Forward
+S or Down:Backward
+A:        Step left
+D:        Step right
              PgUp:     Move upwards
              PgDown:   Move downwards
              F:        Toggle frame rate stats on/off
 			 R:        Render mode
              T:        Cycle texture filtering
                        Bilinear, Trilinear, Anisotropic(8)
+             P:        Toggle on/off display of camera position / orientation
 -----------------------------------------------------------------------------
 */
 
@@ -55,8 +45,11 @@ using namespace Ogre;
 
 class BaseFrameListener: public FrameListener, public KeyListener
 {
-private:
+protected:
 	int mSceneDetailIndex ;
+    Real mMoveSpeed;
+    Degree mRotateSpeed;
+    Overlay* mDebugOverlay;
 
     void updateStats(void)
     {
@@ -67,40 +60,48 @@ private:
         static String tris = "Triangle Count: ";
 
         // update stats when necessary
-        GuiElement* guiAvg = GuiManager::getSingleton().getGuiElement("Core/AverageFps");
-        GuiElement* guiCurr = GuiManager::getSingleton().getGuiElement("Core/CurrFps");
-        GuiElement* guiBest = GuiManager::getSingleton().getGuiElement("Core/BestFps");
-        GuiElement* guiWorst = GuiManager::getSingleton().getGuiElement("Core/WorstFps");
+        try {
+            OverlayElement* guiAvg = OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
+            OverlayElement* guiCurr = OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
+            OverlayElement* guiBest = OverlayManager::getSingleton().getOverlayElement("Core/BestFps");
+            OverlayElement* guiWorst = OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
 
-        const RenderTarget::FrameStats& stats = mWindow->getStatistics();
+            const RenderTarget::FrameStats& stats = mWindow->getStatistics();
 
-        guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
-        guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
-        guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS)
-            +" "+StringConverter::toString(stats.bestFrameTime)+" ms");
-        guiWorst->setCaption(worstFps + StringConverter::toString(stats.worstFPS)
-            +" "+StringConverter::toString(stats.worstFrameTime)+" ms");
+            guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
+            guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
+            guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS)
+                +" "+StringConverter::toString(stats.bestFrameTime)+" ms");
+            guiWorst->setCaption(worstFps + StringConverter::toString(stats.worstFPS)
+                +" "+StringConverter::toString(stats.worstFrameTime)+" ms");
 
-        GuiElement* guiTris = GuiManager::getSingleton().getGuiElement("Core/NumTris");
-        guiTris->setCaption(tris + StringConverter::toString(stats.triangleCount));
+            OverlayElement* guiTris = OverlayManager::getSingleton().getOverlayElement("Core/NumTris");
+            guiTris->setCaption(tris + StringConverter::toString(stats.triangleCount));
 
-        GuiElement* guiDbg = GuiManager::getSingleton().getGuiElement("Core/DebugText");
-        guiDbg->setCaption(mWindow->getDebugText());
+            OverlayElement* guiDbg = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
+            guiDbg->setCaption(mWindow->getDebugText());
+        }
+        catch(...)
+        {
+            // ignore
+        }
     }
 
 public:
     // Constructor takes a RenderWindow because it uses that to determine input context
     BaseFrameListener(RenderWindow* win, Camera* cam, bool useBufferedInputKeys = false, bool useBufferedInputMouse = false)
     {
+        mDebugOverlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
         mUseBufferedInputKeys = useBufferedInputKeys;
 		mUseBufferedInputMouse = useBufferedInputMouse;
 		mInputTypeSwitchingOn = mUseBufferedInputKeys || mUseBufferedInputMouse;
+        mRotateSpeed = 36;
+        mMoveSpeed = 100;
 
 		if (mInputTypeSwitchingOn)
 		{
             mEventProcessor = new EventProcessor();
 			mEventProcessor->initialise(win);
-            OverlayManager::getSingleton().createCursorOverlay();
 			mEventProcessor->startProcessingEvents();
 			mEventProcessor->addKeyListener(this);
 			mInputDevice = mEventProcessor->getInputReader();
@@ -157,22 +158,11 @@ public:
         {
             mTranslateVector.z = -mMoveScale;
         }
-        /* Move camera forward by mousewheel. */
-        if( mInputDevice->getMouseRelativeZ() > 0 )
-        {
-            mTranslateVector.z = -mMoveScale * 8.0;
-        }
 
         /* Move camera backward by keypress. */
         if (mInputDevice->isKeyDown(KC_DOWN) || mInputDevice->isKeyDown(KC_S) )
         {
             mTranslateVector.z = mMoveScale;
-        }
-
-        /* Move camera backward by mouse wheel. */
-        if( mInputDevice->getMouseRelativeZ() < 0 )
-        {
-            mTranslateVector.z = mMoveScale * 8.0;
         }
 
         if (mInputDevice->isKeyDown(KC_PGUP))
@@ -270,7 +260,20 @@ public:
 			mTimeUntilNextToggle = 0.5;
 		}
 
-
+        static bool displayCameraDetails = false;
+        if (mInputDevice->isKeyDown(KC_P) && mTimeUntilNextToggle <= 0)
+        {
+            displayCameraDetails = !displayCameraDetails;
+            mTimeUntilNextToggle = 0.5;
+            if (!displayCameraDetails)
+                mWindow->setDebugText("");
+        }
+        if (displayCameraDetails)
+        {
+            // Print camera details
+            mWindow->setDebugText("P: " + StringConverter::toString(mCamera->getDerivedPosition()) + " " +
+                "O: " + StringConverter::toString(mCamera->getDerivedOrientation()));
+        }
 
         // Return true to continue rendering
         return true;
@@ -289,8 +292,8 @@ public:
         }
         else
         {
-            mRotX = -mInputDevice->getMouseRelativeX() * 0.13;
-            mRotY = -mInputDevice->getMouseRelativeY() * 0.13;
+            mRotX = Degree(-mInputDevice->getMouseRelativeX() * 0.13);
+            mRotY = Degree(-mInputDevice->getMouseRelativeY() * 0.13);
         }
 
 
@@ -311,23 +314,24 @@ public:
 
     void showDebugOverlay(bool show)
     {
-        Overlay* o = (Overlay*)OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-        if (!o)
-            Except( Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay",
-                "showDebugOverlay" );
-        if (show)
+        if (mDebugOverlay)
         {
-            o->show();
-        }
-        else
-        {
-            o->hide();
+            if (show)
+            {
+                mDebugOverlay->show();
+            }
+            else
+            {
+                mDebugOverlay->hide();
+            }
         }
     }
 
     // Override frameStarted event to process that (don't care about frameEnded)
     bool frameStarted(const FrameEvent& evt)
     {
+        if(mWindow->isClosed())
+            return false;
 
         if (!mInputTypeSwitchingOn)
     	{
@@ -351,9 +355,9 @@ public:
 			else
 			{
 				// Move about 100 units per second,
-				mMoveScale = 100.0 * evt.timeSinceLastFrame;
+				mMoveScale = mMoveSpeed * evt.timeSinceLastFrame;
 				// Take about 10 seconds for full rotation
-				mRotScale = 36 * evt.timeSinceLastFrame;
+				mRotScale = mRotateSpeed * evt.timeSinceLastFrame;
 			}
 			mRotX = 0;
             mRotY = 0;
@@ -440,10 +444,10 @@ protected:
     bool mUseBufferedInputKeys, mUseBufferedInputMouse, mInputTypeSwitchingOn;
 	unsigned int mNumScreenShots;
     float mMoveScale;
-    float mRotScale;
+    Degree mRotScale;
     // just to stop toggles flipping too fast
     Real mTimeUntilNextToggle ;
-    float mRotX, mRotY;
+    Radian mRotX, mRotY;
     TextureFilterOptions mFiltering;
     int mAniso;
 
