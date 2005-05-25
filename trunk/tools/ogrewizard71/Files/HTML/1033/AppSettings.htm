@@ -457,6 +457,8 @@ function OnOgreDirectory()
 
 function InitControls()
 {
+		STATEMANAGER_YES.disabled = true;
+		STATEMANAGER_YES_LABEL.disabled = true;
 	if(MIN_APP.checked)
 	{
 		STATEMANAGER_YES.disabled = true;
@@ -473,8 +475,8 @@ function InitControls()
 
 	if(STANDARD_APP.checked)
 	{
-		STATEMANAGER_YES.disabled = false;
-		STATEMANAGER_YES_LABEL.disabled = false;
+		STATEMANAGER_YES.disabled = true;
+		STATEMANAGER_YES_LABEL.disabled = true;
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = false;

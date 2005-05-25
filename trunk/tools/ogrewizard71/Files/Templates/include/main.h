@@ -21,61 +21,179 @@ Description: A place for me to try out stuff with OGRE.
 #ifndef __[!output PROJECT_NAME]_h_
 #define __[!output PROJECT_NAME]_h_
 
+[!if CEGUI_YES]
+#include <CEGUI.h>
+#include <CEGUISystem.h>
+#include <CEGUISchemeManager.h>
+#include <OgreCEGUIRenderer.h>
+[!endif]
+
 [!if FRAMEWORK_OWN]
 #include "BaseApplication.h"
 [!else]
 #include "ExampleApplication.h"
 [!endif]
 
-RaySceneQuery* raySceneQuery = 0;
+[!if CEGUI_YES]
+CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
+{
+   switch (buttonID)
+   {
+   case MouseEvent::BUTTON0_MASK:
+      return CEGUI::LeftButton;
+   case MouseEvent::BUTTON1_MASK:
+      return CEGUI::RightButton;
+   case MouseEvent::BUTTON2_MASK:
+      return CEGUI::MiddleButton;
+   case MouseEvent::BUTTON3_MASK:
+      return CEGUI::X1Button;
+   default:
+      return CEGUI::LeftButton;
+   }
+}
+[!endif]
 
-// Event handler to add ability to alter curvature
+
 [!if FRAMEWORK_OWN]
+[!if CEGUI_YES]
+class [!output PROJECT_NAME]FrameListener : public BaseFrameListener, public MouseMotionListener, public MouseListener
+[!else]
 class [!output PROJECT_NAME]FrameListener : public BaseFrameListener
+[!endif]
+[!else]
+[!if CEGUI_YES]
+class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener, public MouseMotionListener, public MouseListener
 [!else]
 class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener
 [!endif]
+[!endif]
 {
+private:
+   SceneManager* mSceneMgr;
+[!if CEGUI_YES]
+   CEGUI::Renderer* mGUIRenderer;
+   bool mShutdownRequested;
+[!endif]
 public:
 [!if FRAMEWORK_OWN]
-	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
-		: BaseFrameListener(win, cam)
+[!if CEGUI_YES]
+	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
+		: BaseFrameListener(win, cam, false, true),
+      mGUIRenderer(renderer),
+      mShutdownRequested(false),
+      mSceneMgr(sceneMgr)
 [!else]
-	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
-		: ExampleFrameListener(win, cam)
+      [!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
+         : BaseFrameListener(win, cam),
+         mSceneMgr(sceneMgr)
+[!endif]
+[!else]
+[!if CEGUI_YES]
+	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
+		: ExampleFrameListener(win, cam, false, true),
+      mGUIRenderer(renderer),
+      mShutdownRequested(false),
+      mSceneMgr(sceneMgr)
+[!else]
+      [!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
+         : ExampleFrameListener(win, cam),
+         mSceneMgr(sceneMgr)
+[!endif]
 [!endif]
 	{
-		// Reduce move speed
-		mMoveSpeed = 50;
-
+[!if CEGUI_YES]
+      mEventProcessor->addMouseMotionListener(this);
+      mEventProcessor->addMouseListener(this);
+      mEventProcessor->addKeyListener(this);
+[!endif]
 	}
 
 	bool frameStarted(const FrameEvent& evt)
 	{
-		// clamp to terrain
 		[!if FRAMEWORK_OWN]
 		bool ret = BaseFrameListener::frameStarted(evt);
 		[!else]
 		bool ret = ExampleFrameListener::frameStarted(evt);
 		[!endif]
-		static Ray updateRay;
-		updateRay.setOrigin(mCamera->getPosition());
-		updateRay.setDirection(Vector3::NEGATIVE_UNIT_Y);
-		raySceneQuery->setRay(updateRay);
-		RaySceneQueryResult& qryResult = raySceneQuery->execute();
-		RaySceneQueryResult::iterator i = qryResult.begin();
-		if (i != qryResult.end() && i->worldFragment)
-		{
-			SceneQuery::WorldFragment* wf = i->worldFragment;
-			mCamera->setPosition(mCamera->getPosition().x,
-				i->worldFragment->singleIntersection.y + 10,
-				mCamera->getPosition().z);
-		}
 
-		return ret;
+[!if CEGUI_YES]
+      if(mUseBufferedInputMouse)
+      {
+         CEGUI::MouseCursor::getSingleton().show( );
+      }
+      else
+      {
+         CEGUI::MouseCursor::getSingleton().hide( );
+      }
+[!endif]
+
+      return ret;
 
 	}
 
+[!if CEGUI_YES]
+   void requestShutdown(void)
+   {
+      mShutdownRequested = true;
+   }
+
+   bool frameEnded(const FrameEvent& evt)
+   {
+      if (mShutdownRequested)
+         return false;
+      else
+         [!if FRAMEWORK_OWN]
+         return BaseFrameListener::frameEnded(evt);
+         [!else]
+         return ExampleFrameListener::frameEnded(evt);
+         [!endif]
+   }
+
+   void mouseMoved (MouseEvent *e)
+   {
+      CEGUI::System::getSingleton().injectMouseMove(
+         e->getRelX() * mGUIRenderer->getWidth(), 
+         e->getRelY() * mGUIRenderer->getHeight());
+      e->consume();
+   }
+
+   void mouseDragged (MouseEvent *e) 
+   { 
+      mouseMoved(e);
+   }
+
+   void mousePressed (MouseEvent *e)
+   {
+      CEGUI::System::getSingleton().injectMouseButtonDown(
+         convertOgreButtonToCegui(e->getButtonID()));
+      e->consume();
+   }
+
+   void mouseReleased (MouseEvent *e)
+   {
+      CEGUI::System::getSingleton().injectMouseButtonUp(
+         convertOgreButtonToCegui(e->getButtonID()));
+      e->consume();
+   }
+
+   void mouseClicked(MouseEvent* e) {}
+   void mouseEntered(MouseEvent* e) {}
+   void mouseExited(MouseEvent* e) {}
+
+   void keyPressed(KeyEvent* e)
+   {
+      if(e->getKey() == KC_ESCAPE)
+      {
+         mShutdownRequested = true;
+         e->consume();
+         return;
+      }
+
+      CEGUI::System::getSingleton().injectKeyDown(e->getKey());
+      CEGUI::System::getSingleton().injectChar(e->getKeyChar());
+      e->consume();
+   }
+[!endif]
 };
 
 
@@ -86,35 +204,47 @@ class [!output PROJECT_NAME]App : public BaseApplication
 	class [!output PROJECT_NAME]App : public ExampleApplication
 [!endif]
 	{
+[!if CEGUI_YES]
+   private:
+      CEGUI::OgreCEGUIRenderer* mGUIRenderer;
+      CEGUI::System* mGUISystem;
+[!endif]
 	public:
-		[!output PROJECT_NAME]App() {}
+		[!output PROJECT_NAME]App()
+[!if CEGUI_YES]
+         : mGUIRenderer(0),
+         mGUISystem(0)
+[!endif]
+      {}
 
 	~[!output PROJECT_NAME]App()
 	{
-		delete raySceneQuery;
+[!if CEGUI_YES]
+      if(mGUISystem)
+      {
+         delete mGUISystem;
+         mGUISystem = 0;
+      }
+      if(mGUIRenderer)
+      {
+         delete mGUIRenderer;
+         mGUIRenderer = 0;
+      }
+[!endif]
 	}
 
 protected:
 
-
-	virtual void chooseSceneManager(void)
-	{
-		// Get the SceneManager, in this case a generic one
-		mSceneMgr = mRoot->getSceneManager( ST_EXTERIOR_CLOSE );
-	}
-
 	virtual void createCamera(void)
 	{
-		// Create the camera
-		mCamera = mSceneMgr->createCamera("PlayerCam");
+      // Create the camera
+      mCamera = mSceneMgr->createCamera("PlayerCam");
 
-		// Position it at 500 in Z direction
-		mCamera->setPosition(Vector3(128,25,128));
-		// Look back along -Z
-		mCamera->lookAt(Vector3(0,0,-300));
-		mCamera->setNearClipDistance( 1 );
-		mCamera->setFarClipDistance( 1000 );
-
+      // Position it at 500 in Z direction
+      mCamera->setPosition(Vector3(0,0,80));
+      // Look back along -Z
+      mCamera->lookAt(Vector3(0,0,-300));
+      mCamera->setNearClipDistance(5);
 	}
 
 
@@ -142,60 +272,61 @@ protected:
 	// Just override the mandatory create scene method
 	virtual void createScene(void)
 	{
-		Plane waterPlane;
+[!if CEGUI_YES]
+      // setup GUI system
+      mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow, 
+         Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
 
-		// Set ambient light
-		mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+      mGUISystem = new CEGUI::System(mGUIRenderer);
 
-		// Create a light
-		Light* l = mSceneMgr->createLight("MainLight");
-		// Accept default settings: point light, white diffuse, just set position
-		// NB I could attach the light to a SceneNode if I wanted it to move automatically with
-		//  other objects, but I don't
-		l->setPosition(20,80,50);
-
-		// Fog
-		// NB it's VERY important to set this before calling setWorldGeometry
-		// because the vertex program picked will be different
-		ColourValue fadeColour(0.93, 0.86, 0.76);
-		mSceneMgr->setFog( FOG_LINEAR, fadeColour, .001, 500, 1000);
-		mWindow->getViewport(0)->setBackgroundColour(fadeColour);
-
-		std::string terrain_cfg("terrain.cfg");
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-		terrain_cfg = mResourcePath + terrain_cfg;
-#endif
-		mSceneMgr -> setWorldGeometry( terrain_cfg );
-		// Infinite far plane?
-		if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(RSC_INFINITE_FAR_PLANE))
-		{
-			mCamera->setFarClipDistance(0);
-		}
-
-		// Define the required skyplane
-		Plane plane;
-		// 5000 world units from the camera
-		plane.d = 5000;
-		// Above the camera, facing down
-		plane.normal = -Vector3::UNIT_Y;
-
-		// Set a nice viewpoint
-		mCamera->setPosition(707,2500,528);
-		mCamera->setOrientation(Quaternion(-0.3486, 0.0122, 0.9365, 0.0329));
-		//mRoot -> showDebugOverlay( true );
-
-		raySceneQuery = mSceneMgr->createRayQuery(
-			Ray(mCamera->getPosition(), Vector3::NEGATIVE_UNIT_Y));
+      CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
 
 
+      // load scheme and set up defaults
+      CEGUI::SchemeManager::getSingleton().loadScheme(
+         (CEGUI::utf8*)"TaharezLook.scheme");
+      mGUISystem->setDefaultMouseCursor(
+         (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+      mGUISystem->setDefaultFont((CEGUI::utf8*)"Tahoma-12");
+      CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
+      CEGUI::MouseCursor::getSingleton().show( );
+      setupEventHandlers();
+[!endif]
+
+      Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
+
+      SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+      headNode->attachObject(ogreHead);
+
+      // Set ambient light
+      mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+
+      // Create a light
+      Light* l = mSceneMgr->createLight("MainLight");
+      l->setPosition(20,80,50);
 	}
-	// Create new frame listener
+
+   // Create new frame listener
 	void createFrameListener(void)
 	{
-		mFrameListener= new [!output PROJECT_NAME]FrameListener(mSceneMgr, mWindow, mCamera);
+[!if CEGUI_YES]
+		mFrameListener= new [!output PROJECT_NAME]FrameListener(mSceneMgr, mWindow, mCamera, mGUIRenderer);
+[!else]
+      mFrameListener= new [!output PROJECT_NAME]FrameListener(mSceneMgr, mWindow, mCamera);
+[!endif]
 		mRoot->addFrameListener(mFrameListener);
 	}
+[!if CEGUI_YES]
+   void setupEventHandlers(void)
+   {
+   }
 
+   bool handleQuit(const CEGUI::EventArgs& e)
+   {
+      static_cast<[!output PROJECT_NAME]FrameListener*>(mFrameListener)->requestShutdown();
+      return true;
+   }
+[!endif]
 };
 
 #endif // #ifndef __[!output PROJECT_NAME]_h_
