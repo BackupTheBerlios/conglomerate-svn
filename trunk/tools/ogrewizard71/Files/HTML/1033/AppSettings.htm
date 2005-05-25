@@ -1,9 +1,9 @@
 <HTML DIR="ltr">
 	<HEAD>
-		<TITLE>Ogre Application Wizard</TITLE>
+		<TITLE>Ogre 1.0.1 Application Wizard</TITLE>
 		<META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-		<STYLE TYPE="text/css">@import url(); 
+		<STYLE TYPE="text/css">@import url();
 		</STYLE>
 		<SCRIPT>
 		var strURL = window.external.FindSymbol("PRODUCT_INSTALLATION_DIR");
@@ -39,8 +39,8 @@
 									</TD>
 									<TD CLASS="IMAGE" VALIGN="bottom" WIDTH="110" ROWSPAN="2">
 										<DIV CLASS="SMALLA" ID="CONSOLE_APP_IMAGE" STYLE="DISPLAY:block" align="center">
-											<IMG CLASS="SMALL" SRC="..\..\Images\OgreWizard71.gif" ALT="" BORDER="0" hspace="40"
-												align="middle" vspace="40">
+											<IMG CLASS="SMALL" SRC="..\..\Images\OgreWizard71.png" ALT="" BORDER="0" hspace="40"
+												align="top" vspace="1" height="50" width="50">
 										</DIV>
 									</TD>
 									<TD VALIGN="top" HEIGHT="12" WIDTH="6" ROWSPAN="2">
@@ -53,7 +53,7 @@
 									</TD>
 									<TD VALIGN="top" HEIGHT="65">
 										<H4 CLASS="HEAD" ID="HEAD">Application Settings</H4>
-										<P CLASS="SUBHEAD" ID="SUBHEAD">Specify the type of application you will build with 
+										<P CLASS="SUBHEAD" ID="SUBHEAD">Specify the type of application you will build with
 											this project and the options or libraries you want supported.</P>
 									</TD>
 									<TD VALIGN="top" HEIGHT="65" WIDTH="12">
@@ -79,7 +79,7 @@
 					<TD CLASS="Three" VALIGN="top" HEIGHT="100%" WIDTH="178">
 						<TABLE CLASS="fixedSize" HEIGHT="100%" WIDTH="178" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 							<TR VALIGN="top">
-								<TD CLASS="threeCustom" VALIGN="top" STYLE="BACKGROUND-IMAGE: url(../../Images/OgreWizard71_Background.gif)">
+								<TD CLASS="threeCustom" VALIGN="top" STYLE="BACKGROUND-IMAGE: url(../../Images/OgreWizard71_Background.png)">
 									<!--OPEN OF NAVIGATION TABLE//-->
 									<TABLE CLASS="THREE" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 										<COLGROUP>
@@ -211,26 +211,32 @@
 															<INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="l" NAME="applocation"
 																ID="LOCATION_OGRENEW" TITLE="">
 															<DIV CLASS="itemTextRadioB" ID="LOCATION_OGRENEW_DIV" TITLE="">
-																<LABEL FOR="LOCATION_OGRENEW" ID="LOCATION_OGRENEW_LABEL">On same <U>l</U>evel as 
-																	'ogrenew'</LABEL>
+																<LABEL FOR="LOCATION_OGRENEW" ID="LOCATION_OGRENEW_LABEL">On same <U>l</U>evel
+																	as&nbsp;Ogre root folder.</LABEL>&nbsp;
+															</DIV>
+															<BR>
+															<INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="l" NAME="applocation"
+																ID="Radio1" TITLE="" VALUE="Radio1">
+															<DIV CLASS="itemTextRadioB" ID="Div1" TITLE="">
+																<LABEL FOR="LOCATION_ENVVAR" ID="LOCATION_ENVVAR_LABEL">'OGRE_HOME' environment <U>v</U>ariable</LABEL>
 															</DIV>
 															<BR>
 															<INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="O" NAME="applocation"
 																ID="LOCATION_OTHER" TITLE="">
 															<DIV CLASS="itemTextRadioB" ID="LOCATION_OTHER_DIV" TITLE="">
-																<LABEL FOR="LOCATION_OTHER" ID="LOCATION_OTHER_LABEL"><U>O</U>ther Location:</LABEL>
+																<LABEL FOR="LOCATION_OTHER" ID="LOCATION_OTHER_LABEL"><U>Fixed path to&nbsp;Ogre
+																		root&nbsp;folder</U>:</LABEL>
 															</DIV>
 															<BR>
-											<NOBR><INPUT CLASS="sideBtn2Indent" ID="OGRE_FOLDER" TITLE="Location of 'ogrenew'"
-														NAME="OgreDirectoryName" TYPE="text" VALUE="" onBlur="OnOgreDirectory();">
-												&nbsp;&nbsp;&nbsp; <BUTTON CLASS="buttonClass3Indent" ID="BrowseBtn" DISABLED ACCESSKEY="." TYPE="BUTTON" VALUE="Data Source"
-													TITLE="Choose 'ogrenew' directory." onClick="GetOgreDirectory();">...</BUTTON> </NOBR>
-														</SPAN>
+															<NOBR><INPUT CLASS="sideBtn2Indent" ID="OGRE_FOLDER" TITLE="Location of 'ogrenew'" NAME="OgreDirectoryName"
+																	TYPE="text" onBlur="OnOgreDirectory();"> &nbsp;&nbsp;&nbsp; <BUTTON CLASS="buttonClass3Indent" ID="BrowseBtn" DISABLED ACCESSKEY="." TYPE="button" VALUE="Data Source"
+																	TITLE="Choose 'ogrenew' directory." onClick="GetOgreDirectory();">...</BUTTON>
+															</NOBR></SPAN>
 													</TD>
 													<TD VALIGN="top" WIDTH="12">
 														&nbsp;
 													</TD>
-													<TD VALIGN="top"></SPAN><SPAN CLASS="itemTextTop" ID="Span2" TITLE="">Application 
+													<TD VALIGN="top"></SPAN><SPAN CLASS="itemTextTop" ID="Span2" TITLE="">Application
 															Options:
 															<P CLASS="Spacer">&nbsp;</P>
 															<INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" NAME="appoptions"
@@ -245,43 +251,33 @@
 																<LABEL FOR="FRAMEWORK_OWN" ID="FRAMEWORK_OWN_LABEL">Own Framework</LABEL>
 															</DIV>
 															<BR>
-														</SPAN><SPAN CLASS="itemTextTop" ID="ADD_SUPPORT_SPAN" TITLE="">Framework Options:
-															<P CLASS="Spacer">&nbsp;</P>
-															<INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="c" ID="SCENE_YES" NAME="support" TITLE=""
-																onPropertyChange="InitControls();">
-															<DIV CLASS="itemTextCheckboxB" TITLE="" ID="sample_scene_title">
-																<LABEL FOR="SCENE_YES" ID="SCENE_YES_LABEL">Sample S<U>c</U>ene</LABEL>
-															</DIV>
-															<BR>
-															<INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="F" ID="FRAMELISTENER_YES" NAME="support"
+															<INPUT TYPE="radio" CLASS="Radio" ACCESSKEY="c" ID="STATEMANAGER_YES" NAME="appoptions"
 																TITLE="" onPropertyChange="InitControls();">
-															<DIV CLASS="itemTextCheckboxB" TITLE="" ID="support_mfc_title">
-																<LABEL FOR="FRAMELISTENER_YES" ID="FRAMELISTENER_YES_LABEL">Sample <U>F</U>ramelistener</LABEL>
+															<DIV CLASS="itemTextRadioB" TITLE="" ID="statemanager_title">
+																<LABEL FOR="STATEMANAGER_YES" ID="STATEMANAGER_YES_LABEL">Statemanager F<U>r</U>amework</LABEL>
 															</DIV>
-														</SPAN>
-														<P CLASS="ElementSpacer">&nbsp;</P>
-														<P class="ElementSpacer">&nbsp;</P>
-														<SPAN CLASS="itemText" ID="ADDITIONAL_OPTIONS_SPAN" TITLE="">Additional options:
+																<BR><br>
+														</SPAN><SPAN CLASS="itemTextTop" ID="ADD_SUPPORT_SPAN" TITLE="">Additional Options: </SPAN>
 															<P CLASS="Spacer">&nbsp;</P>
-															<INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="C" ID="SKIP_CONFIG" TITLE=""
-																onPropertyChange="InitControls();" NAME="SKIP_CONFIG">
-															<DIV CLASS="itemTextCheckboxB" TITLE="" ID="skip_config_title">
-																Skip Config Dialog
-															</DIV>
-														<BR>
+																<INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="F" ID="CEGUI_YES" NAME="support" TITLE=""
+																	onPropertyChange="InitControls();">
+														<DIV CLASS="itemTextCheckboxB" TITLE="" ID="support_cegui_title">
+															<LABEL FOR="CEGUI_YES" ID="CEGUI_YES_LABEL">CEGUI <U>S</U>upport</LABEL>
+														</DIV>
+															<br><br>
+															<INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="C" ID="SKIP_CONFIG" TITLE="" onPropertyChange="InitControls();"
+																NAME="SKIP_CONFIG">
+														<DIV CLASS="itemTextCheckboxB" TITLE="" ID="skip_config_title">
+															Skip Config Dialog
+														</DIV>
+															<br>
 															<INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="b" ID="POSTBUILD_COPY" TITLE="" onPropertyChange="InitControls();"
 																NAME="POSTBUILD_COPY">
-															<DIV CLASS="itemTextCheckboxB" TITLE="" ID="postbuild_title">
-																Post<U>b</U>uild copy to samples/bin
-															</DIV>
-															<BR>
-															<INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="P" ID="PRE_COMPILED_HEADER" TITLE=""
-																onPropertyChange="InitControls();" NAME="PRE_COMPILED_HEADER">
-															<DIV CLASS="itemTextCheckboxB" TITLE="" ID="precompiled_header_title">
-																Precompiled Header
-															</DIV>
-														<BR>
+														<DIV CLASS="itemTextCheckboxB" TITLE="" ID="postbuild_title">
+															Post<U>b</U>uild copy to samples/bin
+														</DIV>
 														</SPAN>
+														<BR>
 													</TD>
 													<TD VALIGN="top" WIDTH="12">
 														&nbsp;
@@ -406,7 +402,7 @@ function IsValidDirectory(strDirectory)
 	if (strDirectory.charAt(0)=='\\' && strDirectory.charAt(1)=='\\' &&
 	    (IsLetter(strDirectory.charAt(2)) || IsNumber(strDirectory.charAt(2))))
 		return true;
-	
+
 	return false;
 }
 
@@ -421,7 +417,7 @@ function OnFinish(document)
 			return;
 		}
 	}
-	
+
 	OnWizFinish(document);
 }
 
@@ -441,7 +437,7 @@ function GetOgreDirectory()
 					if (strDirectory.charAt(strDirectory.length-2) != ':')
 						strDirectory = strDirectory.substring(0, strDirectory.length-1);
 				}
-				
+
 				OGRE_FOLDER.value = strDirectory;
 				window.external.AddSymbol("OGRE_FOLDER", strDirectory);
 			}
@@ -463,48 +459,42 @@ function InitControls()
 {
 	if(MIN_APP.checked)
 	{
-		SCENE_YES.disabled = true;
-		SCENE_YES_LABEL.disabled = true;
-		FRAMELISTENER_YES.disabled = true;
-		FRAMELISTENER_YES_LABEL.disabled = true;
+		STATEMANAGER_YES.disabled = true;
+		STATEMANAGER_YES_LABEL.disabled = true;
+		CEGUI_YES.disabled = false;
+		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = false;
 		FRAMEWORK_YES_LABEL.disabled = false;
 		FRAMEWORK_OWN.disabled = false;
 		FRAMEWORK_OWN_LABEL.disabled = false;
-		PRE_COMPILED_HEADER.disabled = false;
-		precompiled_header_title.disabled = false;
 		SKIP_CONFIG.disabled = false;
 		skip_config_title.disabled = false;
 	}
 
 	if(STANDARD_APP.checked)
 	{
-		SCENE_YES.disabled = false;
-		SCENE_YES_LABEL.disabled = false;
-		FRAMELISTENER_YES.disabled = false;
-		FRAMELISTENER_YES_LABEL.disabled = false;
+		STATEMANAGER_YES.disabled = false;
+		STATEMANAGER_YES_LABEL.disabled = false;
+		CEGUI_YES.disabled = false;
+		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = false;
 		FRAMEWORK_YES_LABEL.disabled = false;
 		FRAMEWORK_OWN.disabled = false;
 		FRAMEWORK_OWN_LABEL.disabled = false;
-		PRE_COMPILED_HEADER.disabled = false;
-		precompiled_header_title.disabled = false;
 		SKIP_CONFIG.disabled = false;
 		skip_config_title.disabled = false;
 	}
 
 	if(EMPTY_PROJECT.checked)
 	{
-		SCENE_YES.disabled = true;
-		SCENE_YES_LABEL.disabled = true;
-		FRAMELISTENER_YES.disabled = true;
-		FRAMELISTENER_YES_LABEL.disabled = true;
+		STATEMANAGER_YES.disabled = true;
+		STATEMANAGER_YES_LABEL.disabled = true;
+		CEGUI_YES.disabled = false;
+		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = true;
 		FRAMEWORK_YES_LABEL.disabled = true;
 		FRAMEWORK_OWN.disabled = true;
 		FRAMEWORK_OWN_LABEL.disabled = true;
-		PRE_COMPILED_HEADER.disabled = true;
-		precompiled_header_title.disabled = true;
 		SKIP_CONFIG.disabled = true;
 		skip_config_title.disabled = true;
 	}

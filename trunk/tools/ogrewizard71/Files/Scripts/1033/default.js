@@ -100,11 +100,51 @@ function AddConfig(proj, strProjectName)
 		var bSamplesFolder = wizard.FindSymbol('LOCATION_SAMPLES');
 		var bOgrenewLevelFolder = wizard.FindSymbol('LOCATION_OGRENEW');
 		var bOtherFolder = wizard.FindSymbol('LOCATION_OTHER');
+		var bGlobalEnvar = wizard.FindSymbol('LOCATION_ENVAR');
 		var bCommonFramework = wizard.FindSymbol('FRAMEWORK_YES');
 		var bPostbuildCopy = wizard.FindSymbol('POSTBUILD_COPY');
 		var sOgreFolder = wizard.FindSymbol('OGRE_FOLDER');
+		var bUseCEGUI = wizard.FindSymbol('CEGUI_YES');
 
+		var strCommonDir = '';
+		if(bSamplesFolder)
+			strCommonDir = '..\\..\\Common';
+		if(bOgrenewLevelFolder)
+			strCommonDir = '..\\..\\ogrenew\\samples\\common';
+		if(bOtherFolder)
+			strCommonDir = sOgreFolder + '\\samples\\common';
+		if(bGlobalEnvar)
+			strCommonDir = '$OGRE_HOME' + '\\samples\\common';
+			
+		var strOgreMainDir = '';
+		if(bSamplesFolder)
+			strOgreMainDir = '..\\..\\..\\OgreMain';
+		if(bOgrenewLevelFolder)
+			strOgreMainDir = '..\\..\\ogrenew\\OgreMain';
+		if(bOtherFolder)
+			strOgreMainDir = sOgreFolder + '\\OgreMain';
+		if(bGlobalEnvar)
+			strOgreMainDir = '$OGRE_HOME' + '\\OgreMain';
 
+		var strDependenciesDir = '';
+		if(bSamplesFolder)
+			strDependenciesDir = '..\\..\\..\\Dependencies';
+		if(bOgrenewLevelFolder)
+			strDependenciesDir = '..\\..\\ogrenew\\Dependencies';
+		if(bOtherFolder)
+			strDependenciesDir = sOgreFolder + '\\Dependencies';
+		if(bGlobalEnvar)
+			strDependenciesDir = '$OGRE_HOME' + '\\Dependencies';
+
+		var strCEGUIRendererDir = '';
+		if(bSamplesFolder)
+			strCEGUIRendererDir = '..\\..\\Common\\CEGUIRenderer';
+		if(bOgrenewLevelFolder)
+			strCEGUIRendererDir = '..\\..\\ogrenew\\samples\\Common\\CEGUIRenderer';
+		if(bOtherFolder)
+			strCEGUIRendererDir = sOgreFolder + '\\samples\\Common\\CEGUIRenderer';
+		if(bGlobalEnvar)
+			strCEGUIRendererDir = '$OGRE_HOME' + '\\samples\\Common\\CEGUIRenderer';
 
 //DEBUG//////////////////////////////////////////////////////
 		var config = proj.Object.Configurations('Debug');
@@ -112,21 +152,8 @@ function AddConfig(proj, strProjectName)
 		config.OutputDirectory = '..\\bin\\$(ConfigurationName)';
 		config.CharacterSet = charSet.charSetMBCS;
 		var debugSettings = config.DebugSettings;
-		if(bSamplesFolder)
-		{
-			debugSettings.WorkingDirectory = "..\\..\\Common\\Bin\\$(ConfigurationName)";
-			debugSettings.Command = "..\\..\\Common\\Bin\\$(ConfigurationName)\\$(ProjectName).exe";
-		}
-		else if(bOgrenewLevelFolder)
-		{
-			debugSettings.WorkingDirectory = "..\\..\\ogrenew\\samples\\Common\\Bin\\$(ConfigurationName)";
-			debugSettings.Command = "..\\..\\ogrenew\\samples\\Common\\Bin\\$(ConfigurationName)\\$(ProjectName).exe";
-		}
-		else if(bOtherFolder)
-		{
-			debugSettings.WorkingDirectory = sOgreFolder + "\\samples\\Common\\Bin\\$(ConfigurationName)";
-			debugSettings.Command = sOgreFolder + "\\samples\\Common\\Bin\\$(ConfigurationName)\\$(ProjectName).exe";
-		}
+		debugSettings.WorkingDirectory = strCommonDir + "\\Bin\\$(ConfigurationName)";
+		debugSettings.Command = strCommonDir + "\\Bin\\$(ConfigurationName)\\$(ProjectName).exe";
 
 		var CLTool = config.Tools('VCCLCompilerTool');
 		CLTool.RuntimeLibrary = rtMultiThreadedDebugDLL;
@@ -144,46 +171,26 @@ function AddConfig(proj, strProjectName)
 		CLTool.PreprocessorDefinitions = "WIN32;_DEBUG;_WINDOWS";
 
 
-		if(wizard.FindSymbol("PRE_COMPILED_HEADER"))
-			CLTool.UsePrecompiledHeader = pchGenerateAuto;
+//		if(wizard.FindSymbol("PRE_COMPILED_HEADER"))
+//			CLTool.UsePrecompiledHeader = pchGenerateAuto;
 		if (wizard.FindSymbol("EMPTY_PROJECT"))
 			CLTool.UsePrecompiledHeader = pchNone;
 		
+		var strAdditionalIncludeDirectories = '';
+		if(bCommonFramework)
+		{
+			strAdditionalIncludeDirectories = "..\\include;" + strCommonDir + "\\include;" + strOgreMainDir + "\\include";
+		}
+		else
+		{
+			strAdditionalIncludeDirectories = "..\\include;" + strOgreMainDir + "\\include";
+		}
+		
+		if(bUseCEGUI)
+			strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strDependenciesDir + "\\include\\CEGUI" + ";" + strCEGUIRendererDir + "\\include;" + strDependenciesDir + "\\include";
 
-		if(bSamplesFolder)
-		{
-			if(bCommonFramework)
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\Common\\include;..\\..\\..\\OgreMain\\include";
-			}
-			else
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\..\\OgreMain\\include";
-			}
-		}
-		else if(bOgrenewLevelFolder)
-		{
-			if(bCommonFramework)
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\ogrenew\\samples\\Common\\include;..\\..\\ogrenew\\OgreMain\\include";
-			}
-			else
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\ogrenew\\OgreMain\\include";
-			}
-		}
-		else if(bOtherFolder)
-		{
-			if(bCommonFramework)
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;" + sOgreFolder + "\\samples\\Common\\include;" + sOgreFolder + "\\OgreMain\\include";
-			}
-			else
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;" + sOgreFolder + "\\OgreMain\\include";
-			}
-		}
-
+		CLTool.AdditionalIncludeDirectories = strAdditionalIncludeDirectories;
+		
 		var LinkTool = config.Tools('VCLinkerTool');
 		LinkTool.GenerateDebugInformation = true;
 		LinkTool.ProgramDatabaseFile = "$(OutDir)/" + strProjectName + ".pdb";
@@ -192,38 +199,28 @@ function AddConfig(proj, strProjectName)
 		LinkTool.SubSystem = subSystemOption.subSystemWindows;
 		LinkTool.TargetMachine = machineTypeOption.machineX86;
 
-		if(bSamplesFolder)
+		var strAdditionalLibraryDirectories = '';
+		var strAdditionalDependencies = '';
+		
+		strAdditionalLibraryDirectories = strOgreMainDir + "\\lib\\$(ConfigurationName)";
+		strAdditionalDependencies = "OgreMain_d.lib";
+		
+		if(bUseCEGUI)
 		{
-			LinkTool.AdditionalLibraryDirectories = "..\\..\\..\\OgreMain\\lib\\$(ConfigurationName)";
+			strAdditionalLibraryDirectories = strAdditionalLibraryDirectories + ";" + strDependenciesDir + "\\lib\\$(ConfigurationName)";
+			strAdditionalLibraryDirectories = strAdditionalLibraryDirectories + ";" + strCEGUIRendererDir + "\\lib";
+			strAdditionalDependencies = strAdditionalDependencies + " CEGUIBase_d.lib OgreGUIRenderer_d.lib";
 		}
-		else if(bOgrenewLevelFolder)
-		{
-			LinkTool.AdditionalLibraryDirectories = "..\\..\\ogrenew\\OgreMain\\lib\\$(ConfigurationName)";
-		}
-		else if(bOtherFolder)
-		{
-			LinkTool.AdditionalLibraryDirectories = sOgreFolder + "\\OgreMain\\lib\\$(ConfigurationName)";
-		}
-		LinkTool.AdditionalDependencies = "OgreMain_d.lib";
-
-
+				
+		LinkTool.AdditionalLibraryDirectories = strAdditionalLibraryDirectories;
+		LinkTool.AdditionalDependencies = strAdditionalDependencies;
+		
 		if(bPostbuildCopy)
 		{
 			var PostBuildTool = config.Tools("VCPostBuildEventTool");
 			PostBuildTool.Description = "Copying exe to samples bin directory ...";
 
-			if(bSamplesFolder)
-			{
-				PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) ..\\..\\Common\\Bin\\$(ConfigurationName)";
-			}
-			else if(bOgrenewLevelFolder)
-			{
-				PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) ..\\..\\ogrenew\\samples\\Common\\Bin\\$(ConfigurationName)";
-			}
-			else if(bOtherFolder)
-			{
-				PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + sOgreFolder + "\\samples\\Common\\Bin\\$(ConfigurationName)";
-			}
+			PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + strCommonDir + "\\Bin\\$(ConfigurationName)";
 		}
 
 //RELEASE//////////////////////////////////////////////////////
@@ -252,46 +249,26 @@ function AddConfig(proj, strProjectName)
 		CLTool.OptimizeForWindowsApplication = true;
 		CLTool.StringPooling = true;
 
-		if(wizard.FindSymbol("PRE_COMPILED_HEADER"))
-			CLTool.UsePrecompiledHeader = pchGenerateAuto;
+//		if(wizard.FindSymbol("PRE_COMPILED_HEADER"))
+//			CLTool.UsePrecompiledHeader = pchGenerateAuto;
 		if (wizard.FindSymbol("EMPTY_PROJECT"))
 			CLTool.UsePrecompiledHeader = pchNone;
 
-		if(bSamplesFolder)
+		var strAdditionalIncludeDirectories = '';
+		if(bCommonFramework)
 		{
-			if(bCommonFramework)
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\Common\\include;..\\..\\..\\OgreMain\\include";
-			}
-			else
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\..\\OgreMain\\include";
-			}
+			strAdditionalIncludeDirectories = "..\\include;" + strCommonDir + "\\include;" + strOgreMainDir +"\\include";
 		}
-		else if(bOgrenewLevelFolder)
+		else
 		{
-			if(bCommonFramework)
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\ogrenew\\samples\\Common\\include;..\\..\\ogrenew\\OgreMain\\include";
-			}
-			else
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;..\\..\\ogrenew\\OgreMain\\include";
-			}
-		}
-		else if(bOtherFolder)
-		{
-			if(bCommonFramework)
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;" + sOgreFolder + "\\samples\\Common\\include;" + sOgreFolder + "\\OgreMain\\include";
-			}
-			else
-			{
-				CLTool.AdditionalIncludeDirectories = "..\\include;" + sOgreFolder + "\\OgreMain\\include";
-			}
+			strAdditionalIncludeDirectories = "..\\include;" + strOgreMainDir + "\\include";
 		}
 		
-
+		if(bUseCEGUI)
+			strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strDependenciesDir + "\\include\\CEGUI" + ";" + strCEGUIRendererDir + "\\include;" + strDependenciesDir + "\\include";
+		
+		CLTool.AdditionalIncludeDirectories = strAdditionalIncludeDirectories;
+		
 		var LinkTool = config.Tools('VCLinkerTool');
 		LinkTool.LinkIncremental = linkIncrementalType.linkIncrementalNo;
 		LinkTool.OptimizeForWindows98 = optWin98Type.optWin98No;
@@ -300,38 +277,28 @@ function AddConfig(proj, strProjectName)
 		LinkTool.EnableCOMDATFolding = optFoldingType.optFolding;
 		LinkTool.OptimizeReferences = optRefType.optReferences;
 
-		if(bSamplesFolder)
+		var strAdditionalLibraryDirectories = '';
+		strAdditionalLibraryDirectories = strOgreMainDir + "\\lib\\$(ConfigurationName)";
+		
+		var strAdditionalDependencies = '';
+		strAdditionalDependencies = "OgreMain.lib";
+		
+		if(bUseCEGUI)
 		{
-			LinkTool.AdditionalLibraryDirectories = "..\\..\\..\\OgreMain\\lib\\$(ConfigurationName)";
+			strAdditionalLibraryDirectories = strAdditionalLibraryDirectories + ";" + strDependenciesDir + "\\lib\\$(ConfigurationName)";
+			strAdditionalLibraryDirectories = strAdditionalLibraryDirectories + ";" + strCEGUIRendererDir + "\\lib";
+			strAdditionalDependencies = strAdditionalDependencies + " CEGUIBase.lib OgreGUIRenderer.lib";
 		}
-		else if(bOgrenewLevelFolder)
-		{
-			LinkTool.AdditionalLibraryDirectories = "..\\..\\ogrenew\\OgreMain\\lib\\$(ConfigurationName)";
-		}
-		else if (bOtherFolder)
-		{
-			LinkTool.AdditionalLibraryDirectories = sOgreFolder + "\\OgreMain\\lib\\$(ConfigurationName)";
-		}
-
-		LinkTool.AdditionalDependencies = "OgreMain.lib";
-
+		
+		LinkTool.AdditionalLibraryDirectories = strAdditionalLibraryDirectories;
+		LinkTool.AdditionalDependencies = strAdditionalDependencies;
+		
 		if(bPostbuildCopy)
 		{
 			var PostBuildTool = config.Tools("VCPostBuildEventTool");
 			PostBuildTool.Description = "Copying exe to samples bin directory ...";
 
-			if(bSamplesFolder)
-			{
-				PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) ..\\..\\Common\\Bin\\$(ConfigurationName)";
-			}
-			else if(bOgrenewLevelFolder)
-			{
-				PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) ..\\..\\ogrenew\\samples\\Common\\Bin\\$(ConfigurationName)";
-			}
-			else if(bOtherFolder)
-			{
-				PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + sOgreFolder + "\\samples\\Common\\Bin\\$(ConfigurationName)";
-			}
+			PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + strCommonDir + "\\Bin\\$(ConfigurationName)";
 		}
 	}
 	catch(e)

@@ -1,9 +1,9 @@
 <HTML DIR="ltr">
 	<HEAD>
-		<TITLE>Ogre Application Wizard</TITLE>
+		<TITLE>Ogre 1.0.1 Application Wizard</TITLE>
 		<META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-		<STYLE TYPE="text/css">@import url(); 
+		<STYLE TYPE="text/css">@import url();
 		</STYLE>
 		<SCRIPT>
 		var strURL = window.external.FindSymbol("PRODUCT_INSTALLATION_DIR");
@@ -19,14 +19,15 @@
 		<SYMBOL NAME="EMPTY_PROJECT" TYPE="checkbox" VALUE="false"></SYMBOL>
 		<SYMBOL NAME="FRAMEWORK_YES" TYPE="checkbox" VALUE="true"></SYMBOL>
 		<SYMBOL NAME="FRAMEWORK_OWN" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="SCENE_YES" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="FRAMELISTENER_YES" TYPE="checkbox" VALUE="true"></SYMBOL>
+		<SYMBOL NAME="CEGUI_YES" TYPE="checkbox" VALUE="true"></SYMBOL>
+		<SYMBOL NAME="STATEMANAGER_YES" TYPE="checkbox" VALUE="false"></SYMBOL>
 		<SYMBOL NAME="LOCATION_SAMPLES" TYPE="checkbox" VALUE="true"></SYMBOL>
 		<SYMBOL NAME="LOCATION_OTHER" TYPE="checkbox" VALUE="false"></SYMBOL>
 		<SYMBOL NAME="LOCATION_OGRENEW" TYPE="checkbox" VALUE="false"></SYMBOL>
+		<SYMBOL NAME="LOCATION_ENVVAR" TYPE="checkbox" VALUE="false"></SYMBOL>
 		<SYMBOL NAME="PRE_COMPILED_HEADER" TYPE="checkbox" VALUE="false"></SYMBOL>
 		<SYMBOL NAME="POSTBUILD_COPY" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="SKIP_CONFIG" TYPE="checkbox" VALUE="false"></SYMBOL>
+		<SYMBOL NAME="SKIP_CONFIG" TYPE="checkbox" VALUE="true"></SYMBOL>
 		<SYMBOL NAME="YEAR" TYPE="text"></SYMBOL>
 		<SYMBOL NAME="OGRE_FOLDER" TYPE="text"></SYMBOL>
 	</HEAD>
@@ -54,10 +55,10 @@
 									<TD VALIGN="top" HEIGHT="12" WIDTH="12">
 										&nbsp;
 									</TD>
-									<TD CLASS="IMAGE" VALIGN="bottom" WIDTH="110" ROWSPAN="2">
-										<DIV CLASS="SMALLA" ID="Layer0" align="center">
-											<IMG CLASS="SMALLEST" SRC="../../Images/OgreWizard71.gif" ALT="" BORDER="0" hspace="40"
-												align="middle" vspace="40">
+									<TD VALIGN="bottom" WIDTH="110" ROWSPAN="2">
+										<DIV align="center">
+											<IMG SRC="../../Images/OgreWizard71.png" ALT="" BORDER="0" hspace="40"
+												align="top" vspace="1" height="50" width="50">
 										</DIV>
 									</TD>
 									<TD VALIGN="top" HEIGHT="12" WIDTH="6" ROWSPAN="2">
@@ -69,8 +70,8 @@
 										&nbsp;
 									</TD>
 									<TD VALIGN="top" HEIGHT="65">
-										<H4 CLASS="HEAD" ID="HEAD">Welcome to the Ogre Application Wizard</H4>
-										<P CLASS="SUBHEAD" ID="SUBHEAD">This wizard generates a generic&nbsp;Ogre 
+										<H4 CLASS="HEAD" ID="HEAD">Welcome to the Ogre 1.0.1 Application Wizard</H4>
+										<P CLASS="SUBHEAD" ID="SUBHEAD">This wizard generates a generic&nbsp;Ogre
 											application project.</P>
 									</TD>
 									<TD VALIGN="top" HEIGHT="65" WIDTH="12">
@@ -96,7 +97,7 @@
 					<TD CLASS="Three" VALIGN="top" HEIGHT="100%" WIDTH="178">
 						<TABLE CLASS="fixedSize" HEIGHT="100%" WIDTH="178" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 							<TR VALIGN="top">
-								<TD CLASS="threeCustom" VALIGN="top" STYLE="BACKGROUND-IMAGE: url(../../Images/OgreWizard71_Background.gif)">
+								<TD CLASS="threeCustom" VALIGN="top" STYLE="BACKGROUND-IMAGE: url(../../Images/OgreWizard71_Background.png)">
 									<!--OPEN OF NAVIGATION TABLE//-->
 									<TABLE CLASS="THREE" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 										<COLGROUP>
@@ -194,7 +195,7 @@
 														&nbsp;
 													</TD>
 													<TD VALIGN="top">
-														<SPAN CLASS="ItemTextTop" ID="PROJECT_SETTINGS_SPAN">These are the current project 
+														<SPAN CLASS="ItemTextTop" ID="PROJECT_SETTINGS_SPAN">These are the current project
 															settings:</SPAN>
 														<UL>
 															<LI CLASS="LIST">
@@ -206,22 +207,22 @@
 																<SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK" TITLE=""><LABEL FOR="APPFRAMEWORK"></LABEL>
 																</SPAN>
 															<LI CLASS="LIST">
-																<SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_SCENE" TITLE=""><LABEL FOR="APPFRAMEWORK_SCENE">
+																<SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_CEGUI" TITLE=""><LABEL FOR="APPFRAMEWORK_CEGUI">
 																	</LABEL></SPAN>
 															<LI CLASS="LIST">
-																<SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_FRAMELISTENER" TITLE=""><LABEL FOR="APPFRAMEWORK_FRAMELISTENER">
+																<SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_STATEMANAGER" TITLE=""><LABEL FOR="APPFRAMEWORK_STATEMANAGER">
 																	</LABEL></SPAN>
 															<LI CLASS="LIST">
 																<SPAN CLASS="SideBtnHidden" ID="APPPOSTBUILD" TITLE=""><LABEL FOR="APPPOSTBUILD"></LABEL>
 																</SPAN>
 															<LI CLASS="LIST">
 																<SPAN CLASS="SideBtnHidden" ID="APPPCH" TITLE=""><LABEL FOR="APPPCH"></LABEL></SPAN>
-															</LI>
 															<LI CLASS="LIST">
-																<SPAN CLASS="SideBtnHidden" ID="SKIPCONFIG" TITLE=""><LABEL FOR="SKIPCONFIG"></LABEL></SPAN>
+																<SPAN CLASS="SideBtnHidden" ID="SKIPCONFIG" TITLE=""><LABEL FOR="SKIPCONFIG"></LABEL>
+																</SPAN>
 															</LI>
 														</UL>
-														<SPAN CLASS="ItemText" ID="FinishText">Click <B>Finish</B> from any window to 
+														<SPAN CLASS="ItemText" ID="FinishText">Click <B>Finish</B> from any window to
 															accept the current settings.</SPAN>
 													</TD>
 													<TD VALIGN="top" WIDTH="12">
@@ -311,10 +312,10 @@ tab_array[1] = AppSettings;
 function InitDocument(document)
 {
 	setDirection();
-	
+
 	if (window.external.FindSymbol("DOCUMENT_FIRST_LOAD"))
 	{
-		var L_WizardDialogTitle_Text = "Ogre Application Wizard";
+		var L_WizardDialogTitle_Text = "Ogre 1.0.1 Application Wizard";
 		window.external.AddSymbol("WIZARD_DIALOG_TITLE", L_WizardDialogTitle_Text);
 		var strProjName = window.external.FindSymbol("PROJECT_NAME");
 		var coll = document.all.tags("SYMBOL");
@@ -359,7 +360,7 @@ function InitControls()
 	var L_APPPOSTBUILD_TEXT = "Postbuild copy";
 	var L_APPPCH_TEXT = "Using precompiled header";
 	var L_SKIPCONFIG_TEXT = "Skipping Config Dialog";
-	
+
 	if (window.external.FindSymbol("LOCATION_SAMPLES"))
 	{
 		APPLOCATION.innerText = L_APPLOCATION_TEXT;
@@ -395,7 +396,7 @@ function InitControls()
 		APPPOSTBUILD.parentNode.style.display = 'none';
 	}
 
-	
+
 	if (window.external.FindSymbol("SKIP_CONFIG") && !window.external.IsSymbolDisabled("SKIP_CONFIG"))
 	{
 		SKIPCONFIG.innerText = L_SKIPCONFIG_TEXT;
@@ -414,20 +415,20 @@ function InitControls()
 		APPPCH.parentNode.style.display = 'none';
 	}
 
-	APPFRAMEWORK_SCENE.parentNode.style.display = 'none';
-	APPFRAMEWORK_FRAMELISTENER.parentNode.style.display = 'none';
-	if (window.external.FindSymbol("SCENE_YES") && !window.external.IsSymbolDisabled("SCENE_YES"))
+	APPFRAMEWORK_CEGUI.parentNode.style.display = 'none';
+	APPFRAMEWORK_STATEMANAGER.parentNode.style.display = 'none';
+	if (window.external.FindSymbol("CEGUI_YES") && !window.external.IsSymbolDisabled("CEGUI_YES"))
 	{
-		var L_SCENEYES_TEXT = "sample Scene";
-		APPFRAMEWORK_SCENE.innerText = L_SCENEYES_TEXT;
-		APPFRAMEWORK_SCENE.parentNode.style.display = 'block';
+		var L_CEGUIYES_TEXT = "CEGUI support.";
+		APPFRAMEWORK_CEGUI.innerText = L_CEGUIYES_TEXT;
+		APPFRAMEWORK_CEGUI.parentNode.style.display = 'block';
 	}
-	if (window.external.FindSymbol("FRAMELISTENER_YES") && !window.external.IsSymbolDisabled("FRAMELISTENER_YES"))
+	if (window.external.FindSymbol("STATEMANAGER_YES") && !window.external.IsSymbolDisabled("STATEMANAGER_YES"))
 	{
-		var L_FRAMELISTENERYES_TEXT = "sample Framelistener";
-		APPFRAMEWORK_FRAMELISTENER.innerText = L_FRAMELISTENERYES_TEXT;
-		APPFRAMEWORK_FRAMELISTENER.parentNode.style.display = 'block';
-		
+		var L_STATEMANGERYES_TEXT = "Statemanager support";
+		APPFRAMEWORK_STATEMANAGER.innerText = L_STATEMANGERYES_TEXT;
+		APPFRAMEWORK_STATEMANAGER.parentNode.style.display = 'block';
+
 	}
 }
 
@@ -463,7 +464,7 @@ function IsValidDirectory(strDirectory)
 	if (strDirectory.charAt(0)=='\\' && strDirectory.charAt(1)=='\\' &&
 	    (IsLetter(strDirectory.charAt(2)) || IsNumber(strDirectory.charAt(2))))
 		return true;
-	
+
 	return false;
 }
 

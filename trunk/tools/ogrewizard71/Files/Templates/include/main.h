@@ -32,28 +32,18 @@ RaySceneQuery* raySceneQuery = 0;
 // Event handler to add ability to alter curvature
 [!if FRAMEWORK_OWN]
 class [!output PROJECT_NAME]FrameListener : public BaseFrameListener
-	[!else]
-	class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener
-		[!endif]
+[!else]
+class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener
+[!endif]
 {
 public:
-	[!if FRAMELISTENER_YES]
-	[!if FRAMEWORK_OWN]
+[!if FRAMEWORK_OWN]
 	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
 		: BaseFrameListener(win, cam)
-		[!else]
-		[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
-			: ExampleFrameListener(win, cam)
-			[!endif]
-			[!else]
-			[!if FRAMEWORK_OWN]
-			[!output PROJECT_NAME]FrameListener(RenderWindow* win, Camera* cam)
-				: BaseFrameListener(win, cam)
-				[!else]
-				[!output PROJECT_NAME]FrameListener(RenderWindow* win, Camera* cam)
-					: ExampleFrameListener(win, cam)
-					[!endif]
-					[!endif]
+[!else]
+	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
+		: ExampleFrameListener(win, cam)
+[!endif]
 	{
 		// Reduce move speed
 		mMoveSpeed = 50;
@@ -62,7 +52,6 @@ public:
 
 	bool frameStarted(const FrameEvent& evt)
 	{
-		[!if FRAMELISTENER_YES]
 		// clamp to terrain
 		[!if FRAMEWORK_OWN]
 		bool ret = BaseFrameListener::frameStarted(evt);
@@ -78,20 +67,13 @@ public:
 		if (i != qryResult.end() && i->worldFragment)
 		{
 			SceneQuery::WorldFragment* wf = i->worldFragment;
-			mCamera->setPosition(mCamera->getPosition().x, 
-				i->worldFragment->singleIntersection.y + 10, 
+			mCamera->setPosition(mCamera->getPosition().x,
+				i->worldFragment->singleIntersection.y + 10,
 				mCamera->getPosition().z);
 		}
 
 		return ret;
 
-		[!else]
-		[!if FRAMEWORK_OWN]
-		return BaseFrameListener::frameStarted(evt);
-		[!else]
-		return ExampleFrameListener::frameStarted(evt);
-		[!endif]
-		[!endif]
 	}
 
 };
@@ -102,7 +84,7 @@ public:
 class [!output PROJECT_NAME]App : public BaseApplication
 	[!else]
 	class [!output PROJECT_NAME]App : public ExampleApplication
-		[!endif]
+[!endif]
 	{
 	public:
 		[!output PROJECT_NAME]App() {}
@@ -135,8 +117,30 @@ protected:
 
 	}
 
+
+[!if SKIP_CONFIG]
+    virtual bool configure(void)
+    {
+        // Show the configuration dialog and initialise the system
+        // You can skip this and use root.restoreConfig() to load configuration
+        // settings if you were sure there are valid ones saved in ogre.cfg
+		if(mRoot->restoreConfig() || mRoot->showConfigDialog())
+        {
+            // If returned true, user clicked OK so initialise
+            // Here we choose to let the system create a default rendering window by passing 'true'
+            mWindow = mRoot->initialise(true);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+[!endif]
+
+
 	// Just override the mandatory create scene method
-	void createScene(void)
+	virtual void createScene(void)
 	{
 		Plane waterPlane;
 
@@ -151,7 +155,7 @@ protected:
 		l->setPosition(20,80,50);
 
 		// Fog
-		// NB it's VERY important to set this before calling setWorldGeometry 
+		// NB it's VERY important to set this before calling setWorldGeometry
 		// because the vertex program picked will be different
 		ColourValue fadeColour(0.93, 0.86, 0.76);
 		mSceneMgr->setFog( FOG_LINEAR, fadeColour, .001, 500, 1000);
@@ -188,11 +192,7 @@ protected:
 	// Create new frame listener
 	void createFrameListener(void)
 	{
-		[!if FRAMELISTENER_YES]
 		mFrameListener= new [!output PROJECT_NAME]FrameListener(mSceneMgr, mWindow, mCamera);
-		[!else]
-		mFrameListener= new [!output PROJECT_NAME]FrameListener(mWindow, mCamera);
-		[!endif]
 		mRoot->addFrameListener(mFrameListener);
 	}
 
