@@ -100,7 +100,7 @@ function AddConfig(proj, strProjectName)
 		var bSamplesFolder = wizard.FindSymbol('LOCATION_SAMPLES');
 		var bOgrenewLevelFolder = wizard.FindSymbol('LOCATION_OGRENEW');
 		var bOtherFolder = wizard.FindSymbol('LOCATION_OTHER');
-		var bGlobalEnvar = wizard.FindSymbol('LOCATION_ENVAR');
+		var bGlobalEnvar = wizard.FindSymbol('LOCATION_ENVVAR');
 		var bCommonFramework = wizard.FindSymbol('FRAMEWORK_YES');
 		var bPostbuildCopy = wizard.FindSymbol('POSTBUILD_COPY');
 		var sOgreFolder = wizard.FindSymbol('OGRE_FOLDER');
@@ -114,7 +114,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strCommonDir = sOgreFolder + '\\samples\\common';
 		if(bGlobalEnvar)
-			strCommonDir = '$OGRE_HOME' + '\\samples\\common';
+			strCommonDir = '$(OGRE_HOME)' + '\\samples\\common';
 			
 		var strOgreMainDir = '';
 		if(bSamplesFolder)
@@ -124,7 +124,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strOgreMainDir = sOgreFolder + '\\OgreMain';
 		if(bGlobalEnvar)
-			strOgreMainDir = '$OGRE_HOME' + '\\OgreMain';
+			strOgreMainDir = '$(OGRE_HOME)' + '\\OgreMain';
 
 		var strDependenciesDir = '';
 		if(bSamplesFolder)
@@ -134,7 +134,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strDependenciesDir = sOgreFolder + '\\Dependencies';
 		if(bGlobalEnvar)
-			strDependenciesDir = '$OGRE_HOME' + '\\Dependencies';
+			strDependenciesDir = '$(OGRE_HOME)' + '\\Dependencies';
 
 		var strCEGUIRendererDir = '';
 		if(bSamplesFolder)
@@ -144,7 +144,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strCEGUIRendererDir = sOgreFolder + '\\samples\\Common\\CEGUIRenderer';
 		if(bGlobalEnvar)
-			strCEGUIRendererDir = '$OGRE_HOME' + '\\samples\\Common\\CEGUIRenderer';
+			strCEGUIRendererDir = '$(OGRE_HOME)' + '\\samples\\Common\\CEGUIRenderer';
 
 //DEBUG//////////////////////////////////////////////////////
 		var config = proj.Object.Configurations('Debug');
