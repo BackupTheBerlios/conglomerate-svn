@@ -15,6 +15,6 @@ Remember that you can customize and tweak the wizard to your liking.
 Look in the "templates" directory where you placed the Ogre Application Wizard.
 (Might be a good idea to make a backup copy, just in case...)
 
-Suggestions, etc. -> jacmoe@chello.no
+Suggestions, etc. -> jacmoe@users.berlios.de
 
 /////////////////////////////////////////////////////////////////////////////
