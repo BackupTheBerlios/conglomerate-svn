@@ -3,25 +3,25 @@
 ///  @brief <TODO: insert file description here>
 ///
 ///  @author jacmoe @date 29-05-2005
-///  
+///
 ///////////////////////////////////////////////////////////////////////////////
-///  
+///
 ///  This file is part of OgreOpcode.
-///  
+///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
 ///  version 2.1 of the License, or (at your option) any later version.
-///  
+///
 ///  OgreOpcode is distributed in the hope that it will be useful,
 ///  but WITHOUT ANY WARRANTY; without even the implied warranty of
 ///  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  Lesser General Public License for more details.
-///  
+///
 ///  You should have received a copy of the GNU Lesser General Public
 ///  License along with OgreOpcode; if not, write to the Free Software
 ///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-///  
+///
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef __OgreCollisionManager_h__
 #define __OgreCollisionManager_h__
@@ -39,7 +39,7 @@
 namespace OgreOpcode
 {
    typedef int CollisionClass;
-   
+
    /// Collision manager.
    /// The CollisionManager object serves as factory object of the
    /// different classes of the collision system, namely
@@ -82,8 +82,9 @@ namespace OgreOpcode
       ContextList context_list;
 
       CollisionContext *default_context;
-      
+
       typedef HashMap<String,CollisionShape*> ShapeList;
+      // TODO: Do I own these shapes? Or do I pass the responsibility on?
       ShapeList shape_list;
       typedef ShapeList::const_iterator ShapeIterator;
 
@@ -108,7 +109,7 @@ namespace OgreOpcode
 
       virtual CollisionContext *GetDefaultContext(void);
       virtual CollisionContext *GetContext(const String&);
-      
+
       virtual SceneManager *getSceneManager(void);
 
       // define collision classes and collision check relationships
