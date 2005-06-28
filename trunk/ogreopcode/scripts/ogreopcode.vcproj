@@ -134,6 +134,9 @@
 			<File
 				RelativePath="..\src\OgreCollisionShape.cpp">
 			</File>
+			<File
+				RelativePath="..\src\OgreDynamicDebugLines.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -156,6 +159,9 @@
 			</File>
 			<File
 				RelativePath="..\include\OgreCollisionTypes.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreDynamicDebugLines.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreOpcode.h">
