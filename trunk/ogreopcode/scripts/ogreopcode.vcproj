@@ -175,6 +175,15 @@
 			<File
 				RelativePath="..\include\OgreOpcodeExports.h">
 			</File>
+			<File
+				RelativePath="..\include\tut.h">
+			</File>
+			<File
+				RelativePath="..\include\tut_reporter.h">
+			</File>
+			<File
+				RelativePath="..\include\tut_restartable.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
