@@ -122,7 +122,7 @@ namespace OgreOpcode
       opcMeshAccess.SetNbVertices(numVertices);
       // not using callbacks anymore in order to comply with ODE tri-collider
       //opcMeshAccess.SetCallback(nOpcodeShape::collCallback, this);
-      opcMeshAccess.SetPointers((IndexedTriangle*)faceData, (Point*)vertexData);
+      opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)faceData, (IceMaths::Point*)vertexData);
       opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
 
       // Build tree

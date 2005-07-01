@@ -24,11 +24,14 @@ Description: A place for me to try out stuff with OGRE.
 // Include OgreOpcode headers.
 #include "OgreOpcode.h"
 
+#include "ExampleApplication.h"
+#include <OgreNoMemoryMacros.h>
 #include <CEGUI.h>
 #include <CEGUISystem.h>
 #include <CEGUISchemeManager.h>
 #include <OgreCEGUIRenderer.h>
-#include "ExampleApplication.h"
+#include <OgreMemoryMacros.h>
+
 
 using namespace OgreOpcode;
 

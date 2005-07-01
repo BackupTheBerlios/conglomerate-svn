@@ -31,6 +31,7 @@
 #include "OgreCollisionTypes.h"
 #include "OgreCollisionContext.h"
 #include "OgreCollisionShape.h"
+#include "Opcode.h"
 
 #include <list>
 #include <map>

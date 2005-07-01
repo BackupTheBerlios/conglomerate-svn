@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying exe to samples bin directory ..."
-				CommandLine="copy $(OutDir)\$(TargetFileName) ..\..\Common\Bin\$(ConfigurationName)"/>
+				CommandLine="copy $(OutDir)\$(TargetFileName) ..\..\..\Samples\Common\Bin\$(ConfigurationName)"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -109,7 +109,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying exe to samples bin directory ..."
-				CommandLine="copy $(OutDir)\$(TargetFileName) ..\..\Common\Bin\$(ConfigurationName)"/>
+				CommandLine="copy $(OutDir)\$(TargetFileName) ..\..\..\Samples\Common\Bin\$(ConfigurationName)"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

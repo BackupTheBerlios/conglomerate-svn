@@ -30,6 +30,7 @@
 # include <Ogre.h>
 
 #include "OgreCollisionTypes.h"
+#include "Opcode.h"
 
 namespace OgreOpcode
 {
