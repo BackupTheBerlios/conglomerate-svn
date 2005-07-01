@@ -63,9 +63,9 @@ namespace OgreOpcode
       /// do a "moving sphere" check against collide object radii in the context
       virtual int MovingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
       /// do a line-model check
-      virtual int RayCheck(const Ogre::Ray ray, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+      virtual int RayCheck(const Ray ray, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// do a sphere-model check
-      virtual int SphereCheck(const Ogre::Sphere& sphere, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+      virtual int SphereCheck(const Sphere& sphere, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// reset position and timestamp of all objects
       virtual void Reset();
 

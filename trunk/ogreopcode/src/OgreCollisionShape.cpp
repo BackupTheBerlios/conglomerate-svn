@@ -182,7 +182,7 @@ namespace OgreOpcode
    /// @return                 true if line intersects shape
    bool CollisionShape::RayCheck(CollisionType collType,
       const Matrix4& ownMatrix,
-      const Ogre::Ray& ray,
+      const Ray& ray,
       const Real dist,
       CollisionPair& collPair)
    {
@@ -203,7 +203,7 @@ namespace OgreOpcode
    /// @return                 true if line intersects shape
    bool CollisionShape::SphereCheck(CollisionType collType,
       const Matrix4& ownMatrix,
-      const Ogre::Sphere& ball,
+      const Sphere& ball,
       CollisionPair& collPair)
    {
       return false;
@@ -215,9 +215,9 @@ namespace OgreOpcode
    /// @param[out] index_count  Number of indices.
    /// @param[out] vertex_count Number of vertices.
    ///////////////////////////////////////////////////////////////////////////////
-   void CollisionShape::countIndicesAndVertices(Ogre::Entity * entity, size_t & index_count, size_t & vertex_count)
+   void CollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
    {
-      Ogre::Mesh * mesh = entity->getMesh().getPointer();
+      Mesh * mesh = entity->getMesh().getPointer();
       bool hwSkinning = entity->isHardwareSkinningEnabled();
       bool added_shared = false;
       index_count  = 0;
@@ -226,7 +226,7 @@ namespace OgreOpcode
       // Calculate how many vertices and indices we're going to need
       for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
       {
-         Ogre::SubMesh* submesh = mesh->getSubMesh( i );
+         SubMesh* submesh = mesh->getSubMesh( i );
 
          // We only need to add the shared vertices once
          if(submesh->useSharedVertices)
@@ -255,12 +255,12 @@ namespace OgreOpcode
    /// @param[out] faceData            Target face data array.
    /// @param[int] index_count         Number of indices.
    ///////////////////////////////////////////////////////////////////////////////
-   void CollisionShape::convertMeshData(Ogre::Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count)
+   void CollisionShape::convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count)
    {
       //-------------------------------------------------------------------------
       // CONVERT MESH DATA
       //-------------------------------------------------------------------------
-      Ogre::Mesh * mesh = entity->getMesh().getPointer();
+      Mesh * mesh = entity->getMesh().getPointer();
       bool added_shared = false;
       size_t current_offset = 0;
       size_t shared_offset = 0;
@@ -279,14 +279,14 @@ namespace OgreOpcode
       // Run through the submeshes again, adding the data into the arrays
       for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
       {
-         Ogre::SubMesh* submesh = mesh->getSubMesh(i);
+         SubMesh* submesh = mesh->getSubMesh(i);
          bool useSharedVertices = submesh->useSharedVertices;
 
 
          //---------------------------------------------------------------------
          // GET VERTEXDATA
          //---------------------------------------------------------------------
-         const Ogre::VertexData * vertex_data;
+         const VertexData * vertex_data;
          if(useSoftwareBlendingVertices)
             vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
          else
@@ -300,14 +300,14 @@ namespace OgreOpcode
                shared_offset = current_offset;
             }
 
-            const Ogre::VertexElement* posElem =
+            const VertexElement* posElem =
                vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
 
-            Ogre::HardwareVertexBufferSharedPtr vbuf =
+            HardwareVertexBufferSharedPtr vbuf =
                vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
 
             unsigned char* vertex =
-               static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+               static_cast<unsigned char*>(vbuf->lock(HardwareBuffer::HBL_READ_ONLY));
 
             // There is _no_ baseVertexPointerToElement() which takes an Ogre::Real or a double
             //  as second argument. So make it float, to avoid trouble when Ogre::Real will
@@ -332,13 +332,13 @@ namespace OgreOpcode
          //---------------------------------------------------------------------
          // GET INDEXDATA
          //---------------------------------------------------------------------      
-         Ogre::IndexData* index_data = submesh->indexData;
+         IndexData* index_data = submesh->indexData;
          size_t numTris = index_data->indexCount / 3;
-         Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
+         HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
 
-         bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
+         bool use32bitindexes = (ibuf->getType() == HardwareIndexBuffer::IT_32BIT);
 
-         unsigned long*  pLong = static_cast<unsigned long*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+         unsigned long*  pLong = static_cast<unsigned long*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
          unsigned short* pShort = reinterpret_cast<unsigned short*>(pLong);
 
 
@@ -373,12 +373,12 @@ namespace OgreOpcode
    /// @param [in]       position const Vector3 & [=Vector3::ZERO]    <TODO: insert parameter description here>
    /// @param [in]       orient const Quaternion & [=Quaternion::IDENTITY]    <TODO: insert parameter description here>
    /// @param [in]       scale const Vector3 & [=Vector3::UNIT_SCALE]    <TODO: insert parameter description here>
-   void CollisionShape::getMeshInformation( const Ogre::Mesh* const mesh, size_t &vertex_count,
-      Ogre::Vector3* &vertices,
+   void CollisionShape::getMeshInformation( const Mesh* const mesh, size_t &vertex_count,
+      Vector3* &vertices,
       size_t &index_count, unsigned long* &indices,
-      const Ogre::Vector3 &position,
-      const Ogre::Quaternion &orient,
-      const Ogre::Vector3 &scale)
+      const Vector3 &position,
+      const Quaternion &orient,
+      const Vector3 &scale)
    {
       bool added_shared = false;
       size_t current_offset = 0;
@@ -392,7 +392,7 @@ namespace OgreOpcode
       // Calculate how many vertices and indices we're going to need
       for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
       {
-         Ogre::SubMesh* submesh = mesh->getSubMesh( i );
+         SubMesh* submesh = mesh->getSubMesh( i );
 
          // We only need to add the shared vertices once
          if(submesh->useSharedVertices)
@@ -414,7 +414,7 @@ namespace OgreOpcode
 
 
       // Allocate space for the vertices and indices
-      vertices = new Ogre::Vector3[vertex_count];
+      vertices = new Vector3[vertex_count];
       indices = new unsigned long[index_count];
 
       added_shared = false;
@@ -422,9 +422,9 @@ namespace OgreOpcode
       // Run through the submeshes again, adding the data into the arrays
       for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
       {
-         Ogre::SubMesh* submesh = mesh->getSubMesh(i);
+         SubMesh* submesh = mesh->getSubMesh(i);
 
-         Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+         VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
 
          if((!submesh->useSharedVertices)||(submesh->useSharedVertices && !added_shared))
          {
@@ -434,10 +434,10 @@ namespace OgreOpcode
                shared_offset = current_offset;
             }
 
-            const Ogre::VertexElement* posElem =
+            const VertexElement* posElem =
                vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
 
-            Ogre::HardwareVertexBufferSharedPtr vbuf =
+            HardwareVertexBufferSharedPtr vbuf =
                vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
 
             unsigned char* vertex =
@@ -453,7 +453,7 @@ namespace OgreOpcode
             {
                posElem->baseVertexPointerToElement(vertex, &pReal);
 
-               Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
+               Vector3 pt(pReal[0], pReal[1], pReal[2]);
 
                vertices[current_offset + j] = (orient * (pt * scale)) + position;
             }
@@ -463,9 +463,9 @@ namespace OgreOpcode
          }
 
 
-         Ogre::IndexData* index_data = submesh->indexData;
+         IndexData* index_data = submesh->indexData;
          size_t numTris = index_data->indexCount / 3;
-         Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
+         HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
 
          bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
 

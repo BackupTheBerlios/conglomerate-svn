@@ -157,7 +157,7 @@ namespace OgreOpcode
    /// @param  collClass   [in]  optional coll class (COLLCLASS_ALWAYS_* if no coll class filtering wanted)
    /// @param  cpPtr       [out] will be filled with pointer to collide report pointers
    /// @return             number of detected contacts (1 per collide object)
-   int CollisionContext::RayCheck(const Ogre::Ray ray, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
+   int CollisionContext::RayCheck(const Ray ray, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
    {
       return 0;
    }
@@ -173,7 +173,7 @@ namespace OgreOpcode
    /// @param  collClass   [in]  optional coll class (COLLCLASS_ALWAYS_* if no coll class filtering wanted)
    /// @param  cpPtr       [out] will be filled with pointer to collide report pointers
    /// @return             number of detected contacts (1 per collide object)
-   int CollisionContext::SphereCheck(const Ogre::Sphere& sphere, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
+   int CollisionContext::SphereCheck(const Sphere& sphere, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
    {
       return 0;
    }

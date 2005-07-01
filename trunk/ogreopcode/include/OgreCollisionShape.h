@@ -68,14 +68,14 @@ namespace OgreOpcode
       /// perform collision with other CollisionShape
       virtual bool Collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
       /// perform collision with line
-      virtual bool RayCheck(CollisionType collType, const Matrix4& ownMatrix, const Ogre::Ray& ray, const Real dist, CollisionPair& collPair);
+      virtual bool RayCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& ray, const Real dist, CollisionPair& collPair);
       /// perform a sphere check
-      virtual bool SphereCheck(CollisionType collType, const Matrix4& ownMatrix, const Ogre::Sphere& ball, CollisionPair& collPair);
+      virtual bool SphereCheck(CollisionType collType, const Matrix4& ownMatrix, const Sphere& sphere, CollisionPair& collPair);
       /// return entity
       Entity* getEntity();
    private:
-      void countIndicesAndVertices(Ogre::Entity * entity, size_t & index_count, size_t & vertex_count);
-      void convertMeshData(Ogre::Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count);
+      void countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count);
+      void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count);
 
       /// Extract vertex information from an Ogre mesh.
       /// @param [in]       mesh const Mesh *const     The mesh to extract.
@@ -86,12 +86,12 @@ namespace OgreOpcode
       /// @param [in]       position const Vector3 & [=Vector3::ZERO]    The position of the mesh, optional.
       /// @param [in]       orient const Quaternion & [=Quaternion::IDENTITY]    The orientation of the mesh, optional.
       /// @param [in]       scale const Vector3 & [=Vector3::UNIT_SCALE]    The scale of the mesh, optional.
-      void getMeshInformation( const Ogre::Mesh* const mesh, size_t &vertex_count,
-         Ogre::Vector3* &vertices,
+      void getMeshInformation( const Mesh* const mesh, size_t &vertex_count,
+         Vector3* &vertices,
          size_t &index_count, unsigned long* &indices,
-         const Ogre::Vector3 &position = Vector3::ZERO,
-         const Ogre::Quaternion &orient = Quaternion::IDENTITY,
-         const Ogre::Vector3 &scale = Vector3::UNIT_SCALE);
+         const Vector3 &position = Vector3::ZERO,
+         const Quaternion &orient = Quaternion::IDENTITY,
+         const Vector3 &scale = Vector3::UNIT_SCALE);
 
       // triangle coordinate callback function
       //static void collCallback(udword triangleIndex, VertexPointers& triangle, void * userData);
