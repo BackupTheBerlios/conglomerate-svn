@@ -27,9 +27,13 @@
 #define __OgreCollisionReporter_h__
 
 #include <Ogre.h>
+#include "OgreKeyArray.h"
 #include "OgreOpcodeExports.h"
 
-namespace OgreOpcode
+using namespace Ogre::Details;
+
+
+namespace Ogre
 {
    class CollisionObject;
    
@@ -54,12 +58,13 @@ namespace OgreOpcode
    /// the CollisionContext avoid redundant checks.
    class _OgreOpcode_Export CollisionReporter
    {
-      static const int max_reports_per_object = 256;
-      //enum { MAX_REPORTS_PER_OBJECT = 256 }; // enum hack, but better than a #define ;-)
+      enum
+      {
+         MAX_REPORTS_PER_OBJECT = 256,
+      };
 
-      typedef std::map<int,CollisionPair*> CollPairs;
-      CollPairs coll_pairs;
-      CollisionPair *report_array[max_reports_per_object];
+      nKeyArray<CollisionPair> coll_pairs;
+      CollisionPair *report_array[MAX_REPORTS_PER_OBJECT];
 
    private:
 
@@ -82,14 +87,14 @@ namespace OgreOpcode
       };
    public:
       CollisionReporter(void)
+         : coll_pairs(128,128)
       {}
       
       /// initialize nKeyArray for new collision frame
       void BeginFrame(void)
       {
-         // TODO I should delete the CollisionPair pointers!
-         coll_pairs.clear();
-         memset(report_array,0,sizeof(report_array));
+         this->coll_pairs.Clear();
+         memset(this->report_array,0,sizeof(this->report_array));
       };
 
       /// check if a collision has already been reported
@@ -98,13 +103,15 @@ namespace OgreOpcode
          // generate the merged 32 bit id, and query key array
          // for the collision
          int key;
-         get_merged_id(id1,id2,key);
-         CollPairs::iterator i = coll_pairs.find(key);
-         if (i != coll_pairs.end())
+         this->get_merged_id(id1,id2,key);
+         CollisionPair *cr;
+         if (this->coll_pairs.FindPtr(key,cr))
          {
             return true;
          } else
+         {
             return false;
+         }
       };
 
       /// add a new collision 
@@ -112,12 +119,8 @@ namespace OgreOpcode
       {
          // generate the merged 32 bit id and add collision report
          int key;
-         get_merged_id(id1,id2,key);
-         CollPairs::const_iterator i = coll_pairs.find(key);
-         if (i == coll_pairs.end())
-         {
-            coll_pairs[key] = &cr;
-         }
+         this->get_merged_id(id1,id2,key);
+         this->coll_pairs.Add(key,cr);
       };
 
       /// end a collision frame
@@ -126,7 +129,7 @@ namespace OgreOpcode
       /// get overall number of collisions recorded
       int GetNumCollissions(void)
       {
-         return coll_pairs.size();
+         return this->coll_pairs.Size();
       };
 
       /// report collisions for a specific object.
@@ -136,33 +139,46 @@ namespace OgreOpcode
       {
          // fill report array with all collisions which this
          // object is involved in.
+         assert(co);
          int num_reports = 0;
+         int i;
+         int num = this->coll_pairs.Size();
 
-         CollPairs::iterator i, iend;
-         iend = coll_pairs.end();
-         for (i = coll_pairs.begin(); i != iend; ++i)
+         if (num > MAX_REPORTS_PER_OBJECT)
          {
-            if ((i->second->co1 == co) || (i->second->co2 == co)) 
+            num = MAX_REPORTS_PER_OBJECT;
+         }
+
+         for (i = 0; i < num; i++) 
+         {
+            CollisionPair *cr = &(this->coll_pairs.GetElementAt(i));
+            if ((cr->co1 == co) || (cr->co2 == co)) 
             {
-               report_array[num_reports++] = i->second;
+               this->report_array[num_reports++] = cr;
             }
          }
-         cr_ptr = report_array;
+         cr_ptr = this->report_array;
          return num_reports;
       }
 
       /// get all recorded collisions.
       int GetAllCollissions(CollisionPair **& cr_ptr) 
       {
-         int num_reports = 0;
-         CollPairs::iterator i, iend;
-         iend = coll_pairs.end();
-         for (i = coll_pairs.begin(); i != iend; ++i)
+         int num = this->coll_pairs.Size();
+         int i;
+
+         if (num > MAX_REPORTS_PER_OBJECT)
          {
-            report_array[num_reports++] = i->second;
+            num = MAX_REPORTS_PER_OBJECT;
          }
-         cr_ptr = report_array;
-         return coll_pairs.size();
+
+         for (i = 0; i < num; i++) 
+         {
+            CollisionPair *cr = &(this->coll_pairs.GetElementAt(i));
+            this->report_array[i] = cr;
+         }
+         cr_ptr = this->report_array;
+         return num;
       }
 
       /// Get the collision closest to given point.
@@ -171,30 +187,30 @@ namespace OgreOpcode
       /// @return         number of entries in collide report pointer array (0 or 1)
       int GetClosestCollission(const Vector3& v, CollisionPair **& crPtr)
       {
-         if (coll_pairs.empty())
+         int num = this->coll_pairs.Size();
+         if (0 == num)
          {
             crPtr = 0;
             return 0;
          }
 
+         int i;
          Vector3 distVec;
-         CollisionPair* minPtr = coll_pairs.begin()->second;
+         CollisionPair* minPtr = &(this->coll_pairs.GetElementAt(0));
          float minDist = Vector3(minPtr->contact - v).length();
-
-         CollPairs::iterator i, iend;
-         iend = coll_pairs.end();
-         for (i = coll_pairs.begin(); i != iend; ++i)
+         for (i = 1; i < num; i++)
          {
-            distVec = i->second->contact - v;
+            CollisionPair* curPtr = &(this->coll_pairs.GetElementAt(i));
+            distVec = curPtr->contact - v;
             Real dist = distVec.length();
             if (dist < minDist)
             {
                minDist = dist;
-               minPtr  = i->second;
+               minPtr  = curPtr;
             }
          }
-         report_array[0] = minPtr;
-         crPtr = report_array;
+         this->report_array[0] = minPtr;
+         crPtr = this->report_array;
          return 1;
       }
    };

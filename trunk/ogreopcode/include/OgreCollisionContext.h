@@ -27,10 +27,13 @@
 #define __OgreCollisionContext_h__
 
 #include <Ogre.h>
+#include "OgreNodes.h"
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionTypes.h"
 
-namespace OgreOpcode
+using namespace Ogre::Details;
+
+namespace Ogre
 {
    typedef int CollisionClass;
    class CollisionObject;
@@ -39,7 +42,7 @@ namespace OgreOpcode
    /// a collection of CollisionObject%s which can collide with 
    /// each other. CollisionObject%s can be added and removed
    /// from the context at any time.
-   class _OgreOpcode_Export CollisionContext
+   class _OgreOpcode_Export CollisionContext : public nNode
    {
    public:
       /// constructor
@@ -63,25 +66,28 @@ namespace OgreOpcode
       /// do a "moving sphere" check against collide object radii in the context
       virtual int MovingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
       /// do a line-model check
-      virtual int RayCheck(const Ray ray, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+      virtual int LineCheck(const Ogre::Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// do a sphere-model check
-      virtual int SphereCheck(const Sphere& sphere, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+      virtual int SphereCheck(const Ogre::Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// reset position and timestamp of all objects
-      virtual void Reset();
+      void Reset();
+      void Update();
 
    private:
       friend class CollisionObject;
 
-      static const int maxnum_collisions = 4096;
-      //enum { MAXNUM_COLLISSIONS = 4096 };
+      enum
+      {
+         MAXNUM_COLLISSIONS = 4096,
+      };
 
       CollisionReporter collideReportHandler;     ///< collide reports for Collide()
       CollisionReporter checkReportHandler;       ///< collide reports for Check() functions
+      nList xdim_list;        ///< the x-dimension sorted list (2 nodes per object)
 
    protected:
-      std::list<CollisionObject*> owned_list;       ///< list of CollisionObject%s created by this context
-      std::list<CollisionObject*> attached_list;    ///< the list of objects currently attached to the context
-      typedef std::list<CollisionObject*>::const_iterator attached_list_iterator;
+      nList owned_list;       ///< list of nCollideObjects created by this context
+      nList attached_list;    ///< the list of objects currently attached to the context
       int unique_id;
    };
 
