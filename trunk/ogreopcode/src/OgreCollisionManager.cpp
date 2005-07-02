@@ -24,9 +24,9 @@
 #include "OgreCollisionManager.h"
 #include "OgreCollisionReporter.h"
 
-template<> Ogre::CollisionManager* Ogre::Singleton<Ogre::CollisionManager>::ms_Singleton = 0;
+template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionManager>::ms_Singleton = 0;
 
-namespace Ogre
+namespace OgreOpcode
 {
 
    CollisionManager& CollisionManager::getSingleton(void)
@@ -58,7 +58,7 @@ namespace Ogre
       this->opcRayCollider.SetMaxDist(100000.0f);                 // max dist 100 km
       this->opcRayCollider.SetDestination(&(this->opcFaceCache)); // detected hits go here
 
-      // setup the sphere collider
+      // setup the OgreOpcodeSphere collider
       this->opcSphereCollider.SetFirstContact(false);             // report all contacts
       this->opcSphereCollider.SetTemporalCoherence(false);        // no temporal coherence
    }

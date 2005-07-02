@@ -97,7 +97,7 @@ namespace OgreOpcode
 		   virtual ~BoxDebugObject();
 	   };
 
-      /// %Debug object to visualize a sphere.
+      /// %Debug object to visualize a OgreOpcodeSphere.
       class _OgreOpcode_Export SphereDebugObject : public DebugObject
 	   {
 	   public:

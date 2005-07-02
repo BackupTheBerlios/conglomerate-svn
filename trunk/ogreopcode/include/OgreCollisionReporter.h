@@ -30,10 +30,10 @@
 #include "OgreKeyArray.h"
 #include "OgreOpcodeExports.h"
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
 
-namespace Ogre
+namespace OgreOpcode
 {
    class CollisionObject;
    

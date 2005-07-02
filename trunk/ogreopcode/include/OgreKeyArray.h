@@ -401,6 +401,6 @@ namespace OgreOpcode
       }
 
    } // namespace Details
-} // namespace Ogre
+} // namespace OgreOpcode
 
 #endif // __OgreKeyArray_h__

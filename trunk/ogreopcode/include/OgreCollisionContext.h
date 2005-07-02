@@ -31,9 +31,9 @@
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionTypes.h"
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
-namespace Ogre
+namespace OgreOpcode
 {
    typedef int CollisionClass;
    class CollisionObject;
@@ -63,11 +63,11 @@ namespace Ogre
       virtual void Visualize(bool makeVisible);
       /// get the collide reports for the collisions computed inside Collide()
       virtual int GetCollissions(CollisionObject *collObj, CollisionPair **&cpPtr);
-      /// do a "moving sphere" check against collide object radii in the context
+      /// do a "moving OgreOpcodeSphere" check against collide object radii in the context
       virtual int MovingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
       /// do a line-model check
       virtual int LineCheck(const Ogre::Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
-      /// do a sphere-model check
+      /// do a OgreOpcodeSphere-model check
       virtual int SphereCheck(const Ogre::Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// reset position and timestamp of all objects
       void Reset();

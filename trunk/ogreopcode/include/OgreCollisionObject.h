@@ -32,9 +32,9 @@
 #include "OgreCollisionContext.h"
 #include "OgreOpcodeMath.h"
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
-namespace Ogre
+namespace OgreOpcode
 {
    class CollisionObject;
    
@@ -134,7 +134,7 @@ namespace Ogre
       nNode context_node;         ///< attached to context with this node
 
       Real radius;               ///< radius of the collision object (normally provided by shape)
-      CollisionShape *shape;       ///< the triangle exact collision shape (optional)
+      CollisionShape *shape;       ///< the Triangle exact collision shape (optional)
       CollisionNode xmin_cnode;          ///< the min/max collision node in the X-Dimension
       CollisionNode xmax_cnode;
       CollisionClass coll_class;      ///< the application defined collision type
@@ -367,8 +367,8 @@ namespace Ogre
          // update the x-dimension node, nCNode::SetVal() automatically
          // makes sure that the nodes keep their correct orders
          // in the list
-         this->xmin_cnode.SetVal(this->minv.x);
-         this->xmax_cnode.SetVal(this->maxv.x);
+         this->xmin_cnode.SetVal(this->maxv.z);
+         this->xmax_cnode.SetVal(this->minv.z);
       }
       
       /// Transform the object to its new position/orientation, update the dimensional nodes and the bounding box.
@@ -433,8 +433,8 @@ namespace Ogre
          case COLLTYPE_QUICK:
             {
             // do a contact check between 'moving spheres'
-            sphere s0(p0,this->radius);
-            sphere s1(p1,other->radius);
+            OgreOpcodeSphere s0(p0,this->radius);
+            OgreOpcodeSphere s1(p1,other->radius);
             Real u0,u1;
             if (s0.intersect_sweep(v0,s1,v1,u0,u1))
             {

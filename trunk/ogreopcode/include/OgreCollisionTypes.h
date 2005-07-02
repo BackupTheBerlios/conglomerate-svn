@@ -33,7 +33,7 @@ namespace OgreOpcode
    enum CollisionType
    {
       COLLTYPE_IGNORE     = 0,    ///< no collisions
-      COLLTYPE_QUICK      = 1,    ///< quick sphere-2-sphere collision
+      COLLTYPE_QUICK      = 1,    ///< quick OgreOpcodeSphere-2-OgreOpcodeSphere collision
       COLLTYPE_CONTACT    = 2,    ///< first contact only
       COLLTYPE_EXACT      = 3,    ///< all contacts
    };

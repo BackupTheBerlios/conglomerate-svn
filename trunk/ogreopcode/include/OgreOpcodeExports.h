@@ -1,4 +1,3 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 /// @file OgreOpcodeExports.h
 /// @brief Export macros and common stuff.
@@ -45,4 +44,3 @@ using namespace Ogre;
 #endif
 
 #endif // __OgreOpcodeExports_h__
-/// @endcond

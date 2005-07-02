@@ -376,6 +376,6 @@ namespace OgreOpcode
       }
 
    } // namespace Details
-} // namespace Ogre
+} // namespace OgreOpcode
 
 #endif // __OgreHash_h__

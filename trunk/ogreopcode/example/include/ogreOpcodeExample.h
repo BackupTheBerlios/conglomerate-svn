@@ -32,7 +32,6 @@ Description: A place for me to try out stuff with OGRE.
 #include <OgreCEGUIRenderer.h>
 #include <OgreMemoryMacros.h>
 
-
 using namespace OgreOpcode;
 
 CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
@@ -60,6 +59,8 @@ private:
    CEGUI::Renderer* mGUIRenderer;
    bool mShutdownRequested;
    bool mVisualizeObjects;
+   OgreOpcode::Details::SphereDebugObject* camVisualizer;
+   SceneNode* camVisualizerSceneNode;
    Overlay* TargetSight;
    Overlay* hotTargetSight;
    CollisionObject* mCollObj1;
@@ -68,8 +69,8 @@ private:
    SceneNode* mCamNode;
    Ogre::Ray line;
 public:
-	ogreOpcodeExampleFrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer, CollisionObject* collObj1, CollisionObject* collObj2, CollisionObject* collObj3, SceneNode* camNode)
-		: ExampleFrameListener(win, cam, false, true),
+   ogreOpcodeExampleFrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer, CollisionObject* collObj1, CollisionObject* collObj2, CollisionObject* collObj3, SceneNode* camNode)
+      : ExampleFrameListener(win, cam, false, true),
       mGUIRenderer(renderer),
       mShutdownRequested(false),
       mVisualizeObjects(false),
@@ -84,16 +85,16 @@ public:
       mEventProcessor->addKeyListener(this);
 
       mMoveSpeed = 400;
-      
+
       TargetSight = (Overlay*)OverlayManager::getSingleton().getByName("gunTarget");    
       TargetSight->show();
       hotTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("hotGunTarget");    
       hotTargetSight->hide();
 
-//      camVisualizer = new Ogre::Debug::SphereDebugObject(20.0f);
-//      camVisualizerSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("camVizNode");
-//      camVisualizerSceneNode->attachObject(camVisualizer);
-//      camVisualizer->draw();
+      //      camVisualizer = new Ogre::Debug::SphereDebugObject(20.0f);
+      //      camVisualizerSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("camVizNode");
+      //      camVisualizerSceneNode->attachObject(camVisualizer);
+      //      camVisualizer->draw();
       switchMouseMode();
    }
 
@@ -112,6 +113,49 @@ public:
       return distance;
    }
 
+   Real IntersectRayPlane(Vector3 rOrigin, Vector3 rVector, Vector3 pOrigin, Vector3 pNormal) 
+   {
+
+      Real d = - pNormal.dotProduct(pOrigin);
+
+      Real numer = pNormal.dotProduct(rOrigin) + d;
+      Real denom = pNormal.dotProduct(rVector);
+
+      if (denom == 0)  // normal is orthogonal to vector, cant intersect
+         return (-1.0f);
+
+      return -(numer / denom);	
+   }
+
+   void SetLength(Vector3& v, Real l)
+   {
+      Real len = Math::Sqrt(v.x*v.x + v.y*v.y + v.z*v.z);	
+      v.x *= l/len;
+      v.y *= l/len;
+      v.z *= l/len;
+   } 
+
+   Vector3 PushAwayFrom(const Vector3& V, const Vector3& position, const Real radius)
+   {
+      //--------------------------------------------------------------------------
+      // calculate the separation vector
+      //--------------------------------------------------------------------------
+      Vector3 D = position - V;
+      float  d = D.length();
+
+      //--------------------------------------------------------------------------
+      // calculate the depth of intersection
+      //--------------------------------------------------------------------------
+      Real depth = radius - d;
+
+      //--------------------------------------------------------------------------
+      // push the sphere along the separation vector, by the intersection depth amount
+      //--------------------------------------------------------------------------
+      Vector3 ret(position);
+      ret += D * (depth / d);
+      return ret;
+   }
+
    void doCollisions(const Vector3& velocity, const Vector3& position)
    {
       static int num_recurs = 0;
@@ -127,32 +171,71 @@ public:
       Vector3 newBasePoint = position;
       CollisionPair **pick_report;
       int num_picks = 0;
-      Real radius = 18.0f;
-      Ogre::Sphere cameraSphere(destinationPoint, 18.0f);
-      num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
+      Real radius = 10.0f;
+      Ogre::Sphere cameraSphere(destinationPoint, radius);
+      num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
       if(num_picks > 0)
       {
          for(int i = 0; i < num_picks; ++i)
          {
-            Vector3 intersectPt = pick_report[0]->contact;
-            Vector3 new_velocity = pick_report[0]->co2_normal * (-pick_report[0]->co2_normal.dotProduct(position) + pick_report[0]->co2_normal.dotProduct(intersectPt) - 18.0f );
-            if(new_velocity.length() < 0.01f)
+            Vector3 intersectPt = pick_report[i]->contact;
+            Vector3 intersectNl = pick_report[i]->co2_normal;            
+            Real distToPlaneIntersection = IntersectRayPlane(intersectPt, velocity, position, intersectNl);
+            mWindow->setDebugText("Collide distance = " + Ogre::StringConverter::toString(distToPlaneIntersection));
+
+            Vector3 newSourcePoint;
+
+            // only update if we are not already very close
+            if (distToPlaneIntersection >= radius)
             {
-               num_recurs = 0;
-               return;
+
+               Vector3 V = velocity.normalisedCopy();
+               SetLength(V, distToPlaneIntersection - radius);
+               newSourcePoint.x = position.x + V.x;
+               newSourcePoint.y = position.y + V.y;
+               newSourcePoint.z = position.z + V.z;
             }
+            else if (distToPlaneIntersection < 0.0f)
+            {
+               Vector3 V = -velocity.normalisedCopy();
+               SetLength(V, distToPlaneIntersection - radius);
+               newSourcePoint.x = position.x + V.x;
+               newSourcePoint.y = position.y + V.y;
+               newSourcePoint.z = position.z + V.z;
+            }
+            else
+               newSourcePoint = position;
 
-            mWindow->setDebugText("Collide distance = " + Ogre::StringConverter::toString(new_velocity.length()));
+            // Determine the sliding plane (we do this now, because we're about to
+            // change sourcePoint)
+            Vector3 slidePlaneOrigin = intersectPt;
+            Vector3 slidePlaneNormal;
+            slidePlaneNormal.x = newSourcePoint.x - intersectPt.x;
+            slidePlaneNormal.y = newSourcePoint.y - intersectPt.y;
+            slidePlaneNormal.z = newSourcePoint.z - intersectPt.z;
+            // We now project the destination point onto the sliding plane
+            Real l = IntersectRayPlane(position, slidePlaneNormal, slidePlaneOrigin, slidePlaneNormal);
+            Vector3 newDestinationPoint;
+            newDestinationPoint.x = position.x + l * slidePlaneNormal.x;
+            newDestinationPoint.y = position.y + l * slidePlaneNormal.y;
+            newDestinationPoint.z = position.z + l * slidePlaneNormal.z;
 
-            mCamera->moveRelative(new_velocity);
-            //mCamera->move();
+            Vector3 newVelocityVector;
+            newVelocityVector.x = newDestinationPoint.x - intersectPt.x;
+            newVelocityVector.y = newDestinationPoint.y - intersectPt.y;
+            newVelocityVector.z = newDestinationPoint.z - intersectPt.z;
+
+            newBasePoint = destinationPoint;
+            new_velocity = newVelocityVector;
+            //mCamera->moveRelative(new_velocity);
          }
          num_recurs++;
-         new_velocity /= num_picks;
+         //         new_velocity /= num_picks;
          doCollisions(new_velocity, newBasePoint);
       }
       if(num_picks == 0)
       {
+         num_recurs = 0;
          mCamera->moveRelative(velocity);
       }
    }
@@ -160,7 +243,7 @@ public:
    void moveCamera()
    {
       Real camRadius = 18.0f;
-    
+
       mCamera->yaw(mRotX);
       mCamera->pitch(mRotY);
 
@@ -173,7 +256,11 @@ public:
    }
 
    bool frameStarted(const FrameEvent& evt)
-	{
+   {
+      // This has to be here - debug visualization needs to be updated each frame..
+      mCollObj1->setDebug(mVisualizeObjects);
+      mCollObj2->setDebug(mVisualizeObjects);
+
       //mSceneMgr->getSceneNode("camVizNode")->setPosition(mCamera->getDerivedPosition());
       //mSceneMgr->getSceneNode("camVizNode")->setOrientation(mCamera->getDerivedOrientation());
 
@@ -186,20 +273,20 @@ public:
       transTraveled += transAmount;
 
       bool ret = ExampleFrameListener::frameStarted(evt);
-      
+
       if(!mUseBufferedInputMouse)
          line = mCamera->getCameraToViewportRay(0.5, 0.5);
 
       mSceneMgr->getSceneNode("cammnode")->translate(0.0f, transAmount, 0.0f);
-      
+
       // remove level from context - we don't care when ray testing against entities..
       CollisionManager::getSingletonPtr()->GetDefaultContext()->RemoveObject(mCollObj1);
-      
+
       // Do ray testing against everything but the level
       CollisionPair **pick_report;
-      int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(line, 600.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
+      int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->LineCheck(line, 600.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
       String nameStr;
-      
+
       if (num_picks > 0)
       {
          TargetSight->hide();
@@ -210,7 +297,7 @@ public:
             nameStr = "";
             CollisionObject* yeah = pick_report[i]->co1;
             Vector3 contact = pick_report[i]->contact;
-//            nameStr = nameStr + yeah->GetShape()->GetName() + " Contact: " + Ogre::StringConverter::toString(contact);
+            nameStr = nameStr + yeah->GetShape()->GetName() + " Contact: " + Ogre::StringConverter::toString(contact);
          }
       }
       if (num_picks == 0)
@@ -229,12 +316,12 @@ public:
       if(mCollObj1Picks > 0)
       {
          transAmount = 0.5f;
-//         nameStr = "Level encountered " + Ogre::StringConverter::toString(mCollObj1Picks) + " collisions";
+         //         nameStr = "Level encountered " + Ogre::StringConverter::toString(mCollObj1Picks) + " collisions";
       }
-     // mWindow->setDebugText(nameStr);
-	
+      // mWindow->setDebugText(nameStr);
 
-      
+
+
       if(mUseBufferedInputMouse)
       {
          CEGUI::MouseCursor::getSingleton().show( );
@@ -246,7 +333,7 @@ public:
 
       return ret;
 
-	}
+   }
 
    bool processUnbufferedKeyInput(const FrameEvent& evt)
    {
@@ -362,9 +449,9 @@ public:
       {
          mSceneDetailIndex = (mSceneDetailIndex+1)%3 ;
          switch(mSceneDetailIndex) {
-            case 0 : mCamera->setDetailLevel(SDL_SOLID) ; break ;
-            case 1 : mCamera->setDetailLevel(SDL_WIREFRAME) ; break ;
-            case 2 : mCamera->setDetailLevel(SDL_POINTS) ; break ;
+case 0 : mCamera->setDetailLevel(SDL_SOLID) ; break ;
+case 1 : mCamera->setDetailLevel(SDL_WIREFRAME) ; break ;
+case 2 : mCamera->setDetailLevel(SDL_POINTS) ; break ;
          }
          mTimeUntilNextToggle = 0.5;
       }
@@ -403,8 +490,8 @@ public:
       if (mShutdownRequested)
          return false;
       else
-                  return ExampleFrameListener::frameEnded(evt);
-            }
+         return ExampleFrameListener::frameEnded(evt);
+   }
 
    void mouseMoved (MouseEvent *e)
    {
@@ -463,25 +550,25 @@ public:
 
 
 
-	class ogreOpcodeExampleApp : public ExampleApplication
-	{
-   private:
-      CEGUI::OgreCEGUIRenderer* mGUIRenderer;
-      CEGUI::System* mGUISystem;
-      CollisionContext* collideContext;
-      CollisionObject *collideObject;
-      CollisionObject *collideObject1;
-      CollisionObject *collideObject2;
-      SceneNode* camNode;
-	public:
-		ogreOpcodeExampleApp()
-         : mGUIRenderer(0),
-         mGUISystem(0),
-         collideContext(0)
-      {}
+class ogreOpcodeExampleApp : public ExampleApplication
+{
+private:
+   CEGUI::OgreCEGUIRenderer* mGUIRenderer;
+   CEGUI::System* mGUISystem;
+   CollisionContext* collideContext;
+   CollisionObject *collideObject;
+   CollisionObject *collideObject1;
+   CollisionObject *collideObject2;
+   SceneNode* camNode;
+public:
+   ogreOpcodeExampleApp()
+      : mGUIRenderer(0),
+      mGUISystem(0),
+      collideContext(0)
+   {}
 
-	~ogreOpcodeExampleApp()
-	{
+   ~ogreOpcodeExampleApp()
+   {
       if(mGUISystem)
       {
          delete mGUISystem;
@@ -492,12 +579,12 @@ public:
          delete mGUIRenderer;
          mGUIRenderer = 0;
       }
-	}
+   }
 
 protected:
 
-	virtual void createCamera(void)
-	{
+   virtual void createCamera(void)
+   {
       // Create the camera
       mCamera = mSceneMgr->createCamera("PlayerCam");
       mCamera->setPosition(0,0,0);
@@ -505,7 +592,7 @@ protected:
       // Position it at 500 in Z direction
       // Look back along -Z
       mCamera->setNearClipDistance(5);
-	}
+   }
 
    virtual bool setup(void)
    {
@@ -556,9 +643,9 @@ protected:
    }
 
 
-	// Just override the mandatory create scene method
-	virtual void createScene(void)
-	{
+   // Just override the mandatory create scene method
+   virtual void createScene(void)
+   {
       // setup GUI system
       mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow, 
          Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
@@ -578,13 +665,16 @@ protected:
       CEGUI::MouseCursor::getSingleton().show( );
       setupEventHandlers();
 
-      
+
       new CollisionManager(mSceneMgr);
+      CollisionManager::getSingletonPtr()->BeginCollClasses();
       CollisionManager::getSingletonPtr()->AddCollClass("level");
       CollisionManager::getSingletonPtr()->AddCollClass("bullet");
       CollisionManager::getSingletonPtr()->AddCollClass("ogrehead");
       CollisionManager::getSingletonPtr()->AddCollClass("powerup");
+      CollisionManager::getSingletonPtr()->EndCollClasses();
 
+      CollisionManager::getSingletonPtr()->BeginCollTypes();
       CollisionManager::getSingletonPtr()->AddCollType("level", "level", COLLTYPE_EXACT);
       CollisionManager::getSingletonPtr()->AddCollType("ogrehead", "bullet", COLLTYPE_EXACT);
       CollisionManager::getSingletonPtr()->AddCollType("level", "ogrehead", COLLTYPE_EXACT);
@@ -593,13 +683,14 @@ protected:
       CollisionManager::getSingletonPtr()->AddCollType("powerup", "powerup", COLLTYPE_IGNORE);
       CollisionManager::getSingletonPtr()->AddCollType("powerup", "bullet", COLLTYPE_IGNORE);
       CollisionManager::getSingletonPtr()->AddCollType("bullet", "bullet", COLLTYPE_IGNORE);
+      CollisionManager::getSingletonPtr()->EndCollTypes();
 
       collideContext = CollisionManager::getSingletonPtr()->GetDefaultContext();
 
       camNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cameraSceneNode");
-      
-//      camNode->setFixedYawAxis(true);
-//      camNode->attachObject(mCamera);
+
+      //      camNode->setFixedYawAxis(true);
+      //      camNode->attachObject(mCamera);
       mCamera->setPosition(-7.1680, 292.723, 354.041);
       mCamera->setOrientation(Quaternion(0.998007, 0.0623525, 0.00879721, 0.000549518));
 
@@ -624,7 +715,7 @@ protected:
       collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass("level"));
       collideObject->SetShape(collideShape);
       collideContext->AddObject(collideObject);
-      
+
       CollisionShape *collideShape1 = CollisionManager::getSingletonPtr()->NewShape("ogrehead1");
       collideShape1->Load(ogreCam);
       collideObject1 = collideContext->NewObject();
@@ -640,14 +731,14 @@ protected:
       // Create a light
       Light* l = mSceneMgr->createLight("MainLight");
       l->setPosition(20,80,50);
-	}
+   }
 
    // Create new frame listener
-	void createFrameListener(void)
-	{
-		mFrameListener= new ogreOpcodeExampleFrameListener(mSceneMgr, mWindow, mCamera, mGUIRenderer, collideObject, collideObject1, collideObject2, camNode);
-		mRoot->addFrameListener(mFrameListener);
-	}
+   void createFrameListener(void)
+   {
+      mFrameListener= new ogreOpcodeExampleFrameListener(mSceneMgr, mWindow, mCamera, mGUIRenderer, collideObject, collideObject1, collideObject2, camNode);
+      mRoot->addFrameListener(mFrameListener);
+   }
    void setupEventHandlers(void)
    {
    }

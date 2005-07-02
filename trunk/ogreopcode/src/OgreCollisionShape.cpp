@@ -29,7 +29,7 @@
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
    CollisionShape::CollisionShape(const char* name)
       : nHashNode(name),
@@ -98,7 +98,7 @@ namespace Ogre
       }
    }
 
-   /// Fills out a triangle in the collision mesh.
+   /// Fills out a Triangle in the collision mesh.
    /// @param [in]       index int     Index into the index array.
    /// @param [in]       v0Index int     First index into the vertex array.
    /// @param [in]       v1Index int     Second index into the vertex array.
@@ -127,7 +127,7 @@ namespace Ogre
       opcMeshAccess.SetNbVertices(this->numVertices);
       // not using callbacks anymore in order to comply with ODE tri-collider
       //opcMeshAccess.SetCallback(nOpcodeShape::collCallback, this);
-      opcMeshAccess.SetPointers((IndexedTriangle*)this->faceData, (Point*)this->vertexData);
+      opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)this->faceData, (IceMaths::Point*)this->vertexData);
       opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
 
       // Build tree
@@ -147,18 +147,18 @@ namespace Ogre
    }
 
    /*
-   OPCODE uses a callback function to actually get triangle data for the
+   OPCODE uses a callback function to actually get Triangle data for the
    collision test.
    */
    /*
    void
-   nOpcodeShape::collCallback(udword triangleIndex, VertexPointers& triangle, void * userData)
+   nOpcodeShape::collCallback(udword triangleIndex, VertexPointers& Triangle, void * userData)
    {
    nOpcodeShape* self = (nOpcodeShape*) userData;
    int *indexPtr = &(self->faceData[3 * triangleIndex]);
-   triangle.Vertex[0] = (Point*) &(self->vertexData[3 * indexPtr[0]]);
-   triangle.Vertex[1] = (Point*) &(self->vertexData[3 * indexPtr[1]]);
-   triangle.Vertex[2] = (Point*) &(self->vertexData[3 * indexPtr[2]]);
+   Triangle.Vertex[0] = (Point*) &(self->vertexData[3 * indexPtr[0]]);
+   Triangle.Vertex[1] = (Point*) &(self->vertexData[3 * indexPtr[1]]);
+   Triangle.Vertex[2] = (Point*) &(self->vertexData[3 * indexPtr[2]]);
    }
    */
    
@@ -216,7 +216,7 @@ namespace Ogre
 
       bool collided = false;
 
-      // get the number of collided triangle pairs
+      // get the number of collided Triangle pairs
       int numPairs = collider.GetNbPairs();
 
       if (numPairs > 0)
@@ -230,17 +230,17 @@ namespace Ogre
          if (numPairs > 10) numPairs = 10;
          int i;
          Vector3 tp[2][3];
-         line3 l[2][3];
-         triangle t[2];
+         Line3 l[2][3];
+         Triangle t[2];
          bool intersects[2][3];
          float ipos[2][3];
          for (i = 0; i < numPairs; i++)
          {
-            // get the current contact triangle coordinates
+            // get the current contact Triangle coordinates
             this->GetTriCoords(pairs[i].id0, tp[0][0], tp[0][1], tp[0][2]);
             opcodeOther->GetTriCoords(pairs[i].id1, tp[1][0], tp[1][1], tp[1][2]);
 
-            // transform triangle coords into world space
+            // transform Triangle coords into world space
             int j;
             for (j = 0; j < 3; j++)
             {
@@ -261,8 +261,8 @@ namespace Ogre
             l[1][1].set(t[1].point(0), t[1].point(2));
             l[1][2].set(t[1].point(1), t[1].point(2));
 
-            // test triangle 0 lines against triangle 1
-            // test triangle 1 lines against triangle 0
+            // test Triangle 0 lines against Triangle 1
+            // test Triangle 1 lines against Triangle 0
             for (j = 0; j < 3; j++) 
             {
                intersects[0][j] = t[1].intersect_both_sides(l[0][j], ipos[0][j]);
@@ -407,10 +407,10 @@ namespace Ogre
             int triangleIndex = collFaces[collFaceIndex].mFaceID;
             float dist        = collFaces[collFaceIndex].mDistance;
 
-            // build triangle from from faceIndex
+            // build Triangle from from faceIndex
             Vector3 v0,v1,v2;
             this->GetTriCoords(triangleIndex, v0, v1, v2);
-            triangle tri(v0, v1, v2);
+            Triangle tri(v0, v1, v2);
 
             // get 3x3 matrix to transform normal into global space
             Matrix3 m33;
@@ -431,16 +431,16 @@ namespace Ogre
       return false;
    }
 
-   /// Check contact of a sphere with shape.
+   /// Check contact of a OgreOpcodeSphere with shape.
    /// The collType is interpreted as follows:
    /// - COLLTYPE_IGNORE:        illegal (makes no sense)
    /// - COLLTYPE_QUICK:         first contact check only
    /// - COLLTYPE_CONTACT:       return closest contact
    /// - COLLTYPE_EXACT:         same as closest contact
-   /// Currently, sphere checks always work in first constact mode (COLLTYPE_QUICK).
+   /// Currently, OgreOpcodeSphere checks always work in first constact mode (COLLTYPE_QUICK).
    /// @param  collType        see above
    /// @param  ownMatrix       position/orientation of this shape
-   /// @param  ball          sphere definition in world space
+   /// @param  ball          OgreOpcodeSphere definition in world space
    /// @param  collPair      will be filled with result
    /// @return                 true if line intersects shape
    bool CollisionShape::SphereCheck(CollisionType collType,
@@ -450,7 +450,7 @@ namespace Ogre
    {
       assert(COLLTYPE_IGNORE != collType);
 
-      // setup sphere collider
+      // setup OgreOpcodeSphere collider
       Opcode::SphereCollider& collider = CollisionManager::getSingletonPtr()->opcSphereCollider;
       Opcode::SphereCache& cache = CollisionManager::getSingletonPtr()->opcSphereCache;
 
@@ -470,14 +470,14 @@ namespace Ogre
          opcMatrix->m[3][i] = ownMatrix[i][3];
       }
 
-      // build identity matrix because sphere is already in world space
-      Matrix4x4 identity;
+      // build identity matrix because OgreOpcodeSphere is already in world space
+      IceMaths::Matrix4x4 identity;
       identity.Identity();
 
-      sphere collBall;
+      OgreOpcodeSphere collBall;
       collBall.set(ball.getCenter(), ball.getRadius());
-      // build an Opcode Sphere from sphere object
-      const IceMaths::Sphere opcSphere(Point(collBall.p.x, collBall.p.y, collBall.p.z), collBall.r);
+      // build an Opcode Sphere from OgreOpcodeSphere object
+      const IceMaths::Sphere opcSphere(IceMaths::Point(collBall.p.x, collBall.p.y, collBall.p.z), collBall.r);
 
       // perform collision
       collider.Collide(cache, opcSphere, this->opcModel, &identity, opcMatrix);
@@ -492,10 +492,10 @@ namespace Ogre
          {
             assert(1 == numFaces);
 
-            // build triangle from from faceIndex
+            // build Triangle from from faceIndex
             Vector3 v0,v1,v2;
             this->GetTriCoords(collFaces[0], v0, v1, v2);
-            triangle tri(v0, v1, v2);
+            Triangle tri(v0, v1, v2);
 
             // get 3x3 matrix to transform normal into global space
             Matrix3 m33;
@@ -567,12 +567,12 @@ namespace Ogre
       }
    }
 
-   /// Renders the collide model triangle soup.
+   /// Renders the collide model Triangle soup.
    void CollisionShape::Visualize()
    {
       assert(this->vertexData && this->faceData);
 
-      // render the triangle soup
+      // render the Triangle soup
       int i;
       for (i = 0; i < this->numFaces; i++)
       {

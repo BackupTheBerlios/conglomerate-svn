@@ -28,7 +28,7 @@
 #include "OgreOpcodeMath.h"
 #include "OgreCollisionManager.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
    // release all owned collide objects
    CollisionContext::~CollisionContext()
@@ -159,7 +159,7 @@ namespace Ogre
       }
    }
 
-   /// Do an instant check of a moving sphere in the collision volume.
+   /// Do an instant check of a moving OgreOpcodeSphere in the collision volume.
    /// Fills out the provided collide report array and
    /// returns number of detected collisions.
    /// @param p0     [in] starting position
@@ -208,8 +208,8 @@ namespace Ogre
             Vector3 v1 = Vector3(Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]) - p1);
 
             // do the contact check between 2 moving spheres
-            sphere s0(p0,radius);
-            sphere s1(p1,other->radius);
+            OgreOpcodeSphere s0(p0,radius);
+            OgreOpcodeSphere s1(p1,other->radius);
             float u0,u1;
             if (s0.intersect_sweep(v0,s1,v1,u0,u1))
             {
@@ -264,7 +264,7 @@ namespace Ogre
       assert(collType != COLLTYPE_IGNORE);
 
       // create a bounding box from the line
-      bbox3 bbox;
+      BBox3 bbox;
       bbox.begin_grow();
       bbox.grow(line.getOrigin());
       bbox.grow(line.getPoint(dist));
@@ -327,13 +327,13 @@ namespace Ogre
       }
    }
 
-   /// Test a sphere against the collide objects in the collide context.
+   /// Test a OgreOpcodeSphere against the collide objects in the collide context.
    /// The collType will be interpreted as follows:
    /// - COLLTYPE_IGNORE:        illegal (makes no sense)
-   /// - COLLTYPE_QUICK:         return all contacts, do sphere-sphere check
-   /// - COLLTYPE_CONTACT:       return closest contact only, sphere-shape
-   /// - COLLTYPE_EXACT:         return all contacts (unsorted), sphere-shape
-   /// @param  theSphere      [in]  the sphere to test in global space
+   /// - COLLTYPE_QUICK:         return all contacts, do OgreOpcodeSphere-OgreOpcodeSphere check
+   /// - COLLTYPE_CONTACT:       return closest contact only, OgreOpcodeSphere-shape
+   /// - COLLTYPE_EXACT:         return all contacts (unsorted), OgreOpcodeSphere-shape
+   /// @param  theSphere      [in]  the OgreOpcodeSphere to test in global space
    /// @param  collType    [in]  the collission type
    /// @param  collClass   [in]  optional coll class (COLLCLASS_ALWAYS_* if no coll class filtering wanted)
    /// @param  cpPtr       [out] will be filled with pointer to collide report pointers
@@ -342,19 +342,19 @@ namespace Ogre
    {
       assert(collType != COLLTYPE_IGNORE);
 
-      sphere ball;
+      OgreOpcodeSphere ball;
       ball.set(theSphere.getCenter(),theSphere.getRadius());
-      // create a bounding box from the sphere
+      // create a bounding box from the OgreOpcodeSphere
       Vector3 vmin(ball.p.x - ball.r, ball.p.y - ball.r, ball.p.z - ball.r);
       Vector3 vmax(ball.p.x + ball.r, ball.p.y + ball.r, ball.p.z + ball.r);
-      bbox3 bbox(vmin, vmax);
+      BBox3 bbox(vmin, vmax);
       const int ownId = 0xffff;
 
       // initialize collission report handler
       this->checkReportHandler.BeginFrame();
 
       // go through all attached collide objects
-      sphere s0;
+      OgreOpcodeSphere s0;
       nNode *contextNode;
       for (contextNode = this->attached_list.GetHead();
          contextNode;
@@ -376,7 +376,7 @@ namespace Ogre
 
             if (COLLTYPE_QUICK == ct)
             {
-               // do sphere-sphere collision check
+               // do OgreOpcodeSphere-OgreOpcodeSphere collision check
                const Matrix4 coTrans = co->GetTransform();
                s0.set(coTrans[0][3], coTrans[1][3], coTrans[2][3], co->GetRadius());
                if (ball.intersects(s0))
@@ -389,7 +389,7 @@ namespace Ogre
             }
             else
             {
-               // do sphere-shape collision check
+               // do OgreOpcodeSphere-shape collision check
                CollisionShape* shape = co->GetShape();
                if (shape)
                {

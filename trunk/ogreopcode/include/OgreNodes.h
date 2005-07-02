@@ -482,6 +482,6 @@ namespace OgreOpcode
       };
 
    } // namespace Details
-} // namespace Ogre
+} // namespace OgreOpcode
 
 #endif // __OgreNodes_h__
