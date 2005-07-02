@@ -1,4 +1,3 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.h
 ///  @brief <TODO: insert file description here>
@@ -32,9 +31,9 @@
 #include "OgreOpcodeExports.h"
 # include "Ogre.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
-   namespace Debug
+   namespace Details
    {
       /// %Debug visualization line class.
       class _OgreOpcode_Export DebugLines : public Ogre::SimpleRenderable
@@ -134,9 +133,8 @@ namespace Ogre
 		   virtual ~RayDebugObject();
 	   };
    
-   } // namespace Debug
+   } // namespace Details
 
-} // namespace Ogre
+} // namespace OgreOpcode
 
 #endif // __OgreOpcodeDebugObject_h__
-/// @endcond

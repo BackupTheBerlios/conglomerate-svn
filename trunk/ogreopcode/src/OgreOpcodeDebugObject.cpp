@@ -1,4 +1,3 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.cpp
 ///  @brief <TODO: insert file description here>
@@ -26,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeDebugObject.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
-   namespace Debug
+   namespace Details
    {
 
       bool DebugLines::_materials_created = false;
@@ -577,7 +576,6 @@ namespace Ogre
       {
       }
 
-   } // namespace Debug
+   } // namespace Details
 
-} // namespace Ogre
-/// @endcond
+} // namespace OgreOpcode

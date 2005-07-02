@@ -137,6 +137,9 @@
 			<File
 				RelativePath="..\src\OgreDynamicDebugLines.cpp">
 			</File>
+			<File
+				RelativePath="..\src\OgreOpcodeDebugObject.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -164,7 +167,19 @@
 				RelativePath="..\include\OgreDynamicDebugLines.h">
 			</File>
 			<File
+				RelativePath="..\include\OgreHash.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreKeyArray.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreNodes.h">
+			</File>
+			<File
 				RelativePath="..\include\OgreOpcode.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreOpcodeDebugObject.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreOpcodeExports.h">
