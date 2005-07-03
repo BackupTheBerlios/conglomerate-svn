@@ -569,16 +569,11 @@ public:
 
    ~ogreOpcodeExampleApp()
    {
-      if(mGUISystem)
-      {
-         delete mGUISystem;
-         mGUISystem = 0;
-      }
-      if(mGUIRenderer)
-      {
-         delete mGUIRenderer;
-         mGUIRenderer = 0;
-      }
+      delete mGUISystem;
+      mGUISystem = 0;
+      delete mGUIRenderer;
+      mGUIRenderer = 0;
+      delete CollisionManager::getSingletonPtr();
    }
 
 protected:

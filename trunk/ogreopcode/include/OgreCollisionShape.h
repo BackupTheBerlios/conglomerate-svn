@@ -91,6 +91,9 @@ namespace OgreOpcode
       /// return entity
       Entity* getEntity();
    private:
+      void countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count);
+      void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count);
+
       /// Extract vertex information from an Ogre mesh.
       /// @param [in]       mesh const Mesh *const     The mesh to extract.
       /// @param [in, out]  vertex_count size_t &    Returns the vertex count.

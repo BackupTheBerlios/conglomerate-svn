@@ -93,6 +93,7 @@ namespace OgreOpcode
 
       CollisionManager(SceneManager *);
       virtual ~CollisionManager();
+      virtual void CleanUp();
 
       static CollisionManager& getSingleton(void);
 

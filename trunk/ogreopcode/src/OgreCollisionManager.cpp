@@ -63,27 +63,32 @@ namespace OgreOpcode
       this->opcSphereCollider.SetTemporalCoherence(false);        // no temporal coherence
    }
 
-   CollisionManager::~CollisionManager()
+   void CollisionManager::CleanUp()
    {
       // release collision type definitions
       CollisionClassNode *ccn;
       while ((ccn = (CollisionClassNode *)
-         this->collclass_list.RemHead())) delete ccn;
+         collclass_list.RemHead())) delete ccn;
 
-      if (this->colltype_table)
-         delete[] this->colltype_table;
+      if (colltype_table)
+         delete[] colltype_table;
 
       // release any shapes and contexts that may still be around...
       CollisionShape *cs;
       while ((cs = (CollisionShape *) this->shape_list.GetHead()))
       {
-         this->ReleaseShape(cs);
+         ReleaseShape(cs);
       }
       CollisionContext *cc;
       while ((cc = (CollisionContext *) this->context_list.GetHead()))
       {
-         this->ReleaseContext(cc);
+         ReleaseContext(cc);
       }
+   }
+   
+   CollisionManager::~CollisionManager()
+   {
+      CleanUp();
    }
 
    CollisionContext *CollisionManager::NewContext(void)
