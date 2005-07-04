@@ -7,6 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///
 ///  This file is part of OgreOpcode.
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -599,6 +600,7 @@ namespace OgreOpcode
    /// @param[in]  entity Entity to count its data.
    /// @param[out] index_count  Number of indices.
    /// @param[out] vertex_count Number of vertices.
+   /// @author Yavin from the Ogre4J team
    ///////////////////////////////////////////////////////////////////////////////
    void CollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
    {
@@ -639,6 +641,7 @@ namespace OgreOpcode
    /// @param[in]  size_t vertex_count Number of vertices.
    /// @param[out] faceData            Target face data array.
    /// @param[int] index_count         Number of indices.
+   /// @author Yavin from the Ogre4J team
    ///////////////////////////////////////////////////////////////////////////////
    void CollisionShape::convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count)
    {

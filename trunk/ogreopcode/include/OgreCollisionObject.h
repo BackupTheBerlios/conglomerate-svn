@@ -7,6 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///
 ///  This file is part of OgreOpcode.
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -367,8 +368,8 @@ namespace OgreOpcode
          // update the x-dimension node, nCNode::SetVal() automatically
          // makes sure that the nodes keep their correct orders
          // in the list
-         this->xmin_cnode.SetVal(this->maxv.z);
-         this->xmax_cnode.SetVal(this->minv.z);
+         this->xmin_cnode.SetVal(this->minv.x);
+         this->xmax_cnode.SetVal(this->maxv.x);
       }
       
       /// Transform the object to its new position/orientation, update the dimensional nodes and the bounding box.

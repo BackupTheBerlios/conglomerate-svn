@@ -3,7 +3,7 @@
 ///  @brief <TODO: insert file description here>
 ///
 ///  @author jacmoe @date 28-06-2005
-///  @remarks  
+///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.

@@ -2,10 +2,8 @@
 ///  @file OgreOpcodeDebugObject.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @remarks <TODO: insert remarks here>
-///
-///  @author jacmoe @date 29-05-2005
-///  
+///  @author jacmoe @date 28-06-2005
+///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.

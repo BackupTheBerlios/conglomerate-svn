@@ -227,7 +227,7 @@ public:
 
             newBasePoint = destinationPoint;
             new_velocity = newVelocityVector;
-            //mCamera->moveRelative(new_velocity);
+            mCamera->moveRelative(new_velocity);
          }
          num_recurs++;
          //         new_velocity /= num_picks;
