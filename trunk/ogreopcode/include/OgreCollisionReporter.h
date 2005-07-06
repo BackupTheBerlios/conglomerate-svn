@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -31,10 +30,10 @@
 #include "OgreKeyArray.h"
 #include "OgreOpcodeExports.h"
 
-using namespace OgreOpcode::Details;
+using namespace Ogre::Details;
 
 
-namespace OgreOpcode
+namespace Ogre
 {
    class CollisionObject;
    
@@ -46,11 +45,8 @@ namespace OgreOpcode
       CollisionObject *co2; ///< the second object involved in the collision
       Real tstamp; ///< the timestamp at which the collision occured
       Vector3 contact; ///< the point of contact 
-      Real distance; ///< distance to contact
       Vector3 co1_normal; ///< co1's collision plane normal
       Vector3 co2_normal; ///< co2's collision plane normal
-      Vector3 ce1_v0, ce1_v1, ce1_v2; ///< co1's tricoords
-      Vector3 ce2_v0, ce2_v1, ce2_v2; ///< co2's tricoords 
    };
 
    /// Collect and manage CollisionPair%s.

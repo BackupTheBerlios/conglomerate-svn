@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -35,14 +34,15 @@
 #include "OgreOpcodeDebugObject.h"
 #include "Opcode.h"
 
-using namespace OgreOpcode::Details;
+using namespace Ogre::Details;
+using namespace Ogre::Debug;
 
-namespace OgreOpcode
+namespace Ogre
 {
    class CollisionPair;
 
    /// Describes shapes for collision system.
-   /// Holds a Triangle list describing a collision shape.
+   /// Holds a triangle list describing a collision shape.
    /// One CollisionShape object may be shared between several
    /// CollisionObject%s. 2 CollisionShape objects may also
    /// be queried directly whether they intersect.
@@ -71,7 +71,7 @@ namespace OgreOpcode
       virtual void Begin(int numVertices, int numTriangles);
       /// set vertex in collide mesh
       virtual void SetVertex(int index, Vector3& v);
-      /// set Triangle in collide mesh
+      /// set triangle in collide mesh
       virtual void SetTriangle(int index, int v0Index, int v1Index, int v2Index);
       /// finish defining the geometry
       virtual void End();
@@ -83,7 +83,7 @@ namespace OgreOpcode
       virtual bool Collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
       /// perform collision with line
       virtual bool LineCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& line, const Real dist, CollisionPair& collPair);
-      /// perform a OgreOpcodeSphere check
+      /// perform a sphere check
       virtual bool SphereCheck(CollisionType collType, const Matrix4& ownMatrix, const Sphere& ball, CollisionPair& collPair);
       /// visualize the collide shape
       virtual void Visualize();
@@ -92,9 +92,6 @@ namespace OgreOpcode
       /// return entity
       Entity* getEntity();
    private:
-      void countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count);
-      void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count);
-
       /// Extract vertex information from an Ogre mesh.
       /// @param [in]       mesh const Mesh *const     The mesh to extract.
       /// @param [in, out]  vertex_count size_t &    Returns the vertex count.
@@ -111,8 +108,8 @@ namespace OgreOpcode
          const Ogre::Quaternion &orient = Quaternion::IDENTITY,
          const Ogre::Vector3 &scale = Vector3::UNIT_SCALE);
 
-      // Triangle coordinate callback function
-      //static void collCallback(udword triangleIndex, VertexPointers& Triangle, void * userData);
+      // triangle coordinate callback function
+      //static void collCallback(udword triangleIndex, VertexPointers& triangle, void * userData);
       /// get tri coords from tri index
       void GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2);
       /// visualize the AABBTree of the opcode model
@@ -177,7 +174,7 @@ namespace OgreOpcode
       return this->radius;
    }
 
-   /// Extract Triangle coordinates from Triangle index.
+   /// Extract triangle coordinates from triangle index.
    inline
       void
       CollisionShape::GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
@@ -191,6 +188,6 @@ namespace OgreOpcode
       v2 = Vector3(vp2[0], vp2[1], vp2[2]);
    }
    
-}; // namespace OgreOpcode
+}; // namespace Ogre
 
 #endif // __OgreCollisionEntity_h__

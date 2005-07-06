@@ -1,28 +1,28 @@
+/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreNodes.h
 ///  @brief <TODO: insert file description here>
 ///
 ///  @author jacmoe @date 30-05-2005
-///
+///  
 ///////////////////////////////////////////////////////////////////////////////
-///
+///  
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
-///
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
 ///  version 2.1 of the License, or (at your option) any later version.
-///
+///  
 ///  OgreOpcode is distributed in the hope that it will be useful,
 ///  but WITHOUT ANY WARRANTY; without even the implied warranty of
 ///  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  Lesser General Public License for more details.
-///
+///  
 ///  You should have received a copy of the GNU Lesser General Public
 ///  License along with OgreOpcode; if not, write to the Free Software
 ///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-///
+///  
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef __OgreNodes_h__
 #define __OgreNodes_h__
@@ -30,14 +30,14 @@
 #include <Ogre.h>
 #include "OgreOpcodeExports.h"
 
-namespace OgreOpcode
+namespace Ogre
 {
    namespace Details
    {
       class nList;
 
       /// Implement a node in a doubly linked list.
-      class nNode
+      class nNode 
       {
       public:
          /// the default constructor
@@ -70,7 +70,7 @@ namespace OgreOpcode
          void *ptr;
       };
 
-      inline
+      inline 
          nNode::nNode(void)
          : succ(0),
          pred(0),
@@ -79,7 +79,7 @@ namespace OgreOpcode
          // empty
       }
 
-      inline
+      inline 
          nNode::nNode(void *_ptr)
          : succ(0),
          pred(0),
@@ -89,7 +89,7 @@ namespace OgreOpcode
       }
 
       /// The destructor will throw an assertion if the node is still linked into a list!
-      inline
+      inline 
          nNode::~nNode(void)
       {
          assert(!this->succ);
@@ -102,9 +102,9 @@ namespace OgreOpcode
          nNode::GetSucc(void) const
       {
          assert(this->succ);
-         if (this->succ->succ)
+         if (this->succ->succ) 
             return this->succ;
-         else
+         else                  
             return 0;
       }
 
@@ -115,15 +115,15 @@ namespace OgreOpcode
          nNode::GetPred(void) const
       {
          assert(this->pred);
-         if (this->pred->pred)
+         if (this->pred->pred) 
             return this->pred;
-         else
+         else                  
             return NULL;
       }
 
       /// @param node in front of which this node should be inserted
-      inline
-         void
+      inline 
+         void 
          nNode::InsertBefore(nNode *succ)
       {
          assert(succ->pred);
@@ -136,8 +136,8 @@ namespace OgreOpcode
       }
 
       /// @param the node after which this node should be inserted
-      inline
-         void
+      inline 
+         void 
          nNode::InsertAfter(nNode *pred)
       {
          assert(pred->succ);
@@ -149,8 +149,8 @@ namespace OgreOpcode
          succ->pred = this;
       }
 
-      inline
-         void
+      inline 
+         void 
          nNode::Remove(void)
       {
          assert(this->succ);
@@ -163,8 +163,8 @@ namespace OgreOpcode
       }
 
       /// @param the new user data pointer
-      inline
-         void
+      inline 
+         void 
          nNode::SetPtr(void *p)
       {
          this->ptr = p;
@@ -179,11 +179,11 @@ namespace OgreOpcode
       }
 
       /// @return true if node is currently linked into a list
-      inline
-         bool
+      inline 
+         bool 
          nNode::IsLinked(void) const
       {
-         if (this->succ)
+         if (this->succ) 
          {
             return true;
          }
@@ -195,7 +195,7 @@ namespace OgreOpcode
 
 
       /// Implement a doubly linked list.
-      class nList
+      class nList 
       {
       public:
          /// constructor
@@ -223,7 +223,7 @@ namespace OgreOpcode
          nNode* tailpred;
       };
 
-      inline
+      inline 
          nList::nList()
       {
          this->head     = (nNode *) &(this->tail);
@@ -238,30 +238,30 @@ namespace OgreOpcode
       }
 
       /// @return true if list is empty.
-      inline
-         bool
+      inline 
+         bool 
          nList::IsEmpty() const
       {
          return (this->head->succ == 0);
       }
 
       /// @return return first node in list, or 0 if list is empty
-      inline
+      inline 
          nNode*
          nList::GetHead() const
       {
-         if (this->head->succ)
+         if (this->head->succ) 
          {
             return this->head;
          }
-         else
+         else                  
          {
             return 0;
          }
       }
 
       /// @return return last node in list, or 0 if list is empty
-      inline
+      inline 
          nNode*
          nList::GetTail() const
       {
@@ -269,23 +269,23 @@ namespace OgreOpcode
          {
             return this->tailpred;
          }
-         else
+         else                      
          {
             return NULL;
          }
       }
 
       /// @param n the node to be added
-      inline
-         void
+      inline 
+         void 
          nList::AddHead(nNode *n)
       {
          n->InsertAfter((nNode *) &(this->head));
       }
 
       /// @param n the node to be added
-      inline
-         void
+      inline 
+         void 
          nList::AddTail(nNode *n)
       {
          n->InsertBefore((nNode *) &(this->tail));
@@ -296,12 +296,12 @@ namespace OgreOpcode
       inline nNode *nList::RemHead()
       {
          nNode *n = this->head;
-         if (n->succ)
+         if (n->succ) 
          {
             n->Remove();
             return n;
-         }
-         else
+         } 
+         else 
          {
             return 0;
          }
@@ -312,12 +312,12 @@ namespace OgreOpcode
       inline nNode *nList::RemTail()
       {
          nNode *n = this->tailpred;
-         if (n->pred)
+         if (n->pred) 
          {
             n->Remove();
             return n;
-         }
-         else
+         } 
+         else 
          {
             return 0;
          }
@@ -325,7 +325,7 @@ namespace OgreOpcode
 
 
       /// A node in a nStrList.
-      class nStrNode: public nNode
+      class nStrNode: public nNode 
       {
       public:
          /// default constructor
@@ -405,11 +405,11 @@ namespace OgreOpcode
          return (nStrNode *) nNode::GetPred();
       }
 
-
+      
       /// A doubly linked list for named nodes with slow linear search.
-      class nStrList: public nList
+      class nStrList: public nList 
       {
-      public:
+      public:	
          /// return first element of list
          nStrNode* GetHead() const;
          /// return last element of list
@@ -470,11 +470,11 @@ namespace OgreOpcode
          nStrList::Find(const char* str) const
       {
          nStrNode* n;
-         for (n = this->GetHead(); n; n = n->GetSucc())
+         for (n = this->GetHead(); n; n = n->GetSucc()) 
          {
             const char* nodeName = n->GetName();
             assert(nodeName);
-            if (strcmp(str, nodeName) == 0)
+            if (strcmp(str, nodeName) == 0) 
             {
                return n;
             }
@@ -483,6 +483,7 @@ namespace OgreOpcode
       };
 
    } // namespace Details
-} // namespace OgreOpcode
+} // namespace Ogre
 
 #endif // __OgreNodes_h__
+/// @endcond

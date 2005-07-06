@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -35,10 +34,10 @@
 #include "OgreCollisionShape.h"
 #include "Opcode.h"
 
-using namespace OgreOpcode::Details;
+using namespace Ogre::Details;
 
 /// Main %Ogre namespace
-namespace OgreOpcode
+namespace Ogre
 {
    typedef int CollisionClass;
    
@@ -94,7 +93,6 @@ namespace OgreOpcode
 
       CollisionManager(SceneManager *);
       virtual ~CollisionManager();
-      virtual void CleanUp();
 
       static CollisionManager& getSingleton(void);
 
@@ -122,19 +120,19 @@ namespace OgreOpcode
       {
 
          // check for CollClass override cases
-         if ((cc1 == COLLTYPE_ALWAYS_IGNORE) || (cc2 == COLLTYPE_ALWAYS_IGNORE))
+         if ((cc1 == COLLCLASS_ALWAYS_IGNORE) || (cc2 == COLLCLASS_ALWAYS_IGNORE))
          {
             return COLLTYPE_IGNORE;
          }
-         else if ((cc1 == COLLTYPE_ALWAYS_QUICK) || (cc2 == COLLTYPE_ALWAYS_QUICK))
+         else if ((cc1 == COLLCLASS_ALWAYS_QUICK) || (cc2 == COLLCLASS_ALWAYS_QUICK))
          {
             return COLLTYPE_QUICK;
          }
-         else if ((cc1 == COLLTYPE_ALWAYS_CONTACT) || (cc2 == COLLTYPE_ALWAYS_CONTACT))
+         else if ((cc1 == COLLCLASS_ALWAYS_CONTACT) || (cc2 == COLLCLASS_ALWAYS_CONTACT))
          {
             return COLLTYPE_CONTACT;
          }
-         else if ((cc1 == COLLTYPE_ALWAYS_EXACT) || (cc2 == COLLTYPE_ALWAYS_EXACT))
+         else if ((cc1 == COLLCLASS_ALWAYS_EXACT) || (cc2 == COLLCLASS_ALWAYS_EXACT))
          {
             return COLLTYPE_EXACT;
          }
@@ -150,6 +148,6 @@ namespace OgreOpcode
       char *getResourceID(const char *, char *, int);
    };
 
-}; // namespace OgreOpcode
+}; // namespace Ogre
 
 #endif // __OgreCollisionManager_h__

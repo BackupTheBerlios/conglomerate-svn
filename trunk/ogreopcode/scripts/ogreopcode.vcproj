@@ -129,13 +129,7 @@
 				RelativePath="..\src\OgreCollisionManager.cpp">
 			</File>
 			<File
-				RelativePath="..\src\OgreCollisionReporter.cpp">
-			</File>
-			<File
 				RelativePath="..\src\OgreCollisionShape.cpp">
-			</File>
-			<File
-				RelativePath="..\src\OgreDynamicDebugLines.cpp">
 			</File>
 			<File
 				RelativePath="..\src\OgreOpcodeDebugObject.cpp">
@@ -162,9 +156,6 @@
 			</File>
 			<File
 				RelativePath="..\include\OgreCollisionTypes.h">
-			</File>
-			<File
-				RelativePath="..\include\OgreDynamicDebugLines.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreHash.h">

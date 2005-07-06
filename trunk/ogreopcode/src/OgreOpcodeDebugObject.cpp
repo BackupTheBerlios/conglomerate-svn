@@ -1,9 +1,10 @@
+/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.cpp
 ///  @brief <TODO: insert file description here>
 ///
 ///  @author jacmoe @date 28-05-2005
-///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
+///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
@@ -25,9 +26,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeDebugObject.h"
 
-namespace OgreOpcode
+namespace Ogre
 {
-   namespace Details
+   namespace Debug
    {
 
       bool DebugLines::_materials_created = false;
@@ -576,6 +577,7 @@ namespace OgreOpcode
       {
       }
 
-   } // namespace Details
+   } // namespace Debug
 
-} // namespace OgreOpcode
+} // namespace Ogre
+/// @endcond

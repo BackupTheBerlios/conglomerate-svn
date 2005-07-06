@@ -1,3 +1,4 @@
+/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeMath.h
 ///  @brief <TODO: insert file description here>
@@ -7,8 +8,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
-///
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -30,19 +30,19 @@
 #include <Ogre.h>
 #include "OgreOpcodeExports.h"
 
-namespace OgreOpcode
+namespace Ogre
 {
    namespace Details
    {
-      class Line3
+      class line3
       {
       public:
          Vector3 b;
          Vector3 m;
 
-         Line3() {};
-         Line3(const Vector3& v0, const Vector3& v1) : b(v0), m(v1-v0) {};
-         Line3(const Line3& l) : b(l.b), m(l.m) {};
+         line3() {};
+         line3(const Vector3& v0, const Vector3& v1) : b(v0), m(v1-v0) {};
+         line3(const line3& l) : b(l.b), m(l.m) {};
 
          void set(const Vector3& v0, const Vector3& v1)
          {
@@ -92,38 +92,37 @@ namespace OgreOpcode
       //  Triangle points are tri(s,t)=b + s*e0 + t*e1 where
       //  0<=s<=1, 0<=t<=1 and 0<=s+t<=1
       //-------------------------------------------------------------------
-      class Triangle
+      class triangle
       {
       public:
          Vector3 b,e0,e1;
 
-         Triangle() {};
-         Triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2) 
+         triangle() {};
+         triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2) 
             : b(v0), e0(v1-v0), e1(v2-v0) {};
-         Triangle(const Triangle& t) 
+         triangle(const triangle& t) 
             : b(t.b), e0(t.e0), e1(t.e1) {}; 
 
          void set(const Vector3& v0, const Vector3& v1, const Vector3& v2) {
             b  = v0;
             e0 = v1-v0;
-            e1 = v2-v1;
+            e1 = v2-v0;
          };
 
-         //--- get the face normal of the Triangle ---------------------------------
+         //--- get the face normal of the triangle ---------------------------------
          Vector3 normal(void) const
          {
-            Vector3 cross;
-            cross = e0.crossProduct(e1);
+            Vector3 cross(e0*e1);
             cross.normalise();
             return cross;
          };
 
-         //--- get the midpoint (center of gravity) of the Triangle ----------------
+         //--- get the midpoint (center of gravity) of the triangle ----------------
          Vector3 midpoint(void) const {
             return b + ((e0+e1)/3.0f);
          };
 
-         //--- get the plane of the Triangle ---------------------------------------
+         //--- get the plane of the triangle ---------------------------------------
          Plane getplane(void) const
          {
             return Plane(b,b+e0,b+e1);
@@ -141,16 +140,16 @@ namespace OgreOpcode
             }
          };
 
-         //--- check if and where line intersects Triangle -------------------------
+         //--- check if and where line intersects triangle -------------------------
          //  Taken from Magic Software (http://www.cs.unc.edu/~eberly)
-         //  Return false if line is parallel to Triangle or hits its backside.
+         //  Return false if line is parallel to triangle or hits its backside.
          //
-         bool intersect(const Line3& line, Real& ipos)
+         bool intersect(const line3& line, Real& ipos)
          {
 
-            // Compute plane of Triangle, Dot(normal,X-tri.b) = 0 where 'normal' is
+            // Compute plane of triangle, Dot(normal,X-tri.b) = 0 where 'normal' is
             // the plane normal.  If the angle between the line direction and normal
-            // is small, then the line is effectively parallel to the Triangle.
+            // is small, then the line is effectively parallel to the triangle.
             const Real fTolerance = 1e-04f;
             Vector3 norm(e0*e1);
             Real fDenominator = norm.dotProduct(line.m);
@@ -161,22 +160,22 @@ namespace OgreOpcode
             if (fDenominator >= -fTolerance) return false;
 
             //if ((fDenominator*fDenominator) <= (fTolerance*fLLenSqr*fNLenSqr)) {
-            //    // line and Triangle are parallel
+            //    // line and triangle are parallel
             //    return false;
             //}
 
             // The line is X(t) = line.b + t*line.m.  Compute line parameter t for
-            // intersection of line and plane of Triangle.  Substitute in the plane
+            // intersection of line and plane of triangle.  Substitute in the plane
             // equation to get Dot(normal,line.b-tri.b) + t*Dot(normal,line.m)   
             Vector3 kDiff0(line.b - b);
             Real fTime = -(norm.dotProduct(kDiff0)) / fDenominator;
             if ((fTime<-fTolerance) || (fTime>(1.0f+fTolerance))) return false;
 
             // Find difference of intersection point of line with plane and vertex
-            // of Triangle.
+            // of triangle.
             Vector3 kDiff1(kDiff0 + line.m*fTime);
 
-            // Compute if intersection point is inside Triangle.  Write
+            // Compute if intersection point is inside triangle.  Write
             // kDiff1 = s0*E0 + s1*E1 and solve for s0 and s1.
             Real fE00 = e0.dotProduct(e0);
             Real fE01 = e0.dotProduct(e1);
@@ -189,25 +188,24 @@ namespace OgreOpcode
             Real fS1 = fE00*fR1 - fE01*fR0;
 
             if ((fS0>=-fTolerance) && (fS1>=-fTolerance) && (fS0+fS1<=fDet+fTolerance)) {
-               // intersection is inside Triangle
+               // intersection is inside triangle
                ipos = fTime;
                return true;
             } else {
-               // intersection is outside Triangle
+               // intersection is outside triangle
                return false;
             }
          };
 
-         //--- check if and where line intersects Triangle -------------------------
+         //--- check if and where line intersects triangle -------------------------
          //  Taken from Magic Software (http://www.cs.unc.edu/~eberly)
-         //  Return false if line is parallel to Triangle
+         //  Return false if line is parallel to triangle
          //
-         bool intersect_both_sides(const Line3& line, Real& ipos)
-         {
+         bool intersect_both_sides(const line3& line, Real& ipos) {
 
-            // Compute plane of Triangle, Dot(normal,X-tri.b) = 0 where 'normal' is
+            // Compute plane of triangle, Dot(normal,X-tri.b) = 0 where 'normal' is
             // the plane normal.  If the angle between the line direction and normal
-            // is small, then the line is effectively parallel to the Triangle.
+            // is small, then the line is effectively parallel to the triangle.
             const Real fTolerance = 1e-04f;
             Vector3 norm(e0*e1);
             Real fDenominator = norm.dotProduct(line.m);
@@ -218,22 +216,22 @@ namespace OgreOpcode
             if (fDenominator*fDenominator <= fTolerance*fLLenSqr*fNLenSqr) return false;
 
             //if ((fDenominator*fDenominator) <= (fTolerance*fLLenSqr*fNLenSqr)) {
-            //    // line and Triangle are parallel
+            //    // line and triangle are parallel
             //    return false;
             //}
 
             // The line is X(t) = line.b + t*line.m.  Compute line parameter t for
-            // intersection of line and plane of Triangle.  Substitute in the plane
+            // intersection of line and plane of triangle.  Substitute in the plane
             // equation to get Dot(normal,line.b-tri.b) + t*Dot(normal,line.m)   
             Vector3 kDiff0(line.b - b);
             Real fTime = -(norm.dotProduct(kDiff0)) / fDenominator;
             if ((fTime<-fTolerance) || (fTime>(1.0f+fTolerance))) return false;
 
             // Find difference of intersection point of line with plane and vertex
-            // of Triangle.
+            // of triangle.
             Vector3 kDiff1(kDiff0 + line.m*fTime);
 
-            // Compute if intersection point is inside Triangle.  Write
+            // Compute if intersection point is inside triangle.  Write
             // kDiff1 = s0*E0 + s1*E1 and solve for s0 and s1.
             Real fE00 = e0.dotProduct(e0);
             Real fE01 = e0.dotProduct(e1);
@@ -246,11 +244,11 @@ namespace OgreOpcode
             Real fS1 = fE00*fR1 - fE01*fR0;
 
             if ((fS0>=-fTolerance) && (fS1>=-fTolerance) && (fS0+fS1<=fDet+fTolerance)) {
-               // intersection is inside Triangle
+               // intersection is inside triangle
                ipos = fTime;
                return true;
             } else {
-               // intersection is outside Triangle
+               // intersection is outside triangle
                return false;
             }
          };
@@ -260,7 +258,7 @@ namespace OgreOpcode
 #define n_max(a,b)      (((a) > (b)) ? (a) : (b))
 #define n_min(a,b)      (((a) < (b)) ? (a) : (b))
 
-      class BBox3
+      class bbox3
       {
       public:
          Vector3 vmin;
@@ -286,12 +284,12 @@ namespace OgreOpcode
          };
 
          //--- constructors ----------------------------------------------
-         BBox3() {};
-         BBox3(const Vector3& _vmin, const Vector3& _vmax) : vmin(_vmin), vmax(_vmax) {};
-         BBox3(const BBox3& bb) : vmin(bb.vmin), vmax(bb.vmax) {};
+         bbox3() {};
+         bbox3(const Vector3& _vmin, const Vector3& _vmax) : vmin(_vmin), vmax(_vmax) {};
+         bbox3(const bbox3& bb) : vmin(bb.vmin), vmax(bb.vmax) {};
 
          //--- initialize from Vector3 cloud -----------------------------
-         BBox3(Vector3 *varray, int num)
+         bbox3(Vector3 *varray, int num)
          {
             vmin = varray[0];
             vmax = varray[0];
@@ -353,7 +351,7 @@ namespace OgreOpcode
             }
          };
 
-         void grow(const BBox3& bb)
+         void grow(const bbox3& bb)
          {
             if (bb.vmin.x<vmin.x) vmin.x=bb.vmin.x;
             if (bb.vmin.y<vmin.y) vmin.y=bb.vmin.y;
@@ -365,7 +363,7 @@ namespace OgreOpcode
 
          // get point of intersection of 3d line with planes
          // on const x,y,z
-         bool isect_const_x(const float x, const Line3& l, Vector3& out) const
+         bool isect_const_x(const float x, const line3& l, Vector3& out) const
          {
             if (l.m.x != 0.0f)
             {
@@ -380,7 +378,7 @@ namespace OgreOpcode
             return false;
          }
          
-         bool isect_const_y(const float y, const Line3& l, Vector3& out) const
+         bool isect_const_y(const float y, const line3& l, Vector3& out) const
          {
             if (l.m.y != 0.0f)
             {
@@ -395,7 +393,7 @@ namespace OgreOpcode
             return false;
          }
          
-         bool isect_const_z(const float z, const Line3& l, Vector3& out) const
+         bool isect_const_z(const float z, const line3& l, Vector3& out) const
          {
             if (l.m.z != 0.0f)
             {
@@ -430,7 +428,7 @@ namespace OgreOpcode
          }
 
          //--- check if box intersects or contains line ------------------
-         bool intersect(const Line3& line) const
+         bool intersect(const line3& line) const
          {
             // For each side of box, check if point of intersection
             // lies within this sides 2d rectangle. If at least one
@@ -495,7 +493,7 @@ namespace OgreOpcode
          @param ipos closest point of intersection if successful, trash otherwise
          @return true if an intersection occurs
          */
-         bool intersect(const Line3& line, Vector3& ipos) const
+         bool intersect(const line3& line, Vector3& ipos) const
          {
             // Handle special case for start point inside box
             if (line.b.x >= vmin.x && line.b.y >= vmin.y && line.b.z >= vmin.z &&
@@ -555,7 +553,7 @@ namespace OgreOpcode
             else return CLIPS;
          }
 
-         int intersect(BBox3 box)
+         int intersect(bbox3 box)
          {
             int and_code = 0xffff;
             int or_code  = 0;
@@ -580,17 +578,17 @@ namespace OgreOpcode
          }
       };
 
-      class OgreOpcodeSphere
+      class sphere
       {
       public:
          Vector3 p;      // position
          Real   r;      // radius
 
          //--- constructors ----------------------------------------------
-         OgreOpcodeSphere() : r(1.0f) {};
-         OgreOpcodeSphere(const Vector3& _p, Real _r) : p(_p), r(_r) {};
-         OgreOpcodeSphere(const OgreOpcodeSphere& s) : p(s.p), r(s.r) {};
-         OgreOpcodeSphere(Real _x, Real _y, Real _z, Real _r) 
+         sphere() : r(1.0f) {};
+         sphere(const Vector3& _p, Real _r) : p(_p), r(_r) {};
+         sphere(const sphere& s) : p(s.p), r(s.r) {};
+         sphere(Real _x, Real _y, Real _z, Real _r) 
             : r(_r)
          {
             p = Vector3(_x,_y,_z);
@@ -609,7 +607,7 @@ namespace OgreOpcode
          };
 
          //--- check if 2 spheres overlap, without contact point ---------
-         bool intersects(const OgreOpcodeSphere& s) const
+         bool intersects(const sphere& s) const
          {
             Vector3 d(s.p-p);
             Real rsum = s.r+r;
@@ -621,7 +619,7 @@ namespace OgreOpcode
          //--- taken from "Simple Intersection Tests For Games" ----------
          //--- article in Gamasutra, Oct 18 1999 -------------------------
          bool intersect_sweep(const Vector3& va,     // in: distance travelled by 'this'
-            const OgreOpcodeSphere&  sb,     // in: the other OgreOpcodeSphere
+            const sphere&  sb,     // in: the other sphere
             const Vector3& vb,     // in: distance travelled by 'sb'
             Real& u0,             // out: normalized intro contact u0
             Real& u1)             // out: normalized outro contact u1
@@ -672,3 +670,4 @@ namespace OgreOpcode
    }
 }
 #endif // __OgreOpcodeMath_h__
+/// @endcond

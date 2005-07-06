@@ -5,7 +5,6 @@
 ///  @author jacmoe @date 28-05-2005
 ///  
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -25,9 +24,9 @@
 #include "OgreCollisionManager.h"
 #include "OgreCollisionReporter.h"
 
-template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionManager>::ms_Singleton = 0;
+template<> Ogre::CollisionManager* Ogre::Singleton<Ogre::CollisionManager>::ms_Singleton = 0;
 
-namespace OgreOpcode
+namespace Ogre
 {
 
    CollisionManager& CollisionManager::getSingleton(void)
@@ -59,37 +58,32 @@ namespace OgreOpcode
       this->opcRayCollider.SetMaxDist(100000.0f);                 // max dist 100 km
       this->opcRayCollider.SetDestination(&(this->opcFaceCache)); // detected hits go here
 
-      // setup the OgreOpcodeSphere collider
+      // setup the sphere collider
       this->opcSphereCollider.SetFirstContact(false);             // report all contacts
       this->opcSphereCollider.SetTemporalCoherence(false);        // no temporal coherence
    }
 
-   void CollisionManager::CleanUp()
+   CollisionManager::~CollisionManager()
    {
       // release collision type definitions
       CollisionClassNode *ccn;
       while ((ccn = (CollisionClassNode *)
-         collclass_list.RemHead())) delete ccn;
+         this->collclass_list.RemHead())) delete ccn;
 
-      if (colltype_table)
-         delete[] colltype_table;
+      if (this->colltype_table)
+         delete[] this->colltype_table;
 
       // release any shapes and contexts that may still be around...
       CollisionShape *cs;
       while ((cs = (CollisionShape *) this->shape_list.GetHead()))
       {
-         ReleaseShape(cs);
+         this->ReleaseShape(cs);
       }
       CollisionContext *cc;
       while ((cc = (CollisionContext *) this->context_list.GetHead()))
       {
-         ReleaseContext(cc);
+         this->ReleaseContext(cc);
       }
-   }
-   
-   CollisionManager::~CollisionManager()
-   {
-      CleanUp();
    }
 
    CollisionContext *CollisionManager::NewContext(void)

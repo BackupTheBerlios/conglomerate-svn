@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -30,7 +29,7 @@
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
 
-namespace OgreOpcode
+namespace Ogre
 {
    CollisionShape::CollisionShape(const char* name)
       : nHashNode(name),
@@ -99,7 +98,7 @@ namespace OgreOpcode
       }
    }
 
-   /// Fills out a Triangle in the collision mesh.
+   /// Fills out a triangle in the collision mesh.
    /// @param [in]       index int     Index into the index array.
    /// @param [in]       v0Index int     First index into the vertex array.
    /// @param [in]       v1Index int     Second index into the vertex array.
@@ -148,18 +147,18 @@ namespace OgreOpcode
    }
 
    /*
-   OPCODE uses a callback function to actually get Triangle data for the
+   OPCODE uses a callback function to actually get triangle data for the
    collision test.
    */
    /*
    void
-   nOpcodeShape::collCallback(udword triangleIndex, VertexPointers& Triangle, void * userData)
+   nOpcodeShape::collCallback(udword triangleIndex, VertexPointers& triangle, void * userData)
    {
    nOpcodeShape* self = (nOpcodeShape*) userData;
    int *indexPtr = &(self->faceData[3 * triangleIndex]);
-   Triangle.Vertex[0] = (Point*) &(self->vertexData[3 * indexPtr[0]]);
-   Triangle.Vertex[1] = (Point*) &(self->vertexData[3 * indexPtr[1]]);
-   Triangle.Vertex[2] = (Point*) &(self->vertexData[3 * indexPtr[2]]);
+   triangle.Vertex[0] = (Point*) &(self->vertexData[3 * indexPtr[0]]);
+   triangle.Vertex[1] = (Point*) &(self->vertexData[3 * indexPtr[1]]);
+   triangle.Vertex[2] = (Point*) &(self->vertexData[3 * indexPtr[2]]);
    }
    */
    
@@ -215,12 +214,9 @@ namespace OgreOpcode
       // perform collision test
       collider.Collide(*(this->opcTreeCache), m0Ptr, m1Ptr);
 
-      delete m0Ptr;
-      delete m1Ptr;
-
       bool collided = false;
 
-      // get the number of collided Triangle pairs
+      // get the number of collided triangle pairs
       int numPairs = collider.GetNbPairs();
 
       if (numPairs > 0)
@@ -234,17 +230,17 @@ namespace OgreOpcode
          if (numPairs > 10) numPairs = 10;
          int i;
          Vector3 tp[2][3];
-         Line3 l[2][3];
-         Triangle t[2];
+         line3 l[2][3];
+         triangle t[2];
          bool intersects[2][3];
          float ipos[2][3];
          for (i = 0; i < numPairs; i++)
          {
-            // get the current contact Triangle coordinates
+            // get the current contact triangle coordinates
             this->GetTriCoords(pairs[i].id0, tp[0][0], tp[0][1], tp[0][2]);
             opcodeOther->GetTriCoords(pairs[i].id1, tp[1][0], tp[1][1], tp[1][2]);
 
-            // transform Triangle coords into world space
+            // transform triangle coords into world space
             int j;
             for (j = 0; j < 3; j++)
             {
@@ -265,8 +261,8 @@ namespace OgreOpcode
             l[1][1].set(t[1].point(0), t[1].point(2));
             l[1][2].set(t[1].point(1), t[1].point(2));
 
-            // test Triangle 0 lines against Triangle 1
-            // test Triangle 1 lines against Triangle 0
+            // test triangle 0 lines against triangle 1
+            // test triangle 1 lines against triangle 0
             for (j = 0; j < 3; j++) 
             {
                intersects[0][j] = t[1].intersect_both_sides(l[0][j], ipos[0][j]);
@@ -411,10 +407,10 @@ namespace OgreOpcode
             int triangleIndex = collFaces[collFaceIndex].mFaceID;
             float dist        = collFaces[collFaceIndex].mDistance;
 
-            // build Triangle from from faceIndex
+            // build triangle from from faceIndex
             Vector3 v0,v1,v2;
             this->GetTriCoords(triangleIndex, v0, v1, v2);
-            Triangle tri(v0, v1, v2);
+            triangle tri(v0, v1, v2);
 
             // get 3x3 matrix to transform normal into global space
             Matrix3 m33;
@@ -435,16 +431,16 @@ namespace OgreOpcode
       return false;
    }
 
-   /// Check contact of a OgreOpcodeSphere with shape.
+   /// Check contact of a sphere with shape.
    /// The collType is interpreted as follows:
    /// - COLLTYPE_IGNORE:        illegal (makes no sense)
    /// - COLLTYPE_QUICK:         first contact check only
    /// - COLLTYPE_CONTACT:       return closest contact
    /// - COLLTYPE_EXACT:         same as closest contact
-   /// Currently, OgreOpcodeSphere checks always work in first constact mode (COLLTYPE_QUICK).
+   /// Currently, sphere checks always work in first constact mode (COLLTYPE_QUICK).
    /// @param  collType        see above
    /// @param  ownMatrix       position/orientation of this shape
-   /// @param  ball          OgreOpcodeSphere definition in world space
+   /// @param  ball          sphere definition in world space
    /// @param  collPair      will be filled with result
    /// @return                 true if line intersects shape
    bool CollisionShape::SphereCheck(CollisionType collType,
@@ -454,7 +450,7 @@ namespace OgreOpcode
    {
       assert(COLLTYPE_IGNORE != collType);
 
-      // setup OgreOpcodeSphere collider
+      // setup sphere collider
       Opcode::SphereCollider& collider = CollisionManager::getSingletonPtr()->opcSphereCollider;
       Opcode::SphereCache& cache = CollisionManager::getSingletonPtr()->opcSphereCache;
 
@@ -463,6 +459,25 @@ namespace OgreOpcode
 
       // SPHERE CHECK ALWAYS WORKS IN FIRST CONTACT MODE!!!
       collider.SetFirstContact(true);
+
+      /*
+      THIS CODE SWITCHES BETWEEN FIRST AND ALL CONTACTS
+
+      switch (collType)
+      {
+      case COLLTYPE_QUICK:
+      collider.SetFirstContact(true);
+      break;
+
+      case COLLTYPE_CONTACT:
+      case COLLTYPE_EXACT:
+      collider.SetFirstContact(false);
+      break;
+
+      default:
+      break;
+      }
+      */
 
       // convert Matrix4 to Opcode Matrix4x4
       IceMaths::Matrix4x4* opcMatrix = new IceMaths::Matrix4x4;
@@ -474,13 +489,13 @@ namespace OgreOpcode
          opcMatrix->m[3][i] = ownMatrix[i][3];
       }
 
-      // build identity matrix because OgreOpcodeSphere is already in world space
+      // build identity matrix because sphere is already in world space
       IceMaths::Matrix4x4 identity;
       identity.Identity();
 
-      OgreOpcodeSphere collBall;
+      sphere collBall;
       collBall.set(ball.getCenter(), ball.getRadius());
-      // build an Opcode Sphere from OgreOpcodeSphere object
+      // build an Opcode Sphere from sphere object
       const IceMaths::Sphere opcSphere(IceMaths::Point(collBall.p.x, collBall.p.y, collBall.p.z), collBall.r);
 
       // perform collision
@@ -496,10 +511,10 @@ namespace OgreOpcode
          {
             assert(1 == numFaces);
 
-            // build Triangle from from faceIndex
+            // build triangle from from faceIndex
             Vector3 v0,v1,v2;
             this->GetTriCoords(collFaces[0], v0, v1, v2);
-            Triangle tri(v0, v1, v2);
+            triangle tri(v0, v1, v2);
 
             // get 3x3 matrix to transform normal into global space
             Matrix3 m33;
@@ -508,9 +523,8 @@ namespace OgreOpcode
             // fill collide report
             const float div = 1.0f / 3.0f;
             Vector3 midpoint = (v0 + v1 + v2) * div;
-            Ogre::Plane aPlane(v0,v1,v2);
             collPair.contact    = ownMatrix * midpoint;
-            collPair.co1_normal = m33 * aPlane.normal;//tri.normal();
+            collPair.co1_normal = m33 * tri.normal();
             collPair.co2_normal = collPair.co1_normal;
             return true;
          }
@@ -571,12 +585,12 @@ namespace OgreOpcode
       }
    }
 
-   /// Renders the collide model Triangle soup.
+   /// Renders the collide model triangle soup.
    void CollisionShape::Visualize()
    {
       assert(this->vertexData && this->faceData);
 
-      // render the Triangle soup
+      // render the triangle soup
       int i;
       for (i = 0; i < this->numFaces; i++)
       {
@@ -594,164 +608,6 @@ namespace OgreOpcode
 //      const Opcode::AABBCollisionTree* tree = (const Opcode::AABBCollisionTree*) this->opcModel.GetTree();
 //      this->VisualizeAABBCollisionNode(tree->GetNodes());
    }
-
-   ///////////////////////////////////////////////////////////////////////////////
-   /// Counts how much indices (faces) and vertices a entity contains.
-   /// @param[in]  entity Entity to count its data.
-   /// @param[out] index_count  Number of indices.
-   /// @param[out] vertex_count Number of vertices.
-   /// @author Yavin from the Ogre4J team
-   ///////////////////////////////////////////////////////////////////////////////
-   void CollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
-   {
-      Mesh * mesh = entity->getMesh().getPointer();
-      bool hwSkinning = entity->isHardwareSkinningEnabled();
-      bool added_shared = false;
-      index_count  = 0;
-      vertex_count = 0;
-
-      // Calculate how many vertices and indices we're going to need
-      for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
-      {
-         SubMesh* submesh = mesh->getSubMesh( i );
-
-         // We only need to add the shared vertices once
-         if(submesh->useSharedVertices)
-         {
-            if( !added_shared )
-            {
-               vertex_count += mesh->sharedVertexData->vertexCount;
-               added_shared = true;
-            }
-         }
-         else
-         {
-            vertex_count += submesh->vertexData->vertexCount;
-         }
-
-         // Add the indices
-         index_count += submesh->indexData->indexCount;
-      }
-   }
-
-   ///////////////////////////////////////////////////////////////////////////////
-   /// Converts mesh vertex and face data into simple float arrays.
-   /// @param[in]  entity              Entity to extract data from.
-   /// @param[out] vertexData          Target vertex data array.
-   /// @param[in]  size_t vertex_count Number of vertices.
-   /// @param[out] faceData            Target face data array.
-   /// @param[int] index_count         Number of indices.
-   /// @author Yavin from the Ogre4J team
-   ///////////////////////////////////////////////////////////////////////////////
-   void CollisionShape::convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count)
-   {
-      //-------------------------------------------------------------------------
-      // CONVERT MESH DATA
-      //-------------------------------------------------------------------------
-      Mesh * mesh = entity->getMesh().getPointer();
-      bool added_shared = false;
-      size_t current_offset = 0;
-      size_t shared_offset = 0;
-      size_t next_offset = 0;
-      size_t index_offset = 0;
-      int numOfSubs = 0;
-
-      bool forceManualSoftwareBlending = entity->isHardwareSkinningEnabled() && entity->hasSkeleton();
-      bool useSoftwareBlendingVertices = entity->hasSkeleton();
-
-      if(forceManualSoftwareBlending)
-      {
-         //         entity->_calculateBlendedVertexData();
-      }
-
-      // Run through the submeshes again, adding the data into the arrays
-      for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
-      {
-         SubMesh* submesh = mesh->getSubMesh(i);
-         bool useSharedVertices = submesh->useSharedVertices;
-
-
-         //---------------------------------------------------------------------
-         // GET VERTEXDATA
-         //---------------------------------------------------------------------
-         const VertexData * vertex_data;
-         if(useSoftwareBlendingVertices)
-            vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
-         else
-            vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
-
-         if((!useSharedVertices)||(useSharedVertices && !added_shared))
-         {
-            if(useSharedVertices)
-            {
-               added_shared = true;
-               shared_offset = current_offset;
-            }
-
-            const VertexElement* posElem =
-               vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
-
-            HardwareVertexBufferSharedPtr vbuf =
-               vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
-
-            unsigned char* vertex =
-               static_cast<unsigned char*>(vbuf->lock(HardwareBuffer::HBL_READ_ONLY));
-
-            // There is _no_ baseVertexPointerToElement() which takes an Ogre::Real or a double
-            //  as second argument. So make it float, to avoid trouble when Ogre::Real will
-            //  be comiled/typedefed as double:
-            //      Ogre::Real* pReal;
-            float* pReal;
-
-            for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
-            {
-               posElem->baseVertexPointerToElement(vertex, &pReal);
-
-               size_t n = current_offset*3 + j*3;
-               vertexData[n + 0] = pReal[0];
-               vertexData[n + 1] = pReal[1];
-               vertexData[n + 2] = pReal[2];
-            }
-
-            vbuf->unlock();
-            next_offset += vertex_data->vertexCount;
-         }
-
-         //---------------------------------------------------------------------
-         // GET INDEXDATA
-         //---------------------------------------------------------------------      
-         IndexData* index_data = submesh->indexData;
-         size_t numTris = index_data->indexCount / 3;
-         HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
-
-         bool use32bitindexes = (ibuf->getType() == HardwareIndexBuffer::IT_32BIT);
-
-         unsigned long*  pLong = static_cast<unsigned long*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
-         unsigned short* pShort = reinterpret_cast<unsigned short*>(pLong);
-
-
-         size_t offset = (submesh->useSharedVertices)? shared_offset : current_offset;
-
-         if ( use32bitindexes )
-         {
-            for ( size_t k = 0; k < numTris*3; ++k)
-            {
-               faceData[index_offset++] = pLong[k] + static_cast<unsigned long>(offset);
-            }
-         }
-         else
-         {
-            for ( size_t k = 0; k < numTris*3; ++k)
-            {
-               faceData[index_offset++] = static_cast<unsigned long>(pShort[k]) + static_cast<unsigned long>(offset);
-            }
-         }
-
-         ibuf->unlock();
-         current_offset = next_offset;
-      }
-   }
-
 
    /// <TODO: insert function description here>
    /// @param [in]       mesh const Mesh *const     <TODO: insert parameter description here>
@@ -883,8 +739,6 @@ namespace OgreOpcode
          ibuf->unlock();
          current_offset = next_offset;
       }
-      delete[] vertices;
-      delete[] indices;
    }
 
    /// <TODO: insert function description here>

@@ -1,9 +1,12 @@
+/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 28-06-2005
-///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
+///  @remarks <TODO: insert remarks here>
+///
+///  @author jacmoe @date 29-05-2005
+///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
@@ -29,9 +32,9 @@
 #include "OgreOpcodeExports.h"
 # include "Ogre.h"
 
-namespace OgreOpcode
+namespace Ogre
 {
-   namespace Details
+   namespace Debug
    {
       /// %Debug visualization line class.
       class _OgreOpcode_Export DebugLines : public Ogre::SimpleRenderable
@@ -95,7 +98,7 @@ namespace OgreOpcode
 		   virtual ~BoxDebugObject();
 	   };
 
-      /// %Debug object to visualize a OgreOpcodeSphere.
+      /// %Debug object to visualize a sphere.
       class _OgreOpcode_Export SphereDebugObject : public DebugObject
 	   {
 	   public:
@@ -131,8 +134,9 @@ namespace OgreOpcode
 		   virtual ~RayDebugObject();
 	   };
    
-   } // namespace Details
+   } // namespace Debug
 
-} // namespace OgreOpcode
+} // namespace Ogre
 
 #endif // __OgreOpcodeDebugObject_h__
+/// @endcond

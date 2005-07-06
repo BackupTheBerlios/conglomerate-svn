@@ -107,7 +107,7 @@
 /// @code
 ///     CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("vehicle");
 ///
-///     collideShape->Load(someEntity);
+///     collideShape->Load(fileServer, "data:vehicle/collide.n3d");
 ///
 ///     CollisionObject *collideObject = collideContext->NewObject();
 ///     collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass(this->GetName()));
@@ -176,4 +176,12 @@
 ///     }
 /// @endcode
 ///
+///
+/// When an object is destroyed, it must remove itself from the collision
+/// system.
+///
+/// @code
+///     collideContext->RemObject(collideObject);
+///     collideContext->ReleaseObject(collideObject);
+/// @endcode
 ///

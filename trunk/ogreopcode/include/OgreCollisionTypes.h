@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -27,25 +26,25 @@
 #ifndef __OgreCollisionTypes_h__
 #define __OgreCollisionTypes_h__
 
-namespace OgreOpcode
+namespace Ogre
 {
 
    /// Define the collision types for collision queries.
    enum CollisionType
    {
       COLLTYPE_IGNORE     = 0,    ///< no collisions
-      COLLTYPE_QUICK      = 1,    ///< quick OgreOpcodeSphere-2-OgreOpcodeSphere collision
+      COLLTYPE_QUICK      = 1,    ///< quick sphere-2-sphere collision
       COLLTYPE_CONTACT    = 2,    ///< first contact only
       COLLTYPE_EXACT      = 3,    ///< all contacts
    };
 
    /// special case values for the CollClass check.
-   enum CollTypeOverride
+   enum CollClassType
    {
-      COLLTYPE_ALWAYS_IGNORE  = -1,
-      COLLTYPE_ALWAYS_QUICK   = -2,
-      COLLTYPE_ALWAYS_CONTACT = -3,
-      COLLTYPE_ALWAYS_EXACT   = -4,
+      COLLCLASS_ALWAYS_IGNORE  = -1,
+      COLLCLASS_ALWAYS_QUICK   = -2,
+      COLLCLASS_ALWAYS_CONTACT = -3,
+      COLLCLASS_ALWAYS_EXACT   = -4,
    };
 
 }

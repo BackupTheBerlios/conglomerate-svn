@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///
 ///  This file is part of OgreOpcode.
-///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
@@ -33,9 +32,9 @@
 #include "OgreCollisionContext.h"
 #include "OgreOpcodeMath.h"
 
-using namespace OgreOpcode::Details;
+using namespace Ogre::Details;
 
-namespace OgreOpcode
+namespace Ogre
 {
    class CollisionObject;
    
@@ -135,7 +134,7 @@ namespace OgreOpcode
       nNode context_node;         ///< attached to context with this node
 
       Real radius;               ///< radius of the collision object (normally provided by shape)
-      CollisionShape *shape;       ///< the Triangle exact collision shape (optional)
+      CollisionShape *shape;       ///< the triangle exact collision shape (optional)
       CollisionNode xmin_cnode;          ///< the min/max collision node in the X-Dimension
       CollisionNode xmax_cnode;
       CollisionClass coll_class;      ///< the application defined collision type
@@ -434,8 +433,8 @@ namespace OgreOpcode
          case COLLTYPE_QUICK:
             {
             // do a contact check between 'moving spheres'
-            OgreOpcodeSphere s0(p0,this->radius);
-            OgreOpcodeSphere s1(p1,other->radius);
+            sphere s0(p0,this->radius);
+            sphere s1(p1,other->radius);
             Real u0,u1;
             if (s0.intersect_sweep(v0,s1,v1,u0,u1))
             {
