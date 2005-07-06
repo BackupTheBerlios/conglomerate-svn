@@ -17,10 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestFest", "..\TestFest\scr
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cleanOgreOpcode", "..\..\..\cleanOgreOpcode\scripts\cleanOgreOpcode.vcproj", "{E72C62B4-98F7-4AA9-A1BB-77A4D8FF038B}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -43,10 +39,6 @@ Global
 		{E4880366-9C6C-46E4-9D16-12CA2D83600F}.Debug.Build.0 = Debug|Win32
 		{E4880366-9C6C-46E4-9D16-12CA2D83600F}.Release.ActiveCfg = Release|Win32
 		{E4880366-9C6C-46E4-9D16-12CA2D83600F}.Release.Build.0 = Release|Win32
-		{E72C62B4-98F7-4AA9-A1BB-77A4D8FF038B}.Debug.ActiveCfg = Debug|Win32
-		{E72C62B4-98F7-4AA9-A1BB-77A4D8FF038B}.Debug.Build.0 = Debug|Win32
-		{E72C62B4-98F7-4AA9-A1BB-77A4D8FF038B}.Release.ActiveCfg = Release|Win32
-		{E72C62B4-98F7-4AA9-A1BB-77A4D8FF038B}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

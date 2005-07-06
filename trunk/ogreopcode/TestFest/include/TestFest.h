@@ -15,7 +15,7 @@ LGPL like the rest of the engine.
 /*
 -----------------------------------------------------------------------------
 Filename:    TestFest.h
-Description: A place for me to try out stuff with OGRE.
+Description: I will implement testing of OgreOpcode with the use of TUT.
 -----------------------------------------------------------------------------
 */
 #ifndef __TestFest_h_

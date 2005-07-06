@@ -167,9 +167,6 @@
 				RelativePath=".\res\TestFest.rc">
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\docs\readme.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
