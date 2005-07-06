@@ -56,7 +56,7 @@ namespace Ogre
 
          CollisionClass GetCollClass(void)
          {
-            return this->coll_class;
+            return coll_class;
          };
       };
    }
@@ -136,13 +136,13 @@ namespace Ogre
          {
             return COLLTYPE_EXACT;
          }
-         assert(this->colltype_table);
+         assert(colltype_table);
          assert((cc1 >= 0) && (cc2 >= 0));
-         assert(int(cc1) < this->num_coll_classes);
-         assert(int(cc2) < this->num_coll_classes);
+         assert(int(cc1) < num_coll_classes);
+         assert(int(cc2) < num_coll_classes);
 
-         int index = (int(cc1)*this->num_coll_classes) + int(cc2);
-         return this->colltype_table[index];
+         int index = (int(cc1)*num_coll_classes) + int(cc2);
+         return colltype_table[index];
       };
    protected:
       char *getResourceID(const char *, char *, int);

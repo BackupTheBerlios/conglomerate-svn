@@ -90,8 +90,8 @@ namespace Ogre
       /// initialize nKeyArray for new collision frame
       void BeginFrame(void)
       {
-         this->coll_pairs.Clear();
-         memset(this->report_array,0,sizeof(this->report_array));
+         coll_pairs.Clear();
+         memset(report_array,0,sizeof(report_array));
       };
 
       /// check if a collision has already been reported
@@ -100,9 +100,9 @@ namespace Ogre
          // generate the merged 32 bit id, and query key array
          // for the collision
          int key;
-         this->get_merged_id(id1,id2,key);
+         get_merged_id(id1,id2,key);
          CollisionPair *cr;
-         if (this->coll_pairs.FindPtr(key,cr))
+         if (coll_pairs.FindPtr(key,cr))
          {
             return true;
          } else
@@ -116,8 +116,8 @@ namespace Ogre
       {
          // generate the merged 32 bit id and add collision report
          int key;
-         this->get_merged_id(id1,id2,key);
-         this->coll_pairs.Add(key,cr);
+         get_merged_id(id1,id2,key);
+         coll_pairs.Add(key,cr);
       };
 
       /// end a collision frame
@@ -126,7 +126,7 @@ namespace Ogre
       /// get overall number of collisions recorded
       int GetNumCollissions(void)
       {
-         return this->coll_pairs.Size();
+         return coll_pairs.Size();
       };
 
       /// report collisions for a specific object.
@@ -139,7 +139,7 @@ namespace Ogre
          assert(co);
          int num_reports = 0;
          int i;
-         int num = this->coll_pairs.Size();
+         int num = coll_pairs.Size();
 
          if (num > MAX_REPORTS_PER_OBJECT)
          {
@@ -148,20 +148,20 @@ namespace Ogre
 
          for (i = 0; i < num; i++) 
          {
-            CollisionPair *cr = &(this->coll_pairs.GetElementAt(i));
+            CollisionPair *cr = &(coll_pairs.GetElementAt(i));
             if ((cr->co1 == co) || (cr->co2 == co)) 
             {
-               this->report_array[num_reports++] = cr;
+               report_array[num_reports++] = cr;
             }
          }
-         cr_ptr = this->report_array;
+         cr_ptr = report_array;
          return num_reports;
       }
 
       /// get all recorded collisions.
       int GetAllCollissions(CollisionPair **& cr_ptr) 
       {
-         int num = this->coll_pairs.Size();
+         int num = coll_pairs.Size();
          int i;
 
          if (num > MAX_REPORTS_PER_OBJECT)
@@ -171,10 +171,10 @@ namespace Ogre
 
          for (i = 0; i < num; i++) 
          {
-            CollisionPair *cr = &(this->coll_pairs.GetElementAt(i));
-            this->report_array[i] = cr;
+            CollisionPair *cr = &(coll_pairs.GetElementAt(i));
+            report_array[i] = cr;
          }
-         cr_ptr = this->report_array;
+         cr_ptr = report_array;
          return num;
       }
 
@@ -184,7 +184,7 @@ namespace Ogre
       /// @return         number of entries in collide report pointer array (0 or 1)
       int GetClosestCollission(const Vector3& v, CollisionPair **& crPtr)
       {
-         int num = this->coll_pairs.Size();
+         int num = coll_pairs.Size();
          if (0 == num)
          {
             crPtr = 0;
@@ -193,11 +193,11 @@ namespace Ogre
 
          int i;
          Vector3 distVec;
-         CollisionPair* minPtr = &(this->coll_pairs.GetElementAt(0));
+         CollisionPair* minPtr = &(coll_pairs.GetElementAt(0));
          float minDist = Vector3(minPtr->contact - v).length();
          for (i = 1; i < num; i++)
          {
-            CollisionPair* curPtr = &(this->coll_pairs.GetElementAt(i));
+            CollisionPair* curPtr = &(coll_pairs.GetElementAt(i));
             distVec = curPtr->contact - v;
             Real dist = distVec.length();
             if (dist < minDist)
@@ -206,8 +206,8 @@ namespace Ogre
                minPtr  = curPtr;
             }
          }
-         this->report_array[0] = minPtr;
-         crPtr = this->report_array;
+         report_array[0] = minPtr;
+         crPtr = report_array;
          return 1;
       }
    };

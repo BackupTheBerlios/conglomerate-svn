@@ -27,13 +27,12 @@
 #ifndef __OgreOpcodeExports_h__
 #define __OgreOpcodeExports_h__
 
+#pragma warning( disable: 4267 )  // conversion from 'size_t' to whatever
 
 #include "Ogre.h"
 #include "OgrePrerequisites.h"
 
 using namespace Ogre;
-
-//#include <cassert>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #	if defined( OGREOPCODE_EXPORTS )

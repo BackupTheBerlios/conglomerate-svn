@@ -550,6 +550,7 @@ public:
          delete mGUIRenderer;
          mGUIRenderer = 0;
       }
+      delete CollisionManager::getSingletonPtr();
 	}
 
 protected:

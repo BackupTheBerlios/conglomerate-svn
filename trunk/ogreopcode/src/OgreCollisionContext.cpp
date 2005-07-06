@@ -34,12 +34,12 @@ namespace Ogre
    CollisionContext::~CollisionContext()
    {
       CollisionObject *co;
-      while ((co = (CollisionObject *) this->owned_list.RemHead()))
+      while ((co = (CollisionObject *) owned_list.RemHead()))
       {
          assert(co);
          assert(co->GetContext() == this);
          if (co->IsAttached())
-            this->RemoveObject(co);
+            RemoveObject(co);
          co->SetContext(NULL);
          delete co;
       };
@@ -49,9 +49,9 @@ namespace Ogre
    CollisionObject *CollisionContext::NewObject(void)
    {
       CollisionObject *co = new CollisionObject();
-      co->SetId(this->unique_id++);
+      co->SetId(unique_id++);
       co->SetContext(this);
-      this->owned_list.AddTail(co);
+      owned_list.AddTail(co);
       return co;
    }
 
@@ -61,7 +61,7 @@ namespace Ogre
       assert(collObj);
       assert(collObj->GetContext() == this);
       if (collObj->IsAttached())
-         this->RemoveObject(collObj);
+         RemoveObject(collObj);
       collObj->SetContext(NULL);
       collObj->Remove();
       delete collObj;
@@ -74,11 +74,11 @@ namespace Ogre
 
       // link the object into our context
       collObj->SetAttached(true);
-      this->attached_list.AddTail(&(collObj->context_node));
+      attached_list.AddTail(&(collObj->context_node));
 
       // add minx/maxx nodes to x-dimensional sorted list
-      collObj->xmin_cnode.AddToList(this->xdim_list);
-      collObj->xmax_cnode.AddToList(this->xdim_list);
+      collObj->xmin_cnode.AddToList(xdim_list);
+      collObj->xmax_cnode.AddToList(xdim_list);
    }
 
    void CollisionContext::RemoveObject(CollisionObject *collObj)
@@ -101,7 +101,7 @@ namespace Ogre
 
       // first, clear the collision counters in all collide objects
       nNode *context_node;
-      for (context_node = this->attached_list.GetHead();
+      for (context_node = attached_list.GetHead();
          context_node;
          context_node = context_node->GetSucc())
       {
@@ -110,17 +110,17 @@ namespace Ogre
       }
 
       // check the collision status for each object
-      this->collideReportHandler.BeginFrame();
-      for (context_node = this->attached_list.GetHead();
+      collideReportHandler.BeginFrame();
+      for (context_node = attached_list.GetHead();
          context_node;
          context_node = context_node->GetSucc())
       {
          CollisionObject *co = (CollisionObject *) context_node->GetPtr();
          co->Collide();
       }
-      this->collideReportHandler.EndFrame();
+      collideReportHandler.EndFrame();
 
-      int num_coll = this->collideReportHandler.GetNumCollissions();
+      int num_coll = collideReportHandler.GetNumCollissions();
       return num_coll;
    }
 
@@ -131,7 +131,7 @@ namespace Ogre
    {
       if (collObj->GetNumCollissions() > 0)
       {
-         return this->collideReportHandler.GetCollissions(collObj,cpPtr);
+         return collideReportHandler.GetCollissions(collObj,cpPtr);
       } else
       {
          cpPtr = NULL;
@@ -142,11 +142,11 @@ namespace Ogre
    /// Visualize all objects in the context.
    void CollisionContext::Visualize(void)
    {
-      if (!this->attached_list.IsEmpty())
+      if (!attached_list.IsEmpty())
       {
          // for each object in the system...
          nNode *context_node;
-         for (context_node = this->attached_list.GetHead();
+         for (context_node = attached_list.GetHead();
             context_node;
             context_node = context_node->GetSucc())
          {
@@ -182,13 +182,13 @@ namespace Ogre
       const int own_id = 0xffff;
 
       // initialize collision report handler
-      this->checkReportHandler.BeginFrame();
+      checkReportHandler.BeginFrame();
 
       // This simply goes through all attached objects, and
       // checks them for overlap, so ITS SLOW! Every object is
       // tested exactly once
       nNode *context_node;
-      for (context_node = this->attached_list.GetHead();
+      for (context_node = attached_list.GetHead();
          context_node;
          context_node = context_node->GetSucc())
       {
@@ -239,13 +239,13 @@ namespace Ogre
                   cr.contact = (d*radius) + c0;
                   cr.co1_normal = d;
                   cr.co2_normal = -d;
-                  this->checkReportHandler.AddCollission(cr,own_id,other->id);
+                  checkReportHandler.AddCollission(cr,own_id,other->id);
                }
             }
          }
       }
-      this->checkReportHandler.EndFrame();
-      return this->checkReportHandler.GetAllCollissions(cpPtr);
+      checkReportHandler.EndFrame();
+      return checkReportHandler.GetAllCollissions(cpPtr);
    }
 
    /// Test a ray against the collide objects in the collide context.
@@ -271,11 +271,11 @@ namespace Ogre
       const int ownId = 0xffff;
 
       // initialize collision report handler
-      this->checkReportHandler.BeginFrame();
+      checkReportHandler.BeginFrame();
 
       // go through all attached collide objects
       nNode *contextNode;
-      for (contextNode = this->attached_list.GetHead();
+      for (contextNode = attached_list.GetHead();
          contextNode;
          contextNode = contextNode->GetSucc())
       {
@@ -303,7 +303,7 @@ namespace Ogre
                {
                   cp.co1 = co;
                   cp.co2 = co;
-                  this->checkReportHandler.AddCollission(cp, ownId, co->id);
+                  checkReportHandler.AddCollission(cp, ownId, co->id);
                   if (COLLTYPE_QUICK == collType)
                   {
                      // break out of loop
@@ -313,17 +313,17 @@ namespace Ogre
             }
          }
       }
-      this->checkReportHandler.EndFrame();
+      checkReportHandler.EndFrame();
 
       if (COLLTYPE_CONTACT == collType)
       {
          // get closest contact only
-         return this->checkReportHandler.GetClosestCollission(line.getOrigin(), cpPtr);
+         return checkReportHandler.GetClosestCollission(line.getOrigin(), cpPtr);
       }
       else
       {
          // get all contacts (unsorted)
-         return this->checkReportHandler.GetAllCollissions(cpPtr);
+         return checkReportHandler.GetAllCollissions(cpPtr);
       }
    }
 
@@ -351,12 +351,12 @@ namespace Ogre
       const int ownId = 0xffff;
 
       // initialize collission report handler
-      this->checkReportHandler.BeginFrame();
+      checkReportHandler.BeginFrame();
 
       // go through all attached collide objects
       sphere s0;
       nNode *contextNode;
-      for (contextNode = this->attached_list.GetHead();
+      for (contextNode = attached_list.GetHead();
          contextNode;
          contextNode = contextNode->GetSucc())
       {
@@ -384,7 +384,7 @@ namespace Ogre
                   CollisionPair cp;
                   cp.co1 = co;
                   cp.co2 = co;
-                  this->checkReportHandler.AddCollission(cp, ownId, co->id);
+                  checkReportHandler.AddCollission(cp, ownId, co->id);
                }
             }
             else
@@ -398,23 +398,23 @@ namespace Ogre
                   {
                      cp.co1 = co;
                      cp.co2 = co;
-                     this->checkReportHandler.AddCollission(cp, ownId, co->id);
+                     checkReportHandler.AddCollission(cp, ownId, co->id);
                   }
                }
             }
          }
       }
-      this->checkReportHandler.EndFrame();
+      checkReportHandler.EndFrame();
 
       if (COLLTYPE_CONTACT == collType)
       {
          // get closest contact only
-         return this->checkReportHandler.GetClosestCollission(ball.p, cpPtr);
+         return checkReportHandler.GetClosestCollission(ball.p, cpPtr);
       }
       else
       {
          // get all contacts (unsorted)
-         return this->checkReportHandler.GetAllCollissions(cpPtr);
+         return checkReportHandler.GetAllCollissions(cpPtr);
       }
    }
 
@@ -422,7 +422,7 @@ namespace Ogre
    void CollisionContext::Update()
    {
       nNode *context_node;
-      for (context_node = this->attached_list.GetHead();
+      for (context_node = attached_list.GetHead();
          context_node;
          context_node = context_node->GetSucc())
       {
@@ -442,7 +442,7 @@ namespace Ogre
 
       Matrix4 identity = Ogre::Matrix4::IDENTITY;
       nNode *context_node;
-      for (context_node = this->attached_list.GetHead();
+      for (context_node = attached_list.GetHead();
          context_node;
          context_node = context_node->GetSucc())
       {

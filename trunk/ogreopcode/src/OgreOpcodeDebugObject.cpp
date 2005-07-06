@@ -58,7 +58,7 @@ namespace Ogre
 
 		      _materials_created = true;
 	      }
-	      this->setMaterial("OgreOdeDebugLines/Enabled");
+	      setMaterial("OgreOdeDebugLines/Enabled");
       }
 
       void DebugLines::clear()
