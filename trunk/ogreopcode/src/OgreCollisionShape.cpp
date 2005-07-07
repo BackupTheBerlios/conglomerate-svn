@@ -8,6 +8,8 @@
 ///
 ///  This file is part of OgreOpcode.
 ///
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -29,7 +31,7 @@
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
    CollisionShape::CollisionShape(const char* name)
       : nHashNode(name),

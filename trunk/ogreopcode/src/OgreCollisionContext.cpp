@@ -8,6 +8,8 @@
 ///  
 ///  This file is part of OgreOpcode.
 ///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -28,7 +30,7 @@
 #include "OgreOpcodeMath.h"
 #include "OgreCollisionManager.h"
 
-namespace Ogre
+namespace OgreOpcode
 {
    // release all owned collide objects
    CollisionContext::~CollisionContext()
@@ -259,7 +261,7 @@ namespace Ogre
    /// @param  collClass   [in]  optional coll class (COLLCLASS_ALWAYS_* if no coll class filtering wanted)
    /// @param  cpPtr       [out] will be filled with pointer to collide report pointers
    /// @return             number of detected contacts (1 per collide object)
-   int CollisionContext::LineCheck(const Ogre::Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
+   int CollisionContext::RayCheck(const Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
    {
       assert(collType != COLLTYPE_IGNORE);
 
@@ -338,7 +340,7 @@ namespace Ogre
    /// @param  collClass   [in]  optional coll class (COLLCLASS_ALWAYS_* if no coll class filtering wanted)
    /// @param  cpPtr       [out] will be filled with pointer to collide report pointers
    /// @return             number of detected contacts (1 per collide object)
-   int CollisionContext::SphereCheck(const Ogre::Sphere& theSphere, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
+   int CollisionContext::SphereCheck(const Sphere& theSphere, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
    {
       assert(collType != COLLTYPE_IGNORE);
 
@@ -440,7 +442,7 @@ namespace Ogre
    {
       //n_printf("*** nCollideContext::Reset() called\n");
 
-      Matrix4 identity = Ogre::Matrix4::IDENTITY;
+      Matrix4 identity = Matrix4::IDENTITY;
       nNode *context_node;
       for (context_node = attached_list.GetHead();
          context_node;

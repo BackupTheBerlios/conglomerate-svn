@@ -8,6 +8,8 @@
 ///  
 ///  This file is part of OgreOpcode.
 ///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -34,14 +36,13 @@
 #include "OgreCollisionShape.h"
 #include "Opcode.h"
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
-/// Main %Ogre namespace
-namespace Ogre
+/// Main %OgreOpcode namespace
+namespace OgreOpcode
 {
    typedef int CollisionClass;
    
-   /// @cond DO_NOT_DOCUMENT
    namespace Details
    {
       /// Linked list of Collision class types.
@@ -60,7 +61,6 @@ namespace Ogre
          };
       };
    }
-   /// @endcond
    
    /// Collision manager.
    /// The CollisionManager object serves as factory object of the
@@ -148,6 +148,6 @@ namespace Ogre
       char *getResourceID(const char *, char *, int);
    };
 
-}; // namespace Ogre
+}; // namespace OgreOpcode
 
 #endif // __OgreCollisionManager_h__

@@ -8,6 +8,8 @@
 ///  
 ///  This file is part of OgreOpcode.
 ///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -31,9 +33,9 @@
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionTypes.h"
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
-namespace Ogre
+namespace OgreOpcode
 {
    typedef int CollisionClass;
    class CollisionObject;
@@ -66,9 +68,9 @@ namespace Ogre
       /// do a "moving sphere" check against collide object radii in the context
       virtual int MovingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
       /// do a line-model check
-      virtual int LineCheck(const Ogre::Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+      virtual int RayCheck(const Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// do a sphere-model check
-      virtual int SphereCheck(const Ogre::Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+      virtual int SphereCheck(const Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// reset position and timestamp of all objects
       void Reset();
       void Update();

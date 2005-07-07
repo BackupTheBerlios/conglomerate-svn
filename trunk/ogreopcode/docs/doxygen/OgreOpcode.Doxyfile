@@ -109,7 +109,7 @@ FILE_PATTERNS          = *.c \
                          *.mm \
                          *.dox
 RECURSIVE              = YES
-EXCLUDE                = D:/ogrenew/ogreopcode/example \ D:/ogrenew/ogreopcode/opcode13
+EXCLUDE                = D:/ogrenew/ogreopcode/example \ D:/ogrenew/ogreopcode/opcode131 \ D:/ogrenew/ogreopcode/TestFest
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 

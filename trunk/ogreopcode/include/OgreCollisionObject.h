@@ -8,6 +8,8 @@
 ///
 ///  This file is part of OgreOpcode.
 ///
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -32,13 +34,12 @@
 #include "OgreCollisionContext.h"
 #include "OgreOpcodeMath.h"
 
-using namespace Ogre::Details;
+using namespace OgreOpcode::Details;
 
-namespace Ogre
+namespace OgreOpcode
 {
    class CollisionObject;
    
-   /// @cond DO_NOT_DOCUMENT
    namespace Details
    {
       /// A node in a sorted 1-dimensional collision list. 
@@ -107,7 +108,6 @@ namespace Ogre
          };
       };
    }
-   /// @endcond
 
    class CollisionContext;
    class CollisionPair;
@@ -174,7 +174,7 @@ namespace Ogre
       };
 
       /// <TODO: insert function description here>
-      /// @param [in, out]  c Ogre::CollisionContext *    <TODO: insert parameter description here>
+      /// @param [in, out]  c CollisionContext *    <TODO: insert parameter description here>
       /// @return void <TODO: insert return value description here>
       void SetContext(CollisionContext *c)
       {
@@ -183,7 +183,7 @@ namespace Ogre
       };
 
       /// <TODO: insert function description here>
-      /// @return Ogre::CollisionContext * <TODO: insert return value description here>
+      /// @return CollisionContext * <TODO: insert return value description here>
       CollisionContext *GetContext(void)
       {
          return context;

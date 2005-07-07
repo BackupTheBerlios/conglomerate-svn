@@ -8,6 +8,8 @@
 ///  
 ///  This file is part of OgreOpcode.
 ///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -26,7 +28,7 @@
 #ifndef __OgreCollisionTypes_h__
 #define __OgreCollisionTypes_h__
 
-namespace Ogre
+namespace OgreOpcode
 {
 
    /// Define the collision types for collision queries.

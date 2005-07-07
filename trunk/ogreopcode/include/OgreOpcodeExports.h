@@ -1,4 +1,3 @@
-/// @cond DO_NOT_DOCUMENT
 ///////////////////////////////////////////////////////////////////////////////
 /// @file OgreOpcodeExports.h
 /// @brief Export macros and common stuff.
@@ -8,6 +7,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 /// This file is part of OgreOpcode.
+///  
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
 ///  
 /// OgreOpcode is free software; you can redistribute it and/or
 /// modify it under the terms of the GNU Lesser General Public
@@ -46,4 +47,3 @@ using namespace Ogre;
 
 
 #endif // __OgreOpcodeExports_h__
-/// @endcond

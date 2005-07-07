@@ -8,6 +8,8 @@
 ///
 ///  This file is part of OgreOpcode.
 ///
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///  
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -34,10 +36,9 @@
 #include "OgreOpcodeDebugObject.h"
 #include "Opcode.h"
 
-using namespace Ogre::Details;
-using namespace Ogre::Debug;
+using namespace OgreOpcode::Details;
 
-namespace Ogre
+namespace OgreOpcode
 {
    class CollisionPair;
 
@@ -186,6 +187,6 @@ namespace Ogre
       v2 = Vector3(vp2[0], vp2[1], vp2[2]);
    }
    
-}; // namespace Ogre
+}; // namespace OgreOpcode
 
 #endif // __OgreCollisionEntity_h__
