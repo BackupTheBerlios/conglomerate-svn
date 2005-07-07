@@ -229,7 +229,7 @@ namespace OgreOpcode
    /// @param  line            line definition in world space
    /// @param  collPair      will be filled with result
    /// @return                 true if line intersects shape
-   bool CollisionShape::LineCheck(CollisionType collType,
+   bool CollisionShape::RayCheck(CollisionType collType,
       const Matrix4& ownMatrix,
       const Ray& line,
       const Real dist,

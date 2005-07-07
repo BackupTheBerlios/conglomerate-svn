@@ -24,6 +24,8 @@ Description: A place for me to try out stuff with OGRE.
 // Include OgreOpcode headers.
 #include "OgreOpcode.h"
 
+using namespace OgreOpcode;
+
 #include "ExampleApplication.h"
 #include "OgreNoMemoryMacros.h"
 #include <CEGUI.h>
@@ -57,7 +59,7 @@ private:
    CEGUI::Renderer* mGUIRenderer;
    bool mShutdownRequested;
    bool mVisualizeObjects;
-   Ogre::Debug::SphereDebugObject* camVisualizer;
+   OgreOpcode::Details::SphereDebugObject* camVisualizer;
    SceneNode* camVisualizerSceneNode;
    Overlay* TargetSight;
    Overlay* hotTargetSight;
@@ -65,7 +67,7 @@ private:
    CollisionObject* mCollObj2;
    CollisionObject* mCollObj3;
    SceneNode* mCamNode;
-   Ogre::Ray line;
+   Ray ray;
 public:
 	ogreOpcodeExampleFrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer, CollisionObject* collObj1, CollisionObject* collObj2, CollisionObject* collObj3, SceneNode* camNode)
 		: ExampleFrameListener(win, cam, false, true),
@@ -116,7 +118,7 @@ public:
       }
 
       CollisionPair **pick_report;
-      Ogre::Sphere cameraSphere = Ogre::Sphere(pos, 1);
+      Sphere cameraSphere = Sphere(pos, 1);
       int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLCLASS_ALWAYS_EXACT, pick_report);
 
       // If there was no collision, we're done
@@ -148,7 +150,7 @@ public:
       Vector3 planeOrigin = intersectPt;
       Vector3 planeNormal = newBasePoint - intersectPt;
       planeNormal.normalise();
-      Ogre::Plane slidingPlane(planeOrigin, planeNormal);
+      Plane slidingPlane(planeOrigin, planeNormal);
 
       // Find our new destination point
       Vector3 newDestinationPoint = destinationPoint -
@@ -177,7 +179,7 @@ public:
       }
         
       CollisionPair **pick_report = NULL;
-      Ogre::Sphere cameraSphere = Ogre::Sphere(pos, radius);
+      Sphere cameraSphere = Sphere(pos, radius);
       int numCamColls = 0;
       numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLCLASS_ALWAYS_EXACT, pick_report);
 //      int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->MovingSphereCheck(pos, vel, radius, COLLCLASS_ALWAYS_EXACT, pick_report);
@@ -235,8 +237,8 @@ public:
       //mSceneMgr->getSceneNode("camVizNode")->setPosition(mCamera->getDerivedPosition());
       //mSceneMgr->getSceneNode("camVizNode")->setOrientation(mCamera->getDerivedOrientation());
 
-      static float transAmount = -0.5f;
-      static float transTraveled = 0.0f;
+      static Real transAmount = -0.5f;
+      static Real transTraveled = 0.0f;
       if(transTraveled >= 480.0f)
          transAmount = -0.5f;
       if(transTraveled <= -480.0f)
@@ -246,7 +248,7 @@ public:
       bool ret = ExampleFrameListener::frameStarted(evt);
       
       if(!mUseBufferedInputMouse)
-         line = mCamera->getCameraToViewportRay(0.5, 0.5);
+         ray = mCamera->getCameraToViewportRay(0.5, 0.5);
 
       mSceneMgr->getSceneNode("cammnode")->translate(0.0f, transAmount, 0.0f);
       
@@ -255,7 +257,7 @@ public:
       
       // Do ray testing against everything but the level
       CollisionPair **pick_report;
-      int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->LineCheck(line, 600.0f, COLLTYPE_EXACT, COLLCLASS_ALWAYS_EXACT, pick_report);
+      int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(ray, 600.0f, COLLTYPE_EXACT, COLLCLASS_ALWAYS_EXACT, pick_report);
       static String nameStr = "";
       
       if (num_picks > 0)
@@ -493,7 +495,7 @@ public:
 
    void mouseClicked(MouseEvent* e)
    {
-      line = mCamera->getCameraToViewportRay(e->getX(), e->getY());
+      ray = mCamera->getCameraToViewportRay(e->getX(), e->getY());
    }
    void mouseEntered(MouseEvent* e) {}
    void mouseExited(MouseEvent* e) {}

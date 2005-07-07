@@ -301,7 +301,7 @@ namespace OgreOpcode
             if (shape)
             {
                CollisionPair cp;
-               if (shape->LineCheck(collType, co->GetTransform(), line, dist, cp))
+               if (shape->RayCheck(collType, co->GetTransform(), line, dist, cp))
                {
                   cp.co1 = co;
                   cp.co2 = co;
