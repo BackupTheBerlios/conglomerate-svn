@@ -78,10 +78,7 @@ namespace OgreOpcode
    private:
       friend class CollisionObject;
 
-      enum
-      {
-         MAXNUM_COLLISSIONS = 4096,
-      };
+      static const int maxnum_collisions = 4096;
 
       CollisionReporter collideReportHandler;     ///< collide reports for Collide()
       CollisionReporter checkReportHandler;       ///< collide reports for Check() functions

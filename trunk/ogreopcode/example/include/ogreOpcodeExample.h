@@ -119,7 +119,7 @@ public:
 
       CollisionPair **pick_report;
       Sphere cameraSphere = Sphere(pos, 1);
-      int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLCLASS_ALWAYS_EXACT, pick_report);
+      int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
 
       // If there was no collision, we're done
       if (numCamColls == 0)
@@ -181,8 +181,8 @@ public:
       CollisionPair **pick_report = NULL;
       Sphere cameraSphere = Sphere(pos, radius);
       int numCamColls = 0;
-      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLCLASS_ALWAYS_EXACT, pick_report);
-//      int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->MovingSphereCheck(pos, vel, radius, COLLCLASS_ALWAYS_EXACT, pick_report);
+      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
+//      int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->MovingSphereCheck(pos, vel, radius, COLLTYPE_ALWAYS_EXACT, pick_report);
       Vector3 f(0,0,0);
       Vector3 p(pos.x, pos.y+radius, pos.z);
       Vector3 newVel = vel;
@@ -257,7 +257,7 @@ public:
       
       // Do ray testing against everything but the level
       CollisionPair **pick_report;
-      int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(ray, 600.0f, COLLTYPE_EXACT, COLLCLASS_ALWAYS_EXACT, pick_report);
+      int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(ray, 600.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
       static String nameStr = "";
       
       if (num_picks > 0)
@@ -561,11 +561,8 @@ protected:
 	{
       // Create the camera
       mCamera = mSceneMgr->createCamera("PlayerCam");
-
-      // Position it at 500 in Z direction
-      mCamera->setPosition(Vector3(0,0,0));
-      // Look back along -Z
-      mCamera->lookAt(Vector3(0,0,-300));
+      mCamera->setPosition(-7.1680, 292.723, 354.041); 
+      mCamera->setOrientation(Quaternion(0.998007, 0.0623525, 0.00879721, 0.000549518));
       mCamera->setNearClipDistance(5);
 	}
 

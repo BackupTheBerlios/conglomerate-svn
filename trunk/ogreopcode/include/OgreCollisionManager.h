@@ -120,19 +120,19 @@ namespace OgreOpcode
       {
 
          // check for CollClass override cases
-         if ((cc1 == COLLCLASS_ALWAYS_IGNORE) || (cc2 == COLLCLASS_ALWAYS_IGNORE))
+         if ((cc1 == COLLTYPE_ALWAYS_IGNORE) || (cc2 == COLLTYPE_ALWAYS_IGNORE))
          {
             return COLLTYPE_IGNORE;
          }
-         else if ((cc1 == COLLCLASS_ALWAYS_QUICK) || (cc2 == COLLCLASS_ALWAYS_QUICK))
+         else if ((cc1 == COLLTYPE_ALWAYS_QUICK) || (cc2 == COLLTYPE_ALWAYS_QUICK))
          {
             return COLLTYPE_QUICK;
          }
-         else if ((cc1 == COLLCLASS_ALWAYS_CONTACT) || (cc2 == COLLCLASS_ALWAYS_CONTACT))
+         else if ((cc1 == COLLTYPE_ALWAYS_CONTACT) || (cc2 == COLLTYPE_ALWAYS_CONTACT))
          {
             return COLLTYPE_CONTACT;
          }
-         else if ((cc1 == COLLCLASS_ALWAYS_EXACT) || (cc2 == COLLCLASS_ALWAYS_EXACT))
+         else if ((cc1 == COLLTYPE_ALWAYS_EXACT) || (cc2 == COLLTYPE_ALWAYS_EXACT))
          {
             return COLLTYPE_EXACT;
          }

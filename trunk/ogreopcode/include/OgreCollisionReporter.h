@@ -57,13 +57,10 @@ namespace OgreOpcode
    /// the CollisionContext avoid redundant checks.
    class _OgreOpcode_Export CollisionReporter
    {
-      enum
-      {
-         MAX_REPORTS_PER_OBJECT = 256,
-      };
+      static const int max_reports_per_object = 256;
 
       nKeyArray<CollisionPair> coll_pairs;
-      CollisionPair *report_array[MAX_REPORTS_PER_OBJECT];
+      CollisionPair *report_array[max_reports_per_object];
 
    private:
 
@@ -143,9 +140,9 @@ namespace OgreOpcode
          int i;
          int num = coll_pairs.Size();
 
-         if (num > MAX_REPORTS_PER_OBJECT)
+         if (num > max_reports_per_object)
          {
-            num = MAX_REPORTS_PER_OBJECT;
+            num = max_reports_per_object;
          }
 
          for (i = 0; i < num; i++) 
@@ -166,9 +163,9 @@ namespace OgreOpcode
          int num = coll_pairs.Size();
          int i;
 
-         if (num > MAX_REPORTS_PER_OBJECT)
+         if (num > max_reports_per_object)
          {
-            num = MAX_REPORTS_PER_OBJECT;
+            num = max_reports_per_object;
          }
 
          for (i = 0; i < num; i++) 

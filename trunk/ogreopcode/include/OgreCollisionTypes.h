@@ -41,12 +41,12 @@ namespace OgreOpcode
    };
 
    /// special case values for the CollClass check.
-   enum CollClassType
+   enum CollisionTypeOverride
    {
-      COLLCLASS_ALWAYS_IGNORE  = -1,
-      COLLCLASS_ALWAYS_QUICK   = -2,
-      COLLCLASS_ALWAYS_CONTACT = -3,
-      COLLCLASS_ALWAYS_EXACT   = -4,
+      COLLTYPE_ALWAYS_IGNORE  = -1,
+      COLLTYPE_ALWAYS_QUICK   = -2,
+      COLLTYPE_ALWAYS_CONTACT = -3,
+      COLLTYPE_ALWAYS_EXACT   = -4,
    };
 
 }
