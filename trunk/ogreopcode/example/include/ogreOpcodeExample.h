@@ -661,7 +661,6 @@ protected:
 
       camNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cameraSceneNode");
       //camNode->attachObject(mCamera);
-      mCamera->setPosition(Vector3(0,1800,0));
 
       Entity* ogreCam = mSceneMgr->createEntity("Head1", "ogrehead.mesh");
       SceneNode* tcamNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cammnode");
