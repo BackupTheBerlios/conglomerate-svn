@@ -291,7 +291,8 @@ namespace OgreOpcode
       /// @return const Matrix4 & <TODO: insert return value description here>
       const Matrix4& GetTransform(void)
       {
-         GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&new_matrix);
+         new_matrix = GetShape()->getEntity()->_getParentNodeFullTransform();
+         //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&new_matrix);
          return new_matrix;
       };
       
@@ -333,7 +334,8 @@ namespace OgreOpcode
       void Update()
       {
          Matrix4 m;
-         GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
+         m = GetShape()->getEntity()->_getParentNodeFullTransform();
+         //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
 
          Real t = 0.0f;
          if (old_tstamp == 0.0)
@@ -378,7 +380,8 @@ namespace OgreOpcode
       {
          assert(is_attached);
 
-         GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
+         m = GetShape()->getEntity()->_getParentNodeFullTransform();
+         //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
          // if old_matrix and old_tstamp are not yet valid,
          // they will be initialized with the current
          // values, to prevent "startup popping"

@@ -662,7 +662,7 @@ protected:
       camNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cameraSceneNode");
       //camNode->attachObject(mCamera);
 
-      Entity* ogreCam = mSceneMgr->createEntity("Head1", "ogrehead.mesh");
+      Entity* ogreCam = mSceneMgr->createEntity("Head1", "robot.mesh");
       SceneNode* tcamNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cammnode");
       tcamNode->attachObject(ogreCam);
       tcamNode->setPosition(0.0f,400.0f,0.0f);
