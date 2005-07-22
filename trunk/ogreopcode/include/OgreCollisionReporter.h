@@ -67,7 +67,7 @@ namespace OgreOpcode
       // Merge the 2 object id's into 1 32 bit id,
       // order them, so that any combination of 2 id's
       // results in the same merged id. Return true
-      // a swap happend (because other attributes
+      // a swap happened (because other attributes
       // may have to be swapped as well).
       bool get_merged_id(int id1, int id2, int& mrg)
       {
@@ -94,7 +94,7 @@ namespace OgreOpcode
       };
 
       /// check if a collision has already been reported
-      bool CollissionExists(int id1, int id2)
+      bool CollisionExists(int id1, int id2)
       {
          // generate the merged 32 bit id, and query key array
          // for the collision
@@ -111,7 +111,7 @@ namespace OgreOpcode
       };
 
       /// add a new collision 
-      void AddCollission(CollisionPair& cr, int id1, int id2)
+      void AddCollision(CollisionPair& cr, int id1, int id2)
       {
          // generate the merged 32 bit id and add collision report
          int key;
@@ -123,7 +123,7 @@ namespace OgreOpcode
       void EndFrame(void) { };
 
       /// get overall number of collisions recorded
-      int GetNumCollissions(void)
+      int GetNumCollisions(void)
       {
          return coll_pairs.Size();
       };
@@ -131,7 +131,7 @@ namespace OgreOpcode
       /// report collisions for a specific object.
       /// returns number of collisions and pointer to an array of collision report
       /// pointers into the nKeyArray.
-      int GetCollissions(CollisionObject *co, CollisionPair **& cr_ptr)
+      int GetCollisions(CollisionObject *co, CollisionPair **& cr_ptr)
       {
          // fill report array with all collisions which this
          // object is involved in.
@@ -158,7 +158,7 @@ namespace OgreOpcode
       }
 
       /// get all recorded collisions.
-      int GetAllCollissions(CollisionPair **& cr_ptr) 
+      int GetAllCollisions(CollisionPair **& cr_ptr) 
       {
          int num = coll_pairs.Size();
          int i;
@@ -181,7 +181,7 @@ namespace OgreOpcode
       /// @param  v       [in] origin coordinate
       /// @param  crPtr   [out] pointer to collide report pointer array
       /// @return         number of entries in collide report pointer array (0 or 1)
-      int GetClosestCollission(const Vector3& v, CollisionPair **& crPtr)
+      int GetClosestCollision(const Vector3& v, CollisionPair **& crPtr)
       {
          int num = coll_pairs.Size();
          if (0 == num)

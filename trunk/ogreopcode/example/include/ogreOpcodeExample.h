@@ -34,6 +34,24 @@ using namespace OgreOpcode;
 #include <OgreCEGUIRenderer.h>
 #include "OgreMemoryMacros.h"
 
+inline Quaternion makeRandomRotation()
+{
+  //  From
+  //  J. Arvo.
+  //  Fast random rotation matices.
+  //  In D. Kirk, editor, Graphics Gems III, pages 117-120. Academic Press, 1992.
+  Vector3 r(Math::UnitRandom(),Math::UnitRandom(),Math::UnitRandom());
+  Real s1r = sqrt(Real(1.0)-r.x);
+  Real sr  = sqrt(r.x);
+  return Quaternion(
+    s1r * sin(Math::TWO_PI*r.y),
+    s1r * cos(Math::TWO_PI*r.y),
+    sr  * sin(Math::TWO_PI*r.z),
+    sr  * cos(Math::TWO_PI*r.z)
+    );
+}
+
+
 CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
 {
    switch (buttonID)
@@ -68,6 +86,7 @@ private:
    CollisionObject* mCollObj3;
    SceneNode* mCamNode;
    Ray ray;
+   bool mPlayAnimation;
 public:
 	ogreOpcodeExampleFrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer, CollisionObject* collObj1, CollisionObject* collObj2, CollisionObject* collObj3, SceneNode* camNode)
 		: ExampleFrameListener(win, cam, false, true),
@@ -78,7 +97,8 @@ public:
       mCollObj1(collObj1),
       mCollObj2(collObj2),
       mCollObj3(collObj3),
-      mCamNode(camNode)
+      mCamNode(camNode),
+      mPlayAnimation(true)
    {
       mEventProcessor->addMouseMotionListener(this);
       mEventProcessor->addMouseListener(this);
@@ -230,12 +250,8 @@ public:
 
    bool frameStarted(const FrameEvent& evt)
 	{
-      // This has to be here - debug visualization needs to be updated each frame..
-      mCollObj1->setDebug(mVisualizeObjects);
-      mCollObj2->setDebug(mVisualizeObjects);
-
-      //mSceneMgr->getSceneNode("camVizNode")->setPosition(mCamera->getDerivedPosition());
-      //mSceneMgr->getSceneNode("camVizNode")->setOrientation(mCamera->getDerivedOrientation());
+      if (!ExampleFrameListener::frameStarted(evt))
+        return false;
 
       static Real transAmount = -0.5f;
       static Real transTraveled = 0.0f;
@@ -245,13 +261,24 @@ public:
          transAmount = 0.5f;
       transTraveled += transAmount;
 
-      bool ret = ExampleFrameListener::frameStarted(evt);
-      
-      if(!mUseBufferedInputMouse)
-         ray = mCamera->getCameraToViewportRay(0.5, 0.5);
-
       mSceneMgr->getSceneNode("cammnode")->translate(0.0f, transAmount, 0.0f);
-      
+
+      //mSceneMgr->getSceneNode("camVizNode")->setPosition(mCamera->getDerivedPosition());
+      //mSceneMgr->getSceneNode("camVizNode")->setOrientation(mCamera->getDerivedOrientation());
+
+      if (mPlayAnimation) {
+        mSceneMgr->getEntity("Head1")->getAnimationState("Walk")->addTime(evt.timeSinceLastFrame/5);
+        mCollObj2->GetShape()->Refit();
+      }
+      // This has to be here - debug visualization needs to be updated each frame..
+      // but only after we update objects!
+      mCollObj1->setDebug(mVisualizeObjects);
+      mCollObj2->setDebug(mVisualizeObjects);
+
+
+      if(!mUseBufferedInputMouse)
+        ray = mCamera->getCameraToViewportRay(0.5, 0.5);
+
       // remove level from context - we don't care when ray testing against entities..
       CollisionManager::getSingletonPtr()->GetDefaultContext()->RemoveObject(mCollObj1);
       
@@ -273,7 +300,7 @@ public:
             nameStr = nameStr + yeah->GetShape()->GetName() + " Contact: " + Ogre::StringConverter::toString(contact);
          }
       }
-      if (num_picks == 0)
+      else
       {
          TargetSight->show();
          hotTargetSight->hide();
@@ -282,18 +309,15 @@ public:
       // Done ray testing - Now add the level back into context
       CollisionManager::getSingletonPtr()->GetDefaultContext()->AddObject(mCollObj1);
 
-
       // Check all collision objects for collision
       CollisionManager::getSingletonPtr()->GetDefaultContext()->Collide();
-      int mCollObj1Picks = mCollObj1->GetCollissions(pick_report);
+      int mCollObj1Picks = mCollObj1->GetCollisions(pick_report);
       if(mCollObj1Picks > 0)
       {
          transAmount = 0.5f;
          nameStr = "Level encountered " + Ogre::StringConverter::toString(mCollObj1Picks) + " collisions";
       }
       mWindow->setDebugText(nameStr);
-	
-
       
       if(mUseBufferedInputMouse)
       {
@@ -304,8 +328,7 @@ public:
          CEGUI::MouseCursor::getSingleton().hide( );
       }
 
-      return ret;
-
+      return true;
 	}
 
    bool processUnbufferedKeyInput(const FrameEvent& evt)
@@ -449,6 +472,23 @@ public:
          mVisualizeObjects = !mVisualizeObjects;
          mTimeUntilNextToggle = 0.5;
       }
+
+      if (mInputDevice->isKeyDown(KC_SEMICOLON) && mTimeUntilNextToggle <= 0)
+      {
+        mPlayAnimation = !mPlayAnimation;
+        mSceneMgr->getEntity("Head1")->getAnimationState("Walk")->setEnabled(true);
+        mTimeUntilNextToggle = 0.5;
+      }
+
+
+      if (mInputDevice->isKeyDown(KC_BACKSLASH) && mTimeUntilNextToggle <=0)
+      {
+        Quaternion q = makeRandomRotation();
+        mSceneMgr->getEntity("Head1")->getParentNode()->setOrientation(q);
+        mTimeUntilNextToggle = 0.5;
+      }
+
+
       // Return true to continue rendering
       return true;
    }
@@ -618,6 +658,9 @@ protected:
 	// Just override the mandatory create scene method
 	virtual void createScene(void)
 	{
+      // Should work with or without shadows on now.
+      //mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
+
       // setup GUI system
       mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow, 
          Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
@@ -663,7 +706,9 @@ protected:
       //camNode->attachObject(mCamera);
 
       Entity* ogreCam = mSceneMgr->createEntity("Head1", "robot.mesh");
+      //Entity* ogreCam = mSceneMgr->createEntity("Head1", "ogrehead.mesh");
       SceneNode* tcamNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cammnode");
+      //LogManager::getSingleton().logMessage("Walk enabled initially: " + StringConverter::toString(ogreCam->getAnimationState("Walk")->getEnabled()));
       tcamNode->attachObject(ogreCam);
       tcamNode->setPosition(0.0f,400.0f,0.0f);
 
@@ -684,7 +729,7 @@ protected:
       collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass("level"));
       collideObject->SetShape(collideShape);
       collideContext->AddObject(collideObject);
-      
+
       CollisionShape *collideShape1 = CollisionManager::getSingletonPtr()->NewShape("ogrehead1");
       collideShape1->Load(ogreCam);
       collideObject1 = collideContext->NewObject();

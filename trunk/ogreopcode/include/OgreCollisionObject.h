@@ -133,7 +133,7 @@ namespace OgreOpcode
       CollisionContext *context;    ///< the collide context this object is currently attached to
       nNode context_node;         ///< attached to context with this node
 
-      Real radius;               ///< radius of the collision object (normally provided by shape)
+      Real mRadius;               ///< radius of the collision object (normally provided by shape)
       CollisionShape *shape;       ///< the triangle exact collision shape (optional)
       CollisionNode xmin_cnode;          ///< the min/max collision node in the X-Dimension
       CollisionNode xmax_cnode;
@@ -144,8 +144,9 @@ namespace OgreOpcode
 
       Matrix4 old_matrix;        ///< the previous position/orientation of the object
       Matrix4 new_matrix;        ///< the new position/orientation of the object
-      Real old_tstamp;          ///< the timestamp for 'old_transform'
-      Real new_tstamp;          ///< the timestamp for 'new_transform'
+      Real    m_tdelta;          ///< the 'time' between old and new transform
+      Vector3 old_center_offset; ///< the world offset of the shape center
+      Vector3 new_center_offset; ///< the world offset of the shape center
 
       void *client_data;          ///< user defined client data field
       bool is_attached;           ///< currently attached to a context
@@ -155,11 +156,12 @@ namespace OgreOpcode
    public:
       CollisionObject()
          : context(NULL),
-         radius(0.0f),
+         mRadius(0.0f),
+         old_center_offset(0,0,0),
+         new_center_offset(0,0,0),
          shape(NULL),
          coll_class(0),
-         old_tstamp(0.0),
-         new_tstamp(0.0),
+         m_tdelta(-1.0),
          client_data(NULL),
          is_attached(false),
          num_colls(0),
@@ -224,14 +226,14 @@ namespace OgreOpcode
       /// @return void <TODO: insert return value description here>
       void SetRadius(float f)
       {
-         radius = f;
+         mRadius = f;
       };
       
       /// <TODO: insert function description here>
       /// @return float <TODO: insert return value description here>
       float GetRadius(void)
       {
-         return radius;
+         return mRadius;
       };
 
       /// <TODO: insert function description here>
@@ -303,115 +305,84 @@ namespace OgreOpcode
          return old_matrix;
       };
 
-      /// <TODO: insert function description here>
-      /// @return Real <TODO: insert return value description here>
-      Real GetTimeStamp(void)
+      /// Return the 'time' between the current and previous transforms
+      /// @return Real The elapsted 'time' (actually just whatever the user 
+      ///         told us it was when calling Update()).  Negative if no 
+      ///         Update()'s have been performed since the last Reset()
+      Real GetTimeDelta(void)
       {
-         return new_tstamp;
+         return m_tdelta;
       };
       
       /// <TODO: insert function description here>
-      /// @return Real <TODO: insert return value description here>
-      Real GetPrevTimeStamp(void)
-      {
-         return old_tstamp;
-      };
-
-      /// <TODO: insert function description here>
       /// @return void <TODO: insert return value description here>
-      void ClearCollissions(void)
+      void ClearCollisions(void)
       {
          num_colls = 0;
       };
       
       /// <TODO: insert function description here>
       /// @return int <TODO: insert return value description here>
-      int GetNumCollissions(void)
+      int GetNumCollisions(void)
       {
          return num_colls;
       };
 
-      void Update()
+      void Update(Real tdelta)
       {
          Matrix4 m;
-         m = GetShape()->getEntity()->_getParentNodeFullTransform();
-         //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
-
-         Real t = 0.0f;
-         if (old_tstamp == 0.0)
-         {
-            old_matrix = m;
-            old_tstamp = t;
-         } else if (old_tstamp == t)
-         {
-            old_matrix = m;
-            old_tstamp = t;
-         } else
-         {
-            old_matrix = new_matrix;
-            old_tstamp = new_tstamp;
-         }
-         new_matrix = m;
-         new_tstamp = t;
-
-         // update the bounding-box
-         // Extract position vectors from matrix
-         Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
-         Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
-         minv = Vector3(n_min(p0.x,p1.x)-radius,
-            n_min(p0.y,p1.y)-radius,
-            n_min(p0.z,p1.z)-radius);
-         maxv = Vector3(n_max(p0.x,p1.x)+radius,
-            n_max(p0.y,p1.y)+radius,
-            n_max(p0.z,p1.z)+radius);
-
-
-         // update the x-dimension node, nCNode::SetVal() automatically
-         // makes sure that the nodes keep their correct orders
-         // in the list
-         xmin_cnode.SetVal(minv.x);
-         xmax_cnode.SetVal(maxv.x);
+         Update(tdelta,m);
       }
       
-      /// Transform the object to its new position/orientation, update the dimensional nodes and the bounding box.
-      /// @param [in]       t Real     timestamp
-      /// @param [in]       m const Matrix4 &    world transform
-      void Transform(Real t, Matrix4& m)
+      /// Update the object to its new position/orientation, update the dimensional nodes and the bounding box.
+      /// @param [in]       t Real 'time' delta.  Doesn't have to be real time though.
+      ///                   Just pass in 1.0 every time if you don't care about actual time.
+      ///                   This comes into play when collisions are sub-stepped.
+      ///                   You can get back the portion of t that passed before 
+      ///                   a collision occurred from the CollisionPair::tstamp member.
+      /// @param [in]       m const Matrix4 &    new world transform
+      void Update(Real t, Matrix4& m)
       {
          assert(is_attached);
-
          m = GetShape()->getEntity()->_getParentNodeFullTransform();
          //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
-         // if old_matrix and old_tstamp are not yet valid,
-         // they will be initialized with the current
-         // values, to prevent "startup popping"
-         if (old_tstamp == 0.0)
-         {
-            old_matrix = m;
-            old_tstamp = t;
-         } else if (old_tstamp == t)
-         {
-            old_matrix = m;
-            old_tstamp = t;
-         } else
-         {
-            old_matrix = new_matrix;
-            old_tstamp = new_tstamp;
-         }
+
+         old_matrix = new_matrix;
+         old_center_offset = new_center_offset;
          new_matrix = m;
-         new_tstamp = t;
 
-         // update the bounding-box
+         // Update the swept bounding-box
          // Extract position vectors from matrix
-         Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
-         Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
-         minv = Vector3(n_min(p0.x,p1.x)-radius,
-            n_min(p0.y,p1.y)-radius,
-            n_min(p0.z,p1.z)-radius);
-         maxv = Vector3(n_max(p0.x,p1.x)+radius,
-            n_max(p0.y,p1.y)+radius,
-            n_max(p0.z,p1.z)+radius);
 
+         // Get center in world space.
+         Vector3 ctr = GetShape()->getCenter();
+         mRadius = GetShape()->GetRadius();
+         // We need center's world offset from object's world origin
+         // (And object's world origin is just translation part of m)
+         new_center_offset = Vector3(ctr.x-new_matrix[0][3],
+                                     ctr.y-new_matrix[1][3],
+                                     ctr.z-new_matrix[2][3]);
+
+         // if old_matrix etc are not yet valid,
+         // initialize with the current values, to prevent "startup popping"
+         bool oldValsInvalid = (m_tdelta <= 0.0);
+         if (oldValsInvalid)
+         {
+           old_matrix = new_matrix;
+           old_center_offset = new_center_offset;
+         }
+         m_tdelta = t;
+
+         Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
+         p0 += old_center_offset;
+         Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
+         p1 += new_center_offset;
+         minv = Vector3(n_min(p0.x,p1.x)-mRadius,
+                        n_min(p0.y,p1.y)-mRadius,
+                        n_min(p0.z,p1.z)-mRadius);
+         maxv = Vector3(n_max(p0.x,p1.x)+mRadius,
+                        n_max(p0.y,p1.y)+mRadius,
+                        n_max(p0.z,p1.z)+mRadius);
 
          // update the x-dimension node, nCNode::SetVal() automatically
          // makes sure that the nodes keep their correct orders
@@ -425,6 +396,7 @@ namespace OgreOpcode
          CollisionType ct,
          CollisionPair& cr)
       {
+         // This object moved from p0 to p0+v0, the other from p1 to p1+v1.
          Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
          Vector3 p1(other->old_matrix[0][3], other->old_matrix[1][3], other->old_matrix[2][3]);
          Vector3 v0(Vector3(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3])  - p0);
@@ -436,8 +408,8 @@ namespace OgreOpcode
          case COLLTYPE_QUICK:
             {
             // do a contact check between 'moving spheres'
-            sphere s0(p0,radius);
-            sphere s1(p1,other->radius);
+            sphere s0(p0,mRadius);
+            sphere s1(p1,other->mRadius);
             Real u0,u1;
             if (s0.intersect_sweep(v0,s1,v1,u0,u1))
             {
@@ -459,14 +431,14 @@ namespace OgreOpcode
                   }
 
                   // compute the contact point
-                  cr.contact = (d*radius) + c0;
+                  cr.contact = (d*mRadius) + c0;
 
                   // compute the collide normals
                   cr.co1_normal = d;
                   cr.co2_normal = -d;
 
                   // compute the timestamp where the collision happended
-                  cr.tstamp = old_tstamp + (new_tstamp-old_tstamp)*u0;
+                  cr.tstamp = m_tdelta*u0;
                   has_contact = true;
                }
             }
@@ -479,8 +451,17 @@ namespace OgreOpcode
             // If distance travelled is more then 1/8 then each of the object's
             // radii, then we do several tests along the line
             // of movements.
-            Real rq0 = radius * 0.125f;
-            Real rq1 = other->radius * 0.125f;
+
+            // WVB:
+            // This isn't likely to work particularly well for objects
+            // with large rotational motion.  For that it would be better 
+            // to blend the transformations along the path as well,
+            // and to also use amount of rotation in determining how many
+            // steps are necessary.  That would bring this another step closer
+            // to being a true continuous collision detection system.
+
+            Real rq0 = mRadius * 0.125f;
+            Real rq1 = other->mRadius * 0.125f;
             Real v0_len = v0.length();
             Real v1_len = v1.length();
             int num = (int) n_max((v0_len/rq0), (v1_len/rq1));
@@ -511,8 +492,8 @@ namespace OgreOpcode
                if (shape->Collide(ct, self_matrix, other->shape, other_matrix, cr))
                {
                   // CONTACT!!!
-                  double dt = (new_tstamp - old_tstamp) / num;
-                  cr.tstamp = old_tstamp + dt*i;
+                  double dt = (m_tdelta) / num;
+                  cr.tstamp = dt*i;
                   return true;
                }
             }
@@ -528,7 +509,7 @@ namespace OgreOpcode
       /// For each overlapping object in all 3 dimensions,
       /// which doesn't fall into the ignore_types category,
       /// do a collision check, and if the check is positive,
-      /// record collision by doing an AddCollission().
+      /// record collision by doing an AddCollision().
       void Collide(void)
       {
          assert(is_attached);
@@ -558,7 +539,7 @@ namespace OgreOpcode
 
                // has this collision already been detected by the
                // other object?
-               if (!crh->CollissionExists(id,other->id))
+               if (!crh->CollisionExists(id,other->id))
                {
                   // no, we're first...
 
@@ -570,7 +551,7 @@ namespace OgreOpcode
                   {
                      cr.co1 = this;
                      cr.co2 = other;
-                     crh->AddCollission(cr,id,other->id);
+                     crh->AddCollision(cr,id,other->id);
                      num_colls++;
                      other->num_colls++;
                   }
@@ -581,11 +562,11 @@ namespace OgreOpcode
       };
 
       /// Return collision reports for all collisions this object is involved in.
-      int GetCollissions(CollisionPair **&crp)
+      int GetCollisions(CollisionPair **&crp)
       {
          assert(context);
          assert(is_attached);
-         return context->collideReportHandler.GetCollissions(this,crp);
+         return context->collideReportHandler.GetCollisions(this,crp);
          return 0;
       };
 
@@ -697,6 +678,7 @@ namespace OgreOpcode
          // render the objects radii
          int dim;
          Real dr = Ogre::Math::DegreesToRadians(5.0f);
+         Vector3 ctr = GetShape()->getLocalCenter();
          for (dim=0; dim<3; dim++)
          {
             Real r;
@@ -706,12 +688,12 @@ namespace OgreOpcode
                Real cos_r0 = (Real) cos(r);
                float sin_r1 = (Real) sin(r+dr);
                Real cos_r1 = (Real) cos(r+dr);
-               Vector3 v0_x(0.0f, sin_r0*radius, cos_r0*radius);
-               Vector3 v1_x(0.0f, sin_r1*radius, cos_r1*radius);
-               Vector3 v0_y(sin_r0*radius, 0.0f, cos_r0*radius);
-               Vector3 v1_y(sin_r1*radius, 0.0f, cos_r1*radius);
-               Vector3 v0_z(sin_r0*radius, cos_r0*radius, 0.0f);
-               Vector3 v1_z(sin_r1*radius, cos_r1*radius, 0.0f);
+               Vector3 v0_x(0.0f, sin_r0*mRadius, cos_r0*mRadius); v0_x+=ctr;
+               Vector3 v1_x(0.0f, sin_r1*mRadius, cos_r1*mRadius); v1_x+=ctr;
+               Vector3 v0_y(sin_r0*mRadius, 0.0f, cos_r0*mRadius); v0_y+=ctr;
+               Vector3 v1_y(sin_r1*mRadius, 0.0f, cos_r1*mRadius); v1_y+=ctr;
+               Vector3 v0_z(sin_r0*mRadius, cos_r0*mRadius, 0.0f); v0_z+=ctr;
+               Vector3 v1_z(sin_r1*mRadius, cos_r1*mRadius, 0.0f); v1_z+=ctr;
                
                _debug_obj->addLine(v0_x.x,v0_x.y,v0_x.z, v1_x.x,v1_x.y,v1_x.z);
                _debug_obj->addLine(v0_y.x,v0_y.y,v0_y.z, v1_y.x,v1_y.y,v1_y.z);
@@ -727,7 +709,7 @@ namespace OgreOpcode
          if (num_colls > 0)
          {
             CollisionPair **pcr;
-            int num = context->GetCollissions(this,pcr);
+            int num = context->GetCollisions(this,pcr);
             int i;
             for (i=0; i<num; i++)
             {

@@ -60,11 +60,11 @@ namespace OgreOpcode
       /// remove collide object from context
       virtual void RemoveObject(CollisionObject *collObj);
       /// compute contacts between collision objects in context
-      virtual int Collide(void);
+      virtual int Collide(Real dt=1.0);
       /// debug visualization of the collide context
       virtual void Visualize(void);
       /// get the collide reports for the collisions computed inside Collide()
-      virtual int GetCollissions(CollisionObject *collObj, CollisionPair **&cpPtr);
+      virtual int GetCollisions(CollisionObject *collObj, CollisionPair **&cpPtr);
       /// do a "moving sphere" check against collide object radii in the context
       virtual int MovingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
       /// do a line-model check
@@ -73,7 +73,7 @@ namespace OgreOpcode
       virtual int SphereCheck(const Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
       /// reset position and timestamp of all objects
       void Reset();
-      void Update();
+      void Update(Real dt=1.0);
 
    private:
       friend class CollisionObject;

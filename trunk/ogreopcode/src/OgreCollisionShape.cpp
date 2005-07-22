@@ -33,15 +33,164 @@
 
 namespace OgreOpcode
 {
-   CollisionShape::CollisionShape(const char* name)
+
+  template<class NodeT>
+    inline void GetOpcodeNodeCenter(const NodeT &n, Vector3 &ctr)
+  {
+    ctr.x = n.mAABB.mCenter.x;
+    ctr.y = n.mAABB.mCenter.y;
+    ctr.z = n.mAABB.mCenter.z;
+  }
+  template<class TreeT, class NodeT>
+    inline void GetOpcodeQuantizedNodeCenter(const TreeT &tree, const NodeT &n, Vector3 &ctr)
+  {
+    ctr = Vector3(float(n.mAABB.mCenter[0]),  float(n.mAABB.mCenter[1]), float(n.mAABB.mCenter[2]));
+    ctr.x *= tree.mCenterCoeff.x;
+    ctr.y *= tree.mCenterCoeff.y;
+    ctr.z *= tree.mCenterCoeff.z;
+  }
+  template<class NodeT>
+  inline void GetOpcodeNodeMinMaxBox(const NodeT &n, Vector3 &bmin, Vector3 &bMax)
+  {
+    Vector3 center(n.mAABB.mCenter.x,  n.mAABB.mCenter.y,  n.mAABB.mCenter.z);
+    Vector3 extent(n.mAABB.mExtents.x, n.mAABB.mExtents.y, n.mAABB.mExtents.z);
+
+    bmin  = center;
+    bmin -= extent;
+    bMax  = center;
+    bMax += extent;
+  }
+  template<class TreeT, class NodeT>
+    inline void GetOpcodeQuantizedNodeMinMaxBox(const TreeT &tree, const NodeT &n, Vector3 &bmin, Vector3 &bMax)
+  {
+    Vector3 center(float(n.mAABB.mCenter[0]),  float(n.mAABB.mCenter[1]), float(n.mAABB.mCenter[2]));
+    Vector3 extent(float(n.mAABB.mExtents[0]), float(n.mAABB.mExtents[1]), float(n.mAABB.mExtents[2]));
+
+    extent.x *= tree.mExtentsCoeff.x;
+    extent.y *= tree.mExtentsCoeff.y;
+    extent.z *= tree.mExtentsCoeff.z;
+    
+    center.x *= tree.mCenterCoeff.x;
+    center.y *= tree.mCenterCoeff.y;
+    center.z *= tree.mCenterCoeff.z;
+
+    bmin  = center;
+    bmin -= extent;
+    bMax  = center;
+    bMax += extent;
+  }
+
+  inline void GetOpcodeRootCenter(const Opcode::Model &mdl, Vector3 &ctr)
+  {
+    if (mdl.IsQuantized()) {
+      if (mdl.HasLeafNodes()) {
+        const Opcode::AABBQuantizedTree& tree = *static_cast<const Opcode::AABBQuantizedTree*>(mdl.GetTree());
+        GetOpcodeQuantizedNodeCenter(tree, *tree.GetNodes(), ctr);
+      }
+      else{
+        const Opcode::AABBQuantizedNoLeafTree& tree = *static_cast<const Opcode::AABBQuantizedNoLeafTree*>(mdl.GetTree());
+        GetOpcodeQuantizedNodeCenter(tree, *tree.GetNodes(), ctr);
+      }
+    }
+    else{
+      if (mdl.HasLeafNodes()) {
+        const Opcode::AABBCollisionNode& root = *static_cast<const Opcode::AABBCollisionTree*>(mdl.GetTree())->GetNodes();
+        GetOpcodeNodeCenter(root, ctr);
+      }
+      else{
+        const Opcode::AABBNoLeafNode& root = *static_cast<const Opcode::AABBNoLeafTree*>(mdl.GetTree())->GetNodes();
+        GetOpcodeNodeCenter(root, ctr);
+      }
+    }
+  }
+  inline void GetOpcodeRootMinMaxBox(const Opcode::Model &mdl, Vector3 &bmin, Vector3 &bMax)
+  {
+    if (mdl.IsQuantized()) {
+      if (mdl.HasLeafNodes()) {
+        const Opcode::AABBQuantizedTree& tree = *static_cast<const Opcode::AABBQuantizedTree*>(mdl.GetTree());
+        GetOpcodeQuantizedNodeMinMaxBox(tree, *tree.GetNodes(), bmin, bMax);
+      }
+      else{
+        const Opcode::AABBQuantizedNoLeafTree& tree = *static_cast<const Opcode::AABBQuantizedNoLeafTree*>(mdl.GetTree());
+        GetOpcodeQuantizedNodeMinMaxBox(tree, *tree.GetNodes(), bmin, bMax);
+      }
+    }
+    else{
+      if (mdl.HasLeafNodes()) {
+        const Opcode::AABBCollisionNode& root = *static_cast<const Opcode::AABBCollisionTree*>(mdl.GetTree())->GetNodes();
+        GetOpcodeNodeMinMaxBox(root, bmin, bMax);
+      }
+      else{
+        const Opcode::AABBNoLeafNode& root = *static_cast<const Opcode::AABBNoLeafTree*>(mdl.GetTree())->GetNodes();
+        GetOpcodeNodeMinMaxBox(root, bmin, bMax);
+      }
+    }
+  }
+
+  //------------------------------------------------------------------------
+  Vector3 CollisionShape::getCenter() const
+  {
+    // World space center
+    const Matrix4 &m = getEntity()->_getParentNodeFullTransform();
+    Vector3 center;
+    GetOpcodeRootCenter(opcModel, center);
+    return m*center;
+  }
+  //------------------------------------------------------------------------
+  Vector3 CollisionShape::getLocalCenter() const
+  {
+    // Object space center
+    Vector3 center;
+    GetOpcodeRootCenter(opcModel, center);
+    return center;
+  }
+  //------------------------------------------------------------------------
+  void CollisionShape::getMinMax(Vector3& bMin, Vector3& bMax) const
+  {
+    // Compute the tightest world space box around the current opcode AABB tree
+    const Matrix4 &m = getEntity()->_getParentNodeFullTransform();
+    Vector3 lMin,lMax;
+    GetOpcodeRootMinMaxBox(opcModel, lMin, lMax);
+    bMax = bMin = m * lMin;
+    Vector3 v;
+    v=m*Vector3(lMin.x,lMin.y,lMin.z); bMin.makeFloor(v); bMax.makeCeil(v);
+    v=m*Vector3(lMin.x,lMin.y,lMax.z); bMin.makeFloor(v); bMax.makeCeil(v);
+    v=m*Vector3(lMin.x,lMax.y,lMin.z); bMin.makeFloor(v); bMax.makeCeil(v);
+    v=m*Vector3(lMin.x,lMax.y,lMax.z); bMin.makeFloor(v); bMax.makeCeil(v);
+    v=m*Vector3(lMax.x,lMin.y,lMin.z); bMin.makeFloor(v); bMax.makeCeil(v);
+    v=m*Vector3(lMax.x,lMin.y,lMax.z); bMin.makeFloor(v); bMax.makeCeil(v);
+    v=m*Vector3(lMax.x,lMax.y,lMin.z); bMin.makeFloor(v); bMax.makeCeil(v);
+    v=m*Vector3(lMax.x,lMax.y,lMax.z); bMin.makeFloor(v); bMax.makeCeil(v);
+  }
+  //------------------------------------------------------------------------
+  void CollisionShape::getLocalMinMax(Vector3& lMin, Vector3& lMax) const
+  {
+    // Get the local object space box around the current opcode AABB tree
+    GetOpcodeRootMinMaxBox(opcModel, lMin, lMax);
+  }
+  //------------------------------------------------------------------------
+  void CollisionShape::calculateSize()
+  {
+    // This just calcs the radius.  The world AABB has to be computed on demand
+    // because it depends on the current parent node transform.
+    // But the radius is the radius no matter what.
+    Vector3 lMin,lMax;
+    getLocalMinMax(lMin,lMax);
+    lMax-=lMin;
+    mRadius = lMax.length()*0.5;
+  }
+
+  //------------------------------------------------------------------------
+  //------------------------------------------------------------------------
+  CollisionShape::CollisionShape(const char* name)
       : nHashNode(name),
       refCount(0),
       isInitialized(false),
-      radius(0.0f),
+      mRadius(0.0f),
       numVertices(0),
       numFaces(0),
-      vertexData(0),
-      faceData(0),
+      mVertexBuf(0),
+      mFaceBuf(0),
       _debug_obj(0)
    {
       // initialize pointers to global OPCODE objects
@@ -49,13 +198,15 @@ namespace OgreOpcode
       opcFaceCache    = &(CollisionManager::getSingletonPtr()->opcFaceCache);
    }
 
+   //------------------------------------------------------------------------
    CollisionShape::~CollisionShape()
    {
       assert(0 == refCount);
-      delete[] vertexData;
-      delete[] faceData;
+      delete[] mVertexBuf;
+      delete[] mFaceBuf;
    }
 
+   //------------------------------------------------------------------------
    /// perform collision with other CollisionShape.
    /// @param collType CollisionType     Collision type.
    /// @param ownMatrix Matrix4          Own matrix.
@@ -88,28 +239,24 @@ namespace OgreOpcode
       opcTreeCache->Model1 = &(opcodeOther->opcModel);
 
       // convert Matrix4's into Matrix4x4's
-      IceMaths::Matrix4x4* m0Ptr = new IceMaths::Matrix4x4;
+      IceMaths::Matrix4x4 m0, m1;
       for(unsigned int i = 0; i < 4; i++)
-      {
-         m0Ptr->m[0][i] = ownMatrix[i][0];
-         m0Ptr->m[1][i] = ownMatrix[i][1];
-         m0Ptr->m[2][i] = ownMatrix[i][2];
-         m0Ptr->m[3][i] = ownMatrix[i][3];
+      { 
+         m0.m[0][i] = ownMatrix[i][0];
+         m0.m[1][i] = ownMatrix[i][1];
+         m0.m[2][i] = ownMatrix[i][2];
+         m0.m[3][i] = ownMatrix[i][3];
       }
-      IceMaths::Matrix4x4* m1Ptr = new IceMaths::Matrix4x4;
       for(unsigned int i = 0; i < 4; i++)
       {
-         m1Ptr->m[0][i] = otherMatrix[i][0];
-         m1Ptr->m[1][i] = otherMatrix[i][1];
-         m1Ptr->m[2][i] = otherMatrix[i][2];
-         m1Ptr->m[3][i] = otherMatrix[i][3];
+        m1.m[0][i] = otherMatrix[i][0];
+        m1.m[1][i] = otherMatrix[i][1];
+        m1.m[2][i] = otherMatrix[i][2];
+        m1.m[3][i] = otherMatrix[i][3];
       }
 
       // perform collision test
-      collider.Collide(*(opcTreeCache), m0Ptr, m1Ptr);
-
-      delete m0Ptr;
-      delete m1Ptr;
+      collider.Collide(*(opcTreeCache), &m0, &m1);
 
       bool collided = false;
 
@@ -218,6 +365,7 @@ namespace OgreOpcode
       return collided;
    }
 
+   //------------------------------------------------------------------------
    /// Check contact of line with shape.
    /// The collType is interpreted as follows:
    /// - COLLTYPE_IGNORE:        illegal (makes no sense)
@@ -259,13 +407,13 @@ namespace OgreOpcode
       }
 
       // convert Matrix4 to Opcode Matrix4x4
-      IceMaths::Matrix4x4* opcMatrix = new IceMaths::Matrix4x4;
+      IceMaths::Matrix4x4 opcMatrix;
       for(unsigned int i = 0; i < 4; i++)
       {
-         opcMatrix->m[0][i] = ownMatrix[i][0];
-         opcMatrix->m[1][i] = ownMatrix[i][1];
-         opcMatrix->m[2][i] = ownMatrix[i][2];
-         opcMatrix->m[3][i] = ownMatrix[i][3];
+         opcMatrix.m[0][i] = ownMatrix[i][0];
+         opcMatrix.m[1][i] = ownMatrix[i][1];
+         opcMatrix.m[2][i] = ownMatrix[i][2];
+         opcMatrix.m[3][i] = ownMatrix[i][3];
       }
 
       // build Opcode ray from line
@@ -278,9 +426,7 @@ namespace OgreOpcode
       ray.mDir.z = line.getDirection().z;  
 
       // perform collision
-      collider.Collide(ray, opcModel, opcMatrix);
-
-      delete opcMatrix;
+      collider.Collide(ray, opcModel, &opcMatrix);
 
       // get collision result
       if (collider.GetContactStatus())
@@ -330,6 +476,7 @@ namespace OgreOpcode
       return false;
    }
 
+   //------------------------------------------------------------------------
    /// Check contact of a sphere with shape.
    /// The collType is interpreted as follows:
    /// - COLLTYPE_IGNORE:        illegal (makes no sense)
@@ -379,13 +526,13 @@ namespace OgreOpcode
       */
 
       // convert Matrix4 to Opcode Matrix4x4
-      IceMaths::Matrix4x4* opcMatrix = new IceMaths::Matrix4x4;
+      IceMaths::Matrix4x4 opcMatrix;
       for(unsigned int i = 0; i < 4; i++)
       {
-         opcMatrix->m[0][i] = ownMatrix[i][0];
-         opcMatrix->m[1][i] = ownMatrix[i][1];
-         opcMatrix->m[2][i] = ownMatrix[i][2];
-         opcMatrix->m[3][i] = ownMatrix[i][3];
+         opcMatrix.m[0][i] = ownMatrix[i][0];
+         opcMatrix.m[1][i] = ownMatrix[i][1];
+         opcMatrix.m[2][i] = ownMatrix[i][2];
+         opcMatrix.m[3][i] = ownMatrix[i][3];
       }
 
       // build identity matrix because sphere is already in world space
@@ -398,9 +545,7 @@ namespace OgreOpcode
       const IceMaths::Sphere opcSphere(IceMaths::Point(collBall.p.x, collBall.p.y, collBall.p.z), collBall.r);
 
       // perform collision
-      collider.Collide(cache, opcSphere, opcModel, &identity, opcMatrix);
-      
-      delete opcMatrix;
+      collider.Collide(cache, opcSphere, opcModel, &identity, &opcMatrix);
       
       // get collision result
       if (collider.GetContactStatus())
@@ -440,8 +585,9 @@ namespace OgreOpcode
       return false;
    }
 
+   //------------------------------------------------------------------------
    /// Render a AABBCollisionNode and recurse.
-   ///  @param [in, out]  node const Opcode::AABBCollisionNode *    AABBCollisionNode to visualize.
+   ///  @param [in, out]  node const Opcode::AABBCollisionNode * AABBCollisionNode to visualize.
    void CollisionShape::VisualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node)
    {
       assert(node);
@@ -481,24 +627,77 @@ namespace OgreOpcode
       {
          const Opcode::AABBCollisionNode* neg = node->GetNeg();
          const Opcode::AABBCollisionNode* pos = node->GetPos();
-         VisualizeAABBCollisionNode(neg);
-         VisualizeAABBCollisionNode(pos);
+         if (neg)
+           VisualizeAABBCollisionNode(neg);
+         if (pos) 
+           VisualizeAABBCollisionNode(pos);
       }
    }
 
+   //------------------------------------------------------------------------
+   /// Render a AABBCollisionNode and recurse.
+   ///  @param [in, out]  node const Opcode::AABBNoLeafNode * AABBNoLeafNode to visualize.
+   void CollisionShape::VisualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node)
+   {
+     assert(node);
+
+     Vector3 center(node->mAABB.mCenter.x, node->mAABB.mCenter.y, node->mAABB.mCenter.z);
+     Vector3 extent(node->mAABB.mExtents.x, node->mAABB.mExtents.y, node->mAABB.mExtents.z);
+
+     Vector3 v00(center.x - extent.x, center.y - extent.y, center.z - extent.z);
+     Vector3 v01(center.x - extent.x, center.y - extent.y, center.z + extent.z);
+     Vector3 v02(center.x + extent.x, center.y - extent.y, center.z + extent.z);
+     Vector3 v03(center.x + extent.x, center.y - extent.y, center.z - extent.z);
+
+     Vector3 v10(center.x - extent.x, center.y + extent.y, center.z - extent.z);
+     Vector3 v11(center.x - extent.x, center.y + extent.y, center.z + extent.z);
+     Vector3 v12(center.x + extent.x, center.y + extent.y, center.z + extent.z);
+     Vector3 v13(center.x + extent.x, center.y + extent.y, center.z - extent.z);
+
+     // render ground rect
+     _debug_obj->addLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
+     _debug_obj->addLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
+     _debug_obj->addLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
+     _debug_obj->addLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
+
+     // render top rect
+     _debug_obj->addLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
+     _debug_obj->addLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
+     _debug_obj->addLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
+     _debug_obj->addLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+
+     // render vertical lines
+     _debug_obj->addLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
+     _debug_obj->addLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
+     _debug_obj->addLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
+     _debug_obj->addLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
+
+     if (!node->HasNegLeaf())
+     {
+       const Opcode::AABBNoLeafNode* neg = node->GetNeg();
+       VisualizeAABBNoLeafNode(neg);
+     }
+     if (!node->HasPosLeaf())
+     {
+       const Opcode::AABBNoLeafNode* pos = node->GetPos();
+         VisualizeAABBNoLeafNode(pos);
+     }
+   }
+
+   //------------------------------------------------------------------------
    /// Renders the collide model triangle soup.
    void CollisionShape::Visualize()
    {
-      assert(vertexData && faceData);
+      assert(mVertexBuf && mFaceBuf);
 
       // render the triangle soup
       int i;
       for (i = 0; i < numFaces; i++)
       {
-         int* indexPtr = faceData + 3 * i;
-         float* v0 = vertexData + 3 * indexPtr[0];
-         float* v1 = vertexData + 3 * indexPtr[1];
-         float* v2 = vertexData + 3 * indexPtr[2];
+         int* indexPtr = mFaceBuf + 3 * i;
+         float* v0 = mVertexBuf + 3 * indexPtr[0];
+         float* v1 = mVertexBuf + 3 * indexPtr[1];
+         float* v2 = mVertexBuf + 3 * indexPtr[2];
 
          _debug_obj->addLine(v0[0], v0[1], v0[2], v1[0], v1[1], v1[2]);
          _debug_obj->addLine(v1[0], v1[1], v1[2], v2[0], v2[1], v2[2]);
@@ -506,26 +705,21 @@ namespace OgreOpcode
       }
 
       // render the AABB tree
-//      const Opcode::AABBCollisionTree* tree = (const Opcode::AABBCollisionTree*) opcModel.GetTree();
-//      VisualizeAABBCollisionNode(tree->GetNodes());
+      if (opcModel.HasLeafNodes()) {
+        const Opcode::AABBCollisionTree* tree = static_cast<const Opcode::AABBCollisionTree*>(opcModel.GetTree());
+        VisualizeAABBCollisionNode(tree->GetNodes());
+      }
+      else {
+        const Opcode::AABBNoLeafTree* tree = static_cast<const Opcode::AABBNoLeafTree*>(opcModel.GetTree());
+        VisualizeAABBNoLeafNode(tree->GetNodes());
+
+      }
    }
 
-   void CollisionShape::calculateSize()
-   {
-      Vector3 size = Vector3::ZERO;
 
-      const AxisAlignedBox& aab = getEntity()->getBoundingBox();
-      Vector3 x = aab.getMaximum();
-      Vector3 n = aab.getMinimum();
-      Vector3 scaler = (x - n) * MeshManager::getSingleton().
-         getBoundsPaddingFactor();
-      size = ((x - scaler) - (n + scaler));
-      mSize = size;
-      radius = std::max(mSize.x, mSize.z) / 2.0;
-   }
-
+   //------------------------------------------------------------------------
    ///////////////////////////////////////////////////////////////////////////////
-   /// Counts how much indices (faces) and vertices a entity contains.
+   /// Counts how many indices (faces) and vertices an entity contains.
    /// @param[in]  entity Entity to count its data.
    /// @param[out] index_count  Number of indices.
    /// @param[out] vertex_count Number of vertices.
@@ -563,21 +757,26 @@ namespace OgreOpcode
       }
    }
 
-   ///////////////////////////////////////////////////////////////////////////////
+
+   //------------------------------------------------------------------------
+   //////////////////////////////////////////////////////////////////////////
    /// Converts mesh vertex and face data into simple float arrays.
+   /// If the buffer parameters are null then that data is not converted.
    /// @param[in]  entity              Entity to extract data from.
-   /// @param[out] vertexData          Target vertex data array.
+   /// @param[out] vertexBuf          Target vertex data array (can be null).
    /// @param[in]  size_t vertex_count Number of vertices.
-   /// @param[out] faceData            Target face data array.
+   /// @param[out] faceData            Target face data array (can be null).
    /// @param[int] index_count         Number of indices.
    /// @author Yavin from the Ogre4J team
-   ///////////////////////////////////////////////////////////////////////////////
-   void CollisionShape::convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count)
+   //////////////////////////////////////////////////////////////////////////
+   void CollisionShape::convertMeshData(Entity * entity, 
+                                        float * vertexBuf, size_t vertex_count,
+                                        int * faceBuf, size_t index_count)
    {
-      //-------------------------------------------------------------------------
+      //---------------------------------------------------------------------
       // CONVERT MESH DATA
-      //-------------------------------------------------------------------------
-      Mesh * mesh = entity->getMesh().getPointer();
+      //---------------------------------------------------------------------
+      MeshPtr mesh = entity->getMesh();
       bool added_shared = false;
       size_t current_offset = 0;
       size_t shared_offset = 0;
@@ -590,97 +789,121 @@ namespace OgreOpcode
 
       if(forceManualSoftwareBlending)
       {
-         //         entity->_calculateBlendedVertexData();
+         entity->_calculateBlendedVertexData();
       }
 
       // Run through the submeshes again, adding the data into the arrays
-      for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
+      for ( size_t i = 0; i < mesh->getNumSubMeshes(); ++i)
       {
          SubMesh* submesh = mesh->getSubMesh(i);
          bool useSharedVertices = submesh->useSharedVertices;
 
-
-         //---------------------------------------------------------------------
-         // GET VERTEXDATA
-         //---------------------------------------------------------------------
-         const VertexData * vertex_data;
-         if(useSoftwareBlendingVertices)
-            vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
-         else
-            vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
-
-         if((!useSharedVertices)||(useSharedVertices && !added_shared))
+         if (vertexBuf) 
          {
-            if(useSharedVertices)
-            {
+           //----------------------------------------------------------------
+           // GET VERTEXDATA
+           //----------------------------------------------------------------
+           const VertexData * vertex_data;
+           if(useSoftwareBlendingVertices)
+             vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
+           else
+             vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+
+           //LogManager::getSingleton().logMessage("Submesh "+sc::toString(i)+": 0x" + sc::toString((unsigned long)submesh,8,'0',std::ios::fmtflags(std::ios::hex)));
+
+           if((!useSharedVertices)||(useSharedVertices && !added_shared))
+           {
+             if(useSharedVertices)
+             {
                added_shared = true;
                shared_offset = current_offset;
-            }
+             }
 
-            const VertexElement* posElem =
+             const VertexElement* posElem =
                vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
 
-            HardwareVertexBufferSharedPtr vbuf =
+             HardwareVertexBufferSharedPtr vbuf =
                vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
 
-            unsigned char* vertex =
+             unsigned char* vertex =
                static_cast<unsigned char*>(vbuf->lock(HardwareBuffer::HBL_READ_ONLY));
 
-            // There is _no_ baseVertexPointerToElement() which takes an Ogre::Real or a double
-            //  as second argument. So make it float, to avoid trouble when Ogre::Real will
-            //  be comiled/typedefed as double:
-            //      Ogre::Real* pReal;
-            float* pReal;
+             // There is _no_ baseVertexPointerToElement() which takes an Ogre::Real or a double
+             //  as second argument. So make it float, to avoid trouble when Ogre::Real is
+             //  comiled/typedefed as double:
+             float* pReal;
 
-            for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
-            {
-               posElem->baseVertexPointerToElement(vertex, &pReal);
+             if (useSoftwareBlendingVertices) {
+               // Blended bone data is computed in world space.
+               // Opcode expects data in local coordinates.
+               Matrix4 xform = entity->_getParentNodeFullTransform().inverse();
 
-               size_t n = current_offset*3 + j*3;
-               vertexData[n + 0] = pReal[0];
-               vertexData[n + 1] = pReal[1];
-               vertexData[n + 2] = pReal[2];
-            }
-
-            vbuf->unlock();
-            next_offset += vertex_data->vertexCount;
+               for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
+               {
+                 posElem->baseVertexPointerToElement(vertex, &pReal);
+                 Vector3 v = Vector3(pReal[0],pReal[1],pReal[2]);
+                 v = xform * v;
+                 size_t n = current_offset*3 + j*3;
+                 vertexBuf[n + 0] = v[0];
+                 vertexBuf[n + 1] = v[1];
+                 vertexBuf[n + 2] = v[2];
+               }
+             }
+             else {
+               for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
+               {
+                 posElem->baseVertexPointerToElement(vertex, &pReal);
+                 size_t n = current_offset*3 + j*3;
+                 vertexBuf[n + 0] = pReal[0];
+                 vertexBuf[n + 1] = pReal[1];
+                 vertexBuf[n + 2] = pReal[2];
+               }
+             }
+             vbuf->unlock();
+             next_offset += vertex_data->vertexCount;
+           }
          }
 
-         //---------------------------------------------------------------------
-         // GET INDEXDATA
-         //---------------------------------------------------------------------      
-         IndexData* index_data = submesh->indexData;
-         size_t numTris = index_data->indexCount / 3;
-         HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
-
-         bool use32bitindexes = (ibuf->getType() == HardwareIndexBuffer::IT_32BIT);
-
-         unsigned long*  pLong = static_cast<unsigned long*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
-         unsigned short* pShort = reinterpret_cast<unsigned short*>(pLong);
-
-
-         size_t offset = (submesh->useSharedVertices)? shared_offset : current_offset;
-
-         if ( use32bitindexes )
+         if (faceBuf) 
          {
-            for ( size_t k = 0; k < numTris*3; ++k)
-            {
-               faceData[index_offset++] = pLong[k] + static_cast<unsigned long>(offset);
-            }
-         }
-         else
-         {
-            for ( size_t k = 0; k < numTris*3; ++k)
-            {
-               faceData[index_offset++] = static_cast<unsigned long>(pShort[k]) + static_cast<unsigned long>(offset);
-            }
+           //----------------------------------------------------------------
+           // GET INDEXDATA
+           //----------------------------------------------------------------      
+           IndexData* index_data = submesh->indexData;
+           size_t numTris = index_data->indexCount / 3;
+           HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
+
+           bool use32bitindexes = (ibuf->getType() == HardwareIndexBuffer::IT_32BIT);
+
+           uint32 *pLong = static_cast<uint32*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
+           uint16* pShort = reinterpret_cast<uint16*>(pLong);
+
+
+           size_t offset = (submesh->useSharedVertices)? shared_offset : current_offset;
+
+           if ( use32bitindexes )
+           {
+             for ( size_t k = 0; k < numTris*3; ++k)
+             {
+               faceBuf[index_offset++] = pLong[k] + static_cast<int>(offset);
+             }
+           }
+           else
+           {
+             for ( size_t k = 0; k < numTris*3; ++k)
+             {
+               faceBuf[index_offset++] = static_cast<int>(pShort[k]) + static_cast<int>(offset);
+             }
+           }
+
+           ibuf->unlock();
          }
 
-         ibuf->unlock();
          current_offset = next_offset;
       }
    }
 
+   //------------------------------------------------------------------------
    /// <TODO: insert function description here>
    void CollisionShape::createDebugObject()
    {
@@ -697,6 +920,7 @@ namespace OgreOpcode
       if(_debug_obj) _debug_obj->setMode(DebugObject::Mode_Static);
    }
 
+   //------------------------------------------------------------------------
    /// <TODO: insert function description here>
    void CollisionShape::destroyDebugObject()
    {
@@ -707,6 +931,7 @@ namespace OgreOpcode
       }
    }
    
+   //------------------------------------------------------------------------
    /// <TODO: insert function description here>
    /// @param [in]       debug bool     <TODO: insert parameter description here>
    void CollisionShape::setDebug(bool debug)
@@ -715,52 +940,102 @@ namespace OgreOpcode
       if(debug) createDebugObject();
    }
 
-   /// Get entity.
-   /// @return Entity *
-   Entity* CollisionShape::getEntity()
+   //------------------------------------------------------------------------
+   void CollisionShape::_prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc)
    {
-      return mEntity;
+     opcc.mIMesh = &opcMeshAccess;
+     //opcc.mSettings.mRules = Opcode::SPLIT_BEST_AXIS;//Opcode::SPLIT_SPLATTER_POINTS;   // split by splattering primitive centers (???)
+     opcc.mSettings.mRules = Opcode::SPLIT_GEOM_CENTER | Opcode::SPLIT_SPLATTER_POINTS; // Recommended by Opcode manual
+     opcc.mSettings.mLimit = 1;             // build a complete tree, 1 primitive/node
+     opcc.mNoLeaf    = true; // false;
+     opcc.mQuantized = false; // true;
    }
-
+   //------------------------------------------------------------------------
    /// <TODO: insert function description here>
    /// @param [in, out]  ent Entity *    <TODO: insert parameter description here>
    /// @return bool <TODO: insert return value description here>
    bool CollisionShape::Load(Entity* ent)
    {
       assert(ent);
+      assert(!mVertexBuf && !mFaceBuf);
       mEntity = ent;
 
       size_t vertex_count = 0;
       size_t index_count  = 0;
       countIndicesAndVertices(mEntity, index_count, vertex_count);
       // Allocate space for the vertices and indices
-      vertexData = new float[vertex_count * 3];
-      faceData = new int[index_count];
+      mVertexBuf = new float[vertex_count * 3];
+      mFaceBuf = new int[index_count];
 
-      convertMeshData(mEntity, vertexData, vertex_count, faceData, index_count );
+      convertMeshData(mEntity, mVertexBuf, vertex_count, mFaceBuf, index_count );
 
       numFaces = index_count / 3;
       numVertices = vertex_count;
 
+      //typedef StringConverter sc;
+      //LogManager::getSingleton().logMessage("NumFace: " + sc::toString(numFaces));
+      //LogManager::getSingleton().logMessage("VertexCount: " + sc::toString(numVertices));
+      //for (int i=0; i<10; i++) {
+      //  LogManager::getSingleton().logMessage("Vertex "+sc::toString(i)+": " + sc::toString(Vector3(mVertexBuf+3*i)));
+      //}
+
       opcMeshAccess.SetNbTriangles(numFaces);
       opcMeshAccess.SetNbVertices(numVertices);
-      opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)faceData, (IceMaths::Point*)vertexData);
+      opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
       opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
 
       // Build tree
-      Opcode::BuildSettings Settings;
-      Settings.mRules = Opcode::SPLIT_BEST_AXIS; // dunno what this means, stole it from ODE :)
+      //Opcode::BuildSettings Settings;
+      //Settings.mRules = Opcode::SPLIT_BEST_AXIS; // dunno what this means, stole it from ODE :)
 
       Opcode::OPCODECREATE opcc;
-      opcc.mIMesh = &opcMeshAccess;
-      opcc.mSettings.mRules = Opcode::SPLIT_SPLATTER_POINTS;   // split by splattering primitive centers (???)
-      opcc.mSettings.mLimit = 1;              // build a complete tree, 1 primitive/node
-      opcc.mNoLeaf    = false; // true;
-      opcc.mQuantized = false; // true;
+      _prepareOpcodeCreateParams(opcc);
       opcModel.Build(opcc);
 
       calculateSize();
 
       return true;
    }
+
+
+   //------------------------------------------------------------------------
+   /// <TODO: insert function description here>
+   /// @return bool <TODO: insert return value description here>
+   bool CollisionShape::Refit()
+   {
+     assert(mEntity && mVertexBuf);
+     // Urg causes crashes...
+     //if (Root::getSingleton()._getCurrentSceneManager())
+     //  mEntity->_updateAnimation();
+
+#ifdef _DEBUG
+     size_t vertex_count = 0;
+     size_t index_count  = 0;
+     countIndicesAndVertices(mEntity, index_count, vertex_count);
+     assert(numVertices == vertex_count);
+#endif
+
+     convertMeshData(mEntity, mVertexBuf, numVertices);
+
+     // Rebuild tree
+     if (!opcModel.Refit()) 
+     {
+       LogManager::getSingleton().logMessage("OgreOpcode::CollisionShape::ReLoad(): OPCODE Quick refit not possible with the given tree type.");
+       // Backup plan -- rebuild full tree
+       opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
+       Opcode::OPCODECREATE opcc;
+       _prepareOpcodeCreateParams(opcc);
+       opcModel.Build(opcc);
+     }
+
+     calculateSize();
+
+     if (_debug_obj) {
+       setDebug(true);
+     }
+
+     return true;
+   }
 }
+
+//------------------------------------------------------------------------

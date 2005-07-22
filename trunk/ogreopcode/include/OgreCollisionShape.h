@@ -67,9 +67,11 @@ namespace OgreOpcode
       /// has object been initialized?
       bool IsInitialized();
       /// get radius of collide mesh
-      Real GetRadius();
+      Real GetRadius() const;
       /// load collide geometry from mesh
       virtual bool Load(Entity* ent);
+      /// Retrieve current vertex data from mesh and refit collision tree
+      virtual bool Refit();
       /// perform collision with other CollisionShape
       virtual bool Collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
       /// perform collision with line
@@ -82,22 +84,33 @@ namespace OgreOpcode
       void setDebug(bool debug);
       /// return entity
       Entity* getEntity();
+      const Entity* getEntity() const;
 
-      Vector3 getSize();
-      Vector3 getCenter();
-      Real getHeight();
+      /// return current center in world space
+      Vector3 getCenter() const;
+      /// return current center in object space
+      Vector3 getLocalCenter() const;
+      /// return current world space AABB min and max
+      void getMinMax(Vector3& bMin, Vector3& bMax) const; 
+      /// return current object space AABB min and max
+      void getLocalMinMax(Vector3& bMin, Vector3& bMax) const; 
 
    private:
+      /// Count up the total number of vertices and indices in the Ogre mesh
       void countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count);
-      void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData, size_t index_count);
+      /// Convert ogre Mesh to simple float and int arrays
+      void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData=0, size_t index_count=0);
       /// get tri coords from tri index
       void GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2);
       /// visualize the AABBTree of the opcode model
       void VisualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node);
+      /// visualize the AABBTree of the opcode model (for no leaf trees)
+      void VisualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node);
+      void _prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc);
 
       void calculateSize();
 
-      Vector3 mSize;
+      float   mRadius;
       
       Opcode::BVTCache*         opcTreeCache;
       Opcode::CollisionFaces*   opcFaceCache;
@@ -106,13 +119,12 @@ namespace OgreOpcode
       Opcode::Model opcModel;
       int numVertices;
       int numFaces;
-      float* vertexData;
-      int*   faceData;
+      float* mVertexBuf;
+      int*   mFaceBuf;
       Entity* mEntity;
 
       bool isInitialized;
       int refCount;
-      float radius;
 
       /// prevent default construction
       CollisionShape();
@@ -151,26 +163,20 @@ namespace OgreOpcode
       return isInitialized;
    }
 
+   inline Entity* CollisionShape::getEntity()
+   {
+     return mEntity;
+   }
+   inline const Entity* CollisionShape::getEntity() const
+   {
+     return mEntity;
+   }
+
    inline
    Real
-   CollisionShape::GetRadius()
+   CollisionShape::GetRadius() const
    {
-      return radius;
-   }
-
-   inline Vector3 CollisionShape::getSize()
-   {
-      return mSize;
-   }
-
-   inline Vector3 CollisionShape::getCenter()
-   {
-      return Vector3(0, 0, getHeight() / 2.0);
-   }
-
-   inline Real CollisionShape::getHeight()
-   {
-      return getSize().y;
+      return mRadius;
    }
 
    /// Extract triangle coordinates from triangle index.
@@ -178,10 +184,10 @@ namespace OgreOpcode
       void
       CollisionShape::GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
    {
-      int* indexPtr = &(faceData[3 * index]);
-      float* vp0 = &(vertexData[3 * indexPtr[0]]);
-      float* vp1 = &(vertexData[3 * indexPtr[1]]);
-      float* vp2 = &(vertexData[3 * indexPtr[2]]);
+      int* indexPtr = &(mFaceBuf[3 * index]);
+      float* vp0 = &(mVertexBuf[3 * indexPtr[0]]);
+      float* vp1 = &(mVertexBuf[3 * indexPtr[1]]);
+      float* vp2 = &(mVertexBuf[3 * indexPtr[2]]);
       v0 = Vector3(vp0[0], vp0[1], vp0[2]);
       v1 = Vector3(vp1[0], vp1[1], vp1[2]);
       v2 = Vector3(vp2[0], vp2[1], vp2[2]);
