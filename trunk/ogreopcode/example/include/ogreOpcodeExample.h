@@ -87,12 +87,13 @@ private:
    SceneNode* mCamNode;
    Ray ray;
    bool mPlayAnimation;
+   String mDbgMsg;
 public:
 	ogreOpcodeExampleFrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer, CollisionObject* collObj1, CollisionObject* collObj2, CollisionObject* collObj3, SceneNode* camNode)
 		: ExampleFrameListener(win, cam, false, true),
       mGUIRenderer(renderer),
       mShutdownRequested(false),
-      mVisualizeObjects(false),
+      mVisualizeObjects(0),
       mSceneMgr(sceneMgr),
       mCollObj1(collObj1),
       mCollObj2(collObj2),
@@ -110,6 +111,10 @@ public:
       TargetSight->show();
       hotTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("hotGunTarget");    
       hotTargetSight->hide();
+
+      // Move the debug overlay up a bit so we can get 2 lines in.
+      OverlayElement* dbgTxt = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
+      dbgTxt->setTop(dbgTxt->getTop()-dbgTxt->getHeight());
 
 //      camVisualizer = new Ogre::Debug::SphereDebugObject(20.0f);
 //      camVisualizerSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("camVizNode");
@@ -268,11 +273,11 @@ public:
 
       if (mPlayAnimation) {
         mSceneMgr->getEntity("Head1")->getAnimationState("Walk")->addTime(evt.timeSinceLastFrame/5);
-        mCollObj2->GetShape()->Refit();
+        mCollObj2->Refit();
       }
       // This has to be here - debug visualization needs to be updated each frame..
       // but only after we update objects!
-      mCollObj1->setDebug(mVisualizeObjects);
+      mCollObj1->setDebug(mVisualizeObjects&1);
       mCollObj2->setDebug(mVisualizeObjects);
 
 
@@ -285,19 +290,20 @@ public:
       // Do ray testing against everything but the level
       CollisionPair **pick_report;
       int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(ray, 600.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
-      static String nameStr = "";
+      const CollisionReporter &rayrept =
+        CollisionManager::getSingletonPtr()->GetDefaultContext()->GetCheckReport();
       
       if (num_picks > 0)
       {
          TargetSight->hide();
          hotTargetSight->show();
-         nameStr += Ogre::StringConverter::toString(num_picks) + " ";
+         mDbgMsg += Ogre::StringConverter::toString(num_picks) + " ";
          for(int i = 0; i < num_picks; i++)
          {
-            nameStr = "";
+            mDbgMsg = "";
             CollisionObject* yeah = pick_report[i]->co1;
             Vector3 contact = pick_report[i]->contact;
-            nameStr = nameStr + yeah->GetShape()->GetName() + " Contact: " + Ogre::StringConverter::toString(contact);
+            mDbgMsg = mDbgMsg + yeah->GetShape()->GetName() + " Contact: " + StringConverter::toString(contact);
          }
       }
       else
@@ -315,9 +321,22 @@ public:
       if(mCollObj1Picks > 0)
       {
          transAmount = 0.5f;
-         nameStr = "Level encountered " + Ogre::StringConverter::toString(mCollObj1Picks) + " collisions";
+         mDbgMsg = "Level encountered " + Ogre::StringConverter::toString(mCollObj1Picks) + " collisions";
       }
-      mWindow->setDebugText(nameStr);
+      const CollisionReporter &rept =
+        CollisionManager::getSingletonPtr()->GetDefaultContext()->GetCollisionReport();
+      String dbg = mDbgMsg;
+      dbg += 
+        "\nRayOb: "+ StringConverter::toString(rayrept.mTotalObjObjTests) + 
+        " RayBV: "+ StringConverter::toString(rayrept.mTotalBVBVTests) + 
+        " RayPr: "+ StringConverter::toString(rayrept.mTotalBVPrimTests);
+      dbg += 
+        "\nObOb: "+ StringConverter::toString(rept.mTotalObjObjTests) + 
+        " BVBV: "+ StringConverter::toString(rept.mTotalBVBVTests) + 
+        " BVPr: "+ StringConverter::toString(rept.mTotalBVPrimTests) +
+        " PrPr: "+ StringConverter::toString(rept.mTotalPrimPrimTests);
+      mWindow->setDebugText(dbg);
+      
       
       if(mUseBufferedInputMouse)
       {

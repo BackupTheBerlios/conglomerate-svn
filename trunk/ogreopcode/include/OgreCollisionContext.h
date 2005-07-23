@@ -65,6 +65,10 @@ namespace OgreOpcode
       virtual void Visualize(void);
       /// get the collide reports for the collisions computed inside Collide()
       virtual int GetCollisions(CollisionObject *collObj, CollisionPair **&cpPtr);
+      /// get reporter for for last Collide() call.
+      const CollisionReporter& GetCollisionReport() const;
+      /// get reporter for for last Check...() call.
+      const CollisionReporter& GetCheckReport() const;
       /// do a "moving sphere" check against collide object radii in the context
       virtual int MovingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
       /// do a line-model check

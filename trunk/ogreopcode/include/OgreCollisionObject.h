@@ -130,11 +130,11 @@ namespace OgreOpcode
       SceneNode* _global_debug_node;
    protected:
       int id;                     ///< a unique 32 bit id for this object
-      CollisionContext *context;    ///< the collide context this object is currently attached to
+      CollisionContext *mContext;    ///< the collide context this object is currently attached to
       nNode context_node;         ///< attached to context with this node
 
       Real mRadius;               ///< radius of the collision object (normally provided by shape)
-      CollisionShape *shape;       ///< the triangle exact collision shape (optional)
+      CollisionShape *mShape;       ///< the triangle exact collision shape (optional)
       CollisionNode xmin_cnode;          ///< the min/max collision node in the X-Dimension
       CollisionNode xmax_cnode;
       CollisionClass coll_class;      ///< the application defined collision type
@@ -155,11 +155,11 @@ namespace OgreOpcode
 
    public:
       CollisionObject()
-         : context(NULL),
+         : mContext(NULL),
          mRadius(0.0f),
          old_center_offset(0,0,0),
          new_center_offset(0,0,0),
-         shape(NULL),
+         mShape(NULL),
          coll_class(0),
          m_tdelta(-1.0),
          client_data(NULL),
@@ -181,14 +181,14 @@ namespace OgreOpcode
       void SetContext(CollisionContext *c)
       {
          // c may be NULL!!!
-         context = c;
+         mContext = c;
       };
 
       /// <TODO: insert function description here>
       /// @return CollisionContext * <TODO: insert return value description here>
       CollisionContext *GetContext(void)
       {
-         return context;
+         return mContext;
       };
 
       /// <TODO: insert function description here>
@@ -241,7 +241,7 @@ namespace OgreOpcode
       /// @return void <TODO: insert return value description here>
       void SetShape(CollisionShape *s)
       {
-         shape = s;
+         mShape = s;
          if (s)
          {
             SetRadius(s->GetRadius());
@@ -256,7 +256,7 @@ namespace OgreOpcode
       /// @return CollisionShape * <TODO: insert return value description here>
       CollisionShape *GetShape(void)
       {
-         return shape;
+         return mShape;
       };
 
       /// <TODO: insert function description here>
@@ -328,6 +328,13 @@ namespace OgreOpcode
          return num_colls;
       };
 
+      /// Retrieve current vertex data from mesh and refit collision tree
+      void Refit() 
+      {
+        if (mShape)
+          mShape->Refit();
+      }
+      
       void Update(Real tdelta)
       {
          Matrix4 m;
@@ -489,7 +496,7 @@ namespace OgreOpcode
                other_matrix[0][3] = p1.x;
                other_matrix[1][3] = p1.y;
                other_matrix[2][3] = p1.z;
-               if (shape->Collide(ct, self_matrix, other->shape, other_matrix, cr))
+               if (mShape->Collide(ct, self_matrix, other->GetShape(), other_matrix, cr))
                {
                   // CONTACT!!!
                   double dt = (m_tdelta) / num;
@@ -513,9 +520,9 @@ namespace OgreOpcode
       void Collide(void)
       {
          assert(is_attached);
-         assert(context);
+         assert(mContext);
 
-         CollisionReporter *crh = &(context->collideReportHandler);
+         CollisionReporter *crh = &(mContext->collideReportHandler);
 
          // for each overlapping object in the X dimension...
          CollisionNode *cnx = &(xmin_cnode);
@@ -537,17 +544,22 @@ namespace OgreOpcode
             {
                // we have an overlap, mister
 
-               // has this collision already been detected by the
-               // other object?
-               if (!crh->CollisionExists(id,other->id))
+               // has this collision already been checked by the other object?
+               if (!crh->CollisionTested(id,other->id))
                {
                   // no, we're first...
+                  crh->mTotalObjObjTests++;
+                  crh->AddCollisionTest(id,other->id);
 
                   // ask objects whether they collide...
                   // FIXME: probably do velocity-based finer
                   // grained control here ?!?!?!
                   CollisionPair cr;
-                  if (Contact(other,ct,cr))
+                  bool ret = Contact(other,ct,cr);
+                  crh->mTotalBVBVTests += cr.numBVBVTests;
+                  crh->mTotalBVPrimTests += cr.numBVPrimTests;
+                  crh->mTotalPrimPrimTests += cr.numPrimPrimTests;
+                  if (ret)
                   {
                      cr.co1 = this;
                      cr.co2 = other;
@@ -564,9 +576,9 @@ namespace OgreOpcode
       /// Return collision reports for all collisions this object is involved in.
       int GetCollisions(CollisionPair **&crp)
       {
-         assert(context);
+         assert(mContext);
          assert(is_attached);
-         return context->collideReportHandler.GetCollisions(this,crp);
+         return mContext->collideReportHandler.GetCollisions(this,crp);
          return 0;
       };
 
@@ -666,9 +678,9 @@ namespace OgreOpcode
          }
 
          // optionally, render the object's shape
-         if (shape)
+         if (mShape)
          {
-            shape->setDebug(debug);
+            mShape->setDebug(debug);
          }
       }
 
@@ -709,7 +721,7 @@ namespace OgreOpcode
          if (num_colls > 0)
          {
             CollisionPair **pcr;
-            int num = context->GetCollisions(this,pcr);
+            int num = mContext->GetCollisions(this,pcr);
             int i;
             for (i=0; i<num; i++)
             {

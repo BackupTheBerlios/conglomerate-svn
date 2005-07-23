@@ -258,10 +258,15 @@ namespace OgreOpcode
       // perform collision test
       collider.Collide(*(opcTreeCache), &m0, &m1);
 
+      collPair.numBVBVTests = collider.GetNbBVBVTests();
+      collPair.numBVPrimTests = collider.GetNbBVPrimTests();
+      collPair.numPrimPrimTests = collider.GetNbPrimPrimTests();
+
       bool collided = false;
 
       // get the number of collided triangle pairs
       int numPairs = collider.GetNbPairs();
+      
 
       if (numPairs > 0)
       {
@@ -428,6 +433,10 @@ namespace OgreOpcode
       // perform collision
       collider.Collide(ray, opcModel, &opcMatrix);
 
+      collPair.numBVBVTests = collider.GetNbRayBVTests();
+      collPair.numBVPrimTests = collider.GetNbRayPrimTests();
+      collPair.numPrimPrimTests = 0;
+
       // get collision result
       if (collider.GetContactStatus())
       {
@@ -546,6 +555,10 @@ namespace OgreOpcode
 
       // perform collision
       collider.Collide(cache, opcSphere, opcModel, &identity, &opcMatrix);
+
+      collPair.numBVBVTests = collider.GetNbVolumeBVTests();
+      collPair.numBVPrimTests = collider.GetNbVolumePrimTests();
+      collPair.numPrimPrimTests = 0;
       
       // get collision result
       if (collider.GetContactStatus())

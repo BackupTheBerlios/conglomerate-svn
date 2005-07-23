@@ -150,6 +150,18 @@ namespace OgreOpcode
       }
    }
 
+   /// get reporter for for last Collide() call.
+   const CollisionReporter& CollisionContext::GetCollisionReport() const
+   {
+      return collideReportHandler;
+   }
+
+   /// get reporter for for last Check...() call.
+   const CollisionReporter& CollisionContext::GetCheckReport() const
+   {
+      return checkReportHandler;
+   }
+
    /// Visualize all objects in the context.
    void CollisionContext::Visualize(void)
    {
@@ -214,6 +226,8 @@ namespace OgreOpcode
             CollisionType ct = CollisionManager::getSingletonPtr()->QueryCollType(collClass,other->GetCollClass());
             if (COLLTYPE_IGNORE == ct) continue;
 
+            checkReportHandler.mTotalObjObjTests++;
+
             // Trying to extract position information from provided matrices.
             Vector3 p1 = Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]);
             Vector3 v1 = Vector3(Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]) - p1);
@@ -222,6 +236,7 @@ namespace OgreOpcode
             sphere s0(p0,radius);
             sphere s1(p1,other->GetRadius());
             float u0,u1;
+            checkReportHandler.mTotalBVBVTests++;
             if (s0.intersect_sweep(v0,s1,v1,u0,u1))
             {
                if ((u0>=0.0f) && (u0<1.0f))
@@ -292,6 +307,7 @@ namespace OgreOpcode
       {
          CollisionObject *co = (CollisionObject *) contextNode->GetPtr();
 
+
          Vector3 coMin = co->minv;
          Vector3 coMax = co->maxv;
          // see if we have overlaps in all 3 dimensions
@@ -299,7 +315,6 @@ namespace OgreOpcode
              intervalOverlap(bbox.vmin.y,bbox.vmax.y,coMin.y,coMax.y) &&
              intervalOverlap(bbox.vmin.z,bbox.vmax.z,coMin.z,coMax.z) )
          {
-
             // see if the candidate is in the ignore types set
             CollisionType ct = CollisionManager::getSingletonPtr()->QueryCollType(collClass, co->GetCollClass());
             if (COLLTYPE_IGNORE == ct) 
@@ -307,12 +322,17 @@ namespace OgreOpcode
                continue;
             }
 
+
             // check collision
             CollisionShape* shape = co->GetShape();
             if (shape)
             {
+               checkReportHandler.mTotalObjObjTests++;
                CollisionPair cp;
-               if (shape->RayCheck(collType, co->GetTransform(), line, dist, cp))
+               bool ret = shape->RayCheck(collType, co->GetTransform(), line, dist, cp);
+               checkReportHandler.mTotalBVBVTests += cp.numBVBVTests;
+               checkReportHandler.mTotalBVBVTests += cp.numBVPrimTests;
+               if (ret)
                {
                   cp.co1 = co;
                   cp.co2 = co;
@@ -387,11 +407,13 @@ namespace OgreOpcode
                continue;
             }
 
+            checkReportHandler.mTotalObjObjTests++;
             if (COLLTYPE_QUICK == ct)
             {
                // do sphere-sphere collision check
                const Matrix4 coTrans = co->GetTransform();
                s0.set(coTrans[0][3], coTrans[1][3], coTrans[2][3], co->GetRadius());
+               checkReportHandler.mTotalBVBVTests++;
                if (ball.intersects(s0))
                {
                   CollisionPair cp;
@@ -407,7 +429,10 @@ namespace OgreOpcode
                if (shape)
                {
                   CollisionPair cp;
-                  if (shape->SphereCheck(collType, co->GetTransform(), theSphere, cp))
+                  bool ret = shape->SphereCheck(collType, co->GetTransform(), theSphere, cp);
+                  checkReportHandler.mTotalBVBVTests += cp.numBVBVTests;
+                  checkReportHandler.mTotalBVPrimTests += cp.numBVPrimTests;
+                  if (ret)
                   {
                      cp.co1 = co;
                      cp.co2 = co;
