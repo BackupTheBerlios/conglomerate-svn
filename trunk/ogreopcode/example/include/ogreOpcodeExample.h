@@ -745,14 +745,14 @@ protected:
       CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("level1");
       collideShape->Load(ogreLevel);
       collideObject = collideContext->NewObject();
-      collideObject->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass("level"));
+      collideObject->SetCollClass("level");
       collideObject->SetShape(collideShape);
       collideContext->AddObject(collideObject);
 
       CollisionShape *collideShape1 = CollisionManager::getSingletonPtr()->NewShape("ogrehead1");
       collideShape1->Load(ogreCam);
       collideObject1 = collideContext->NewObject();
-      collideObject1->SetCollClass(CollisionManager::getSingletonPtr()->QueryCollClass("ogrehead"));
+      collideObject1->SetCollClass("ogrehead");
       collideObject1->SetShape(collideShape1);
       collideContext->AddObject(collideObject1);
 
@@ -764,6 +764,11 @@ protected:
       // Create a light
       Light* l = mSceneMgr->createLight("MainLight");
       l->setPosition(20,80,50);
+      l->setCastShadows(false);
+
+      Light* l2 = mSceneMgr->createLight("ShadowLight");
+      l2->setPosition(20,550,350);
+      l2->setCastShadows(true);
 	}
 
    // Create new frame listener

@@ -68,10 +68,33 @@ namespace OgreOpcode
       bool IsInitialized();
       /// get radius of collide mesh
       Real GetRadius() const;
-      /// load collide geometry from mesh
+      /// load collide geometry from mesh, and build a collision tree
       virtual bool Load(Entity* ent);
-      /// Retrieve current vertex data from mesh and refit collision tree
+      /// Retrieve current vertex data from mesh and refit collision tree.
+      /// This is an O(n) operation in the number of vertices in the mesh.
       virtual bool Refit();
+      /// Reload the collision geometry from mesh, rebuild collision tree from scratch. 
+      /// Potentially very slow. Only necessary if the mesh has drastically changed,
+      /// like topology changing deformations, or a change in the number of tris.
+      /// In most cases RefitToMesh() is sufficient, and much faster.
+      /// Under usual circumstances there is no need to call this method.
+      virtual bool Rebuild();
+      /// Refits the collision tree to the currently cached vertex data.
+      /// This is an O(n) operation in the number of vertices in the mesh.
+      /// This is an advanced method.  It assumes that the user is manually 
+      /// updating both the CollisionShape's cached data and the actual mesh
+      /// hardware buffers.  Mostly useful for implementing something like 
+      /// deformable body physics.
+      virtual bool _RefitToCachedData();
+      /// Rebuild collision tree from scratch using currently cached vertex data
+      /// This is potentially quite slow.  Only necessary if the mesh has drastically changed,
+      /// like topology changing deformations, or a change in the number of tris.
+      /// In most cases _RefitToCachedGeometry() is sufficient, and much faster.
+      /// This is an advanced method.  It assumes that the user is manually 
+      /// updating both the CollisionShape's cached data and the actual mesh
+      /// hardware buffers.  Mostly useful for implementing something like
+      /// deformable body physics.
+      virtual bool _RebuildFromCachedData();
       /// perform collision with other CollisionShape
       virtual bool Collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
       /// perform collision with line

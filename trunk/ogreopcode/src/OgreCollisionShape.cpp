@@ -31,6 +31,11 @@
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
 
+// Define the following if you have not yet applied this patch:
+//   http://sourceforge.net/tracker/index.php?func=detail&aid=1243841&group_id=2997&atid=302997
+// to your Ogre installation: 
+// #define NO_BAXISSIMO_OGRE_ENTITY_PATCH
+
 namespace OgreOpcode
 {
 
@@ -201,6 +206,11 @@ namespace OgreOpcode
    //------------------------------------------------------------------------
    CollisionShape::~CollisionShape()
    {
+#ifndef NO_BAXISSIMO_OGRE_ENTITY_PATCH
+      if (mEntity && mEntity->hasSkeleton()) {
+        mEntity->removeSoftwareSkinningRequest(false);
+      }
+#endif
       assert(0 == refCount);
       delete[] mVertexBuf;
       delete[] mFaceBuf;
@@ -797,13 +807,16 @@ namespace OgreOpcode
       size_t index_offset = 0;
       int numOfSubs = 0;
 
-      bool forceManualSoftwareBlending = entity->isHardwareSkinningEnabled() && entity->hasSkeleton();
+#ifdef NO_BAXISSIMO_OGRE_ENTITY_PATCH
+      bool useSoftwareBlendingVertices = false;
+#else
       bool useSoftwareBlendingVertices = entity->hasSkeleton();
 
-      if(forceManualSoftwareBlending)
+      if (useSoftwareBlendingVertices) 
       {
-         entity->_calculateBlendedVertexData();
+        entity->_updateAnimation();
       }
+#endif
 
       // Run through the submeshes again, adding the data into the arrays
       for ( size_t i = 0; i < mesh->getNumSubMeshes(); ++i)
@@ -821,8 +834,6 @@ namespace OgreOpcode
              vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
            else
              vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
-
-           //LogManager::getSingleton().logMessage("Submesh "+sc::toString(i)+": 0x" + sc::toString((unsigned long)submesh,8,'0',std::ios::fmtflags(std::ios::hex)));
 
            if((!useSharedVertices)||(useSharedVertices && !added_shared))
            {
@@ -972,44 +983,57 @@ namespace OgreOpcode
       assert(ent);
       assert(!mVertexBuf && !mFaceBuf);
       mEntity = ent;
+      
+#ifndef NO_BAXISSIMO_OGRE_ENTITY_PATCH
+      if (mEntity->hasSkeleton()) {
+        mEntity->addSoftwareSkinningRequest(false);
+      }
+#endif
 
-      size_t vertex_count = 0;
-      size_t index_count  = 0;
-      countIndicesAndVertices(mEntity, index_count, vertex_count);
-      // Allocate space for the vertices and indices
-      mVertexBuf = new float[vertex_count * 3];
-      mFaceBuf = new int[index_count];
-
-      convertMeshData(mEntity, mVertexBuf, vertex_count, mFaceBuf, index_count );
-
-      numFaces = index_count / 3;
-      numVertices = vertex_count;
-
-      //typedef StringConverter sc;
-      //LogManager::getSingleton().logMessage("NumFace: " + sc::toString(numFaces));
-      //LogManager::getSingleton().logMessage("VertexCount: " + sc::toString(numVertices));
-      //for (int i=0; i<10; i++) {
-      //  LogManager::getSingleton().logMessage("Vertex "+sc::toString(i)+": " + sc::toString(Vector3(mVertexBuf+3*i)));
-      //}
-
-      opcMeshAccess.SetNbTriangles(numFaces);
-      opcMeshAccess.SetNbVertices(numVertices);
-      opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
-      opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
-
-      // Build tree
-      //Opcode::BuildSettings Settings;
-      //Settings.mRules = Opcode::SPLIT_BEST_AXIS; // dunno what this means, stole it from ODE :)
-
-      Opcode::OPCODECREATE opcc;
-      _prepareOpcodeCreateParams(opcc);
-      opcModel.Build(opcc);
-
-      calculateSize();
-
-      return true;
+      return Rebuild();
    }
 
+   //------------------------------------------------------------------------
+   /// <TODO: insert function description here>
+   /// @return bool <TODO: insert return value description here>
+   bool CollisionShape::Rebuild()
+   {
+     assert(mEntity);
+
+     // NOTE: Assuming presence or absence of skeleton hasn't changed!
+
+     size_t vertex_count = 0;
+     size_t index_count  = 0;
+     countIndicesAndVertices(mEntity, index_count, vertex_count);
+
+     // Re-Allocate space for the vertices and indices
+     if (mVertexBuf && numVertices != vertex_count) {
+       delete [] mVertexBuf;
+       mVertexBuf = 0;
+     }
+     if (mFaceBuf && numFaces != index_count/3) {
+       delete [] mFaceBuf;
+       mFaceBuf = 0;
+     }
+
+     if (!mVertexBuf)
+      mVertexBuf = new float[vertex_count * 3];
+     if (!mFaceBuf)
+      mFaceBuf = new int[index_count];
+
+     convertMeshData(mEntity, mVertexBuf, vertex_count, mFaceBuf, index_count );
+
+     numFaces = index_count / 3;
+     numVertices = vertex_count;
+
+     opcMeshAccess.SetNbTriangles(numFaces);
+     opcMeshAccess.SetNbVertices(numVertices);
+     opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
+     opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
+
+     return _RebuildFromCachedData();
+
+   }
 
    //------------------------------------------------------------------------
    /// <TODO: insert function description here>
@@ -1017,9 +1041,6 @@ namespace OgreOpcode
    bool CollisionShape::Refit()
    {
      assert(mEntity && mVertexBuf);
-     // Urg causes crashes...
-     //if (Root::getSingleton()._getCurrentSceneManager())
-     //  mEntity->_updateAnimation();
 
 #ifdef _DEBUG
      size_t vertex_count = 0;
@@ -1030,16 +1051,48 @@ namespace OgreOpcode
 
      convertMeshData(mEntity, mVertexBuf, numVertices);
 
+     return _RefitToCachedData();
+   }
+
+
+   //------------------------------------------------------------------------
+   /// <TODO: insert function description here>
+   /// @return bool <TODO: insert return value description here>
+   bool CollisionShape::_RefitToCachedData()
+   {
+     assert(mEntity && mVertexBuf);
+
      // Rebuild tree
      if (!opcModel.Refit()) 
      {
-       LogManager::getSingleton().logMessage("OgreOpcode::CollisionShape::ReLoad(): OPCODE Quick refit not possible with the given tree type.");
+       LogManager::getSingleton().logMessage(
+         "OgreOpcode::CollisionShape::_RefitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
        // Backup plan -- rebuild full tree
        opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
        Opcode::OPCODECREATE opcc;
        _prepareOpcodeCreateParams(opcc);
        opcModel.Build(opcc);
      }
+
+     calculateSize();
+
+     if (_debug_obj) {
+       setDebug(true);
+     }
+
+     return true;
+   }
+
+   //------------------------------------------------------------------------
+   /// <TODO: insert function description here>
+   /// @return bool <TODO: insert return value description here>
+   bool CollisionShape::_RebuildFromCachedData()
+   {
+     assert(mEntity && mVertexBuf && mFaceBuf);
+
+     Opcode::OPCODECREATE opcc;
+     _prepareOpcodeCreateParams(opcc);
+     opcModel.Build(opcc);
 
      calculateSize();
 

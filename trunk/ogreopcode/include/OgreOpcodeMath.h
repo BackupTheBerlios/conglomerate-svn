@@ -113,7 +113,7 @@ namespace OgreOpcode
          //--- get the face normal of the triangle ---------------------------------
          Vector3 normal(void) const
          {
-            Vector3 cross(e0*e1);
+            Vector3 cross = e0.crossProduct(e1);
             cross.normalise();
             return cross;
          };
@@ -152,7 +152,7 @@ namespace OgreOpcode
             // the plane normal.  If the angle between the line direction and normal
             // is small, then the line is effectively parallel to the triangle.
             const Real fTolerance = 1e-04f;
-            Vector3 norm(e0*e1);
+            Vector3 norm = e0.crossProduct(e1);
             Real fDenominator = norm.dotProduct(line.m);
             //Real fLLenSqr     = line.m % line.m;
             //Real fNLenSqr     = norm % norm;
@@ -208,7 +208,7 @@ namespace OgreOpcode
             // the plane normal.  If the angle between the line direction and normal
             // is small, then the line is effectively parallel to the triangle.
             const Real fTolerance = 1e-04f;
-            Vector3 norm(e0*e1);
+            Vector3 norm = e0.crossProduct(e1);
             Real fDenominator = norm.dotProduct(line.m);
             Real fLLenSqr     = line.m.dotProduct(line.m);
             Real fNLenSqr     = norm.dotProduct(norm);

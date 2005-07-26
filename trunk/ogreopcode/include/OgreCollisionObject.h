@@ -260,13 +260,21 @@ namespace OgreOpcode
       };
 
       /// <TODO: insert function description here>
-      /// @param [in]       cc CollisionClass     <TODO: insert parameter description here>
-      /// @return void <TODO: insert return value description here>
+      /// @param [in] cc CollisionClass     <TODO: insert parameter description here>
+      /// @return void
       void SetCollClass(CollisionClass cc)
       {
-         coll_class = cc;
+        coll_class = cc;
       };
-      
+
+      /// <TODO: insert function description here>
+      /// @param [in]       ccstr registered CollisionClass string
+      /// @return void
+      void SetCollClass(const char *ccstr)
+      {
+        coll_class = CollisionManager::getSingletonPtr()->QueryCollClass(ccstr);
+      };
+
       /// <TODO: insert function description here>
       /// @return CollisionClass <TODO: insert return value description here>
       CollisionClass GetCollClass(void)
