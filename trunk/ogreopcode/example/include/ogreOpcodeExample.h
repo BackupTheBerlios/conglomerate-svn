@@ -116,119 +116,51 @@ public:
       OverlayElement* dbgTxt = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
       dbgTxt->setTop(dbgTxt->getTop()-dbgTxt->getHeight());
 
-//      camVisualizer = new Ogre::Debug::SphereDebugObject(20.0f);
-//      camVisualizerSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("camVizNode");
-//      camVisualizerSceneNode->attachObject(camVisualizer);
-//      camVisualizer->draw();
       switchMouseMode();
    }
 
-
-   Vector3 CollideAndSlide(const Vector3& pos, float radius, const Vector3& vel)
+   Vector3 CheckCollision(const Vector3& pos, float radius, const Vector3& vel)
    {
       static int recursionDepth = 0;
-      // Our 'very close distance' is scaled by the radius, because all the
-      // collision detection happens in 'unit sphere space', i.e. all geometry
-      // is divided by the sphere radius so as to simplify computation
-
-      // Note that the position and velocity have already been scaled by the radius
-      float veryCloseDistance = radius;
-//      float veryCloseDistance = 1.0f / radius;
-
-      // Check for maximum recursion depth
-      if (recursionDepth > 100)
-      {
-         recursionDepth = 0;
-         return pos + vel;
-      }
 
       CollisionPair **pick_report;
-      Sphere cameraSphere = Sphere(pos, 1);
-      int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
+      Vector3 destinationPoint = pos + vel;
+      Vector3 new_vel(0,0,0);
+      Ogre::Sphere cameraSphere = Ogre::Sphere(destinationPoint, 18.0f);
+      int numCamColls = 0;
+      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
 
       // If there was no collision, we're done
       if (numCamColls == 0)
-         return pos + vel;
-
-      
-      // Else a collision has occured
-
-      // The original, unobstructed destination point
-      Vector3 destinationPoint = pos + vel;
-
-      // Our new start point, which we will probably change
-      Vector3 newBasePoint = pos;
-
-      // Only move base point if we are more than 'veryCloseDistance' away from
-      // the intersection point
-      Vector3 intersectPt = pick_report[0]->contact;
-//      Real distanceToIntersection = Math::Sqrt( ((intersectPt.x-newBasePoint.x)*(intersectPt.x-newBasePoint.x)) + ((intersectPt.y-newBasePoint.y)*(intersectPt.y-newBasePoint.y)) + ((intersectPt.z-newBasePoint.z)*(intersectPt.z-newBasePoint.z)) );
-      Real distanceToIntersection = Math::Sqrt( (newBasePoint.x-intersectPt.x)*(newBasePoint.x-intersectPt.x) + (newBasePoint.y-intersectPt.y)*(newBasePoint.y-intersectPt.y) + (newBasePoint.z-intersectPt.z)*(newBasePoint.z-intersectPt.z) );
-      if (distanceToIntersection >= veryCloseDistance)
       {
-         newBasePoint = pos + vel.normalisedCopy() *
-            (distanceToIntersection - veryCloseDistance);
-         intersectPt -= vel.normalisedCopy() * veryCloseDistance;
+         recursionDepth = 0;
+         return vel;
       }
 
-      // Determine the sliding plane
-      Vector3 planeOrigin = intersectPt;
-      Vector3 planeNormal = newBasePoint - intersectPt;
-      planeNormal.normalise();
-      Plane slidingPlane(planeOrigin, planeNormal);
+      // Else a collision has occured
 
-      // Find our new destination point
-      Vector3 newDestinationPoint = destinationPoint -
-         slidingPlane.getDistance(destinationPoint) *
-         planeNormal;
-
-      // Generate the slide vector
-      Vector3 newVelocity = newDestinationPoint - intersectPt;
+      for(int i = 0; i < numCamColls; ++i)
+      {
+         Plane collPlane(pick_report[i]->contact, pick_report[i]->co2_normal);
+         new_vel += pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(destinationPoint) - (collPlane.d - radius));
+         if(recursionDepth > 50)
+         {
+            recursionDepth = 0;
+            return pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(pick_report[i]->contact) - (collPlane.d - radius));
+         }
+      }
 
       // Don't recurse if the velocity vector is small enough
-      if (newVelocity.length() < 0.01f)
-         return newBasePoint;
+      if (new_vel.length() < radius)
+      {
+         recursionDepth = 0;
+         return new_vel;
+      }
 
       // Recurse
       recursionDepth++;
-      return CollideAndSlide(newBasePoint, radius, newVelocity);
+      return CheckCollision(pos, radius, new_vel);
    }
-
-   Vector3 CheckCollision(Vector3& pos, float radius, Vector3& vel)
-   {
-      static int numRecursions = 0;
-      if(numRecursions > 20)
-      {
-         numRecursions = 0;
-         return vel;
-      }
-        
-      CollisionPair **pick_report = NULL;
-      Sphere cameraSphere = Sphere(pos, radius);
-      int numCamColls = 0;
-      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
-//      int numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->MovingSphereCheck(pos, vel, radius, COLLTYPE_ALWAYS_EXACT, pick_report);
-      Vector3 f(0,0,0);
-      Vector3 p(pos.x, pos.y+radius, pos.z);
-      Vector3 newVel = vel;
-      if(numCamColls > 0)
-      {
-         for(int i = 0; i < numCamColls; ++i)
-         {
-            Vector3 tmp = pick_report[i]->co2_normal * (-pick_report[i]->co2_normal.dotProduct(p) + pick_report[i]->co2_normal.dotProduct(pick_report[i]->contact) + radius);
-            f.x += tmp.x;
-            f.y += tmp.y;
-            f.z += tmp.z;
-         }
-         f /= numCamColls;
-         newVel = pos - f;
-      }
-      else
-         return newVel;
-      numRecursions++;
-      CheckCollision(f, radius, newVel);
-   }
-
 
    void moveCamera()
    {
@@ -244,13 +176,10 @@ public:
       // Yep, pressing SPACEBAR will also turn off crappy camera collision handling ..
       if(!mVisualizeObjects)
          amount2Move = CheckCollision(camPosition, camRadius, mTranslateVector);
-//         amount2Move = CollideAndSlide(camPosition, camRadius, mTranslateVector);
 
       mCamera->yaw(mRotX);
       mCamera->pitch(mRotY);
-      
       mCamera->moveRelative(amount2Move);
-//         mCamera->setPosition(amount2Move);
    }
 
    bool frameStarted(const FrameEvent& evt)
@@ -267,9 +196,6 @@ public:
       transTraveled += transAmount;
 
       mSceneMgr->getSceneNode("cammnode")->translate(0.0f, transAmount, 0.0f);
-
-      //mSceneMgr->getSceneNode("camVizNode")->setPosition(mCamera->getDerivedPosition());
-      //mSceneMgr->getSceneNode("camVizNode")->setOrientation(mCamera->getDerivedOrientation());
 
       if (mPlayAnimation) {
         mSceneMgr->getEntity("Head1")->getAnimationState("Walk")->addTime(evt.timeSinceLastFrame/5);

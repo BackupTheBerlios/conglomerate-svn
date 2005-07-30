@@ -74,9 +74,11 @@ namespace OgreOpcode
       Opcode::AABBTreeCollider opcTreeCollider;
       Opcode::RayCollider      opcRayCollider;
       Opcode::SphereCollider   opcSphereCollider;
+      Opcode::PlanesCollider   opcPlanesCollider;
       Opcode::BVTCache         opcTreeCache;
       Opcode::CollisionFaces   opcFaceCache;
       Opcode::SphereCache      opcSphereCache;
+      Opcode::PlanesCache      opcPlanesCache;
    protected:
       int unique_id;
       nList context_list;

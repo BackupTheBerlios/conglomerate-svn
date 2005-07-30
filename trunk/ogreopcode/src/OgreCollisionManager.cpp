@@ -63,6 +63,10 @@ namespace OgreOpcode
       // setup the sphere collider
       opcSphereCollider.SetFirstContact(false);             // report all contacts
       opcSphereCollider.SetTemporalCoherence(false);        // no temporal coherence
+
+      // setup the planes collider
+      opcPlanesCollider.SetFirstContact(false);             // report all contacts
+      opcPlanesCollider.SetTemporalCoherence(false);        // no temporal coherence
    }
 
    CollisionManager::~CollisionManager()
