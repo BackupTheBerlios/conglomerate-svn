@@ -122,17 +122,19 @@ public:
    Vector3 CheckCollision(const Vector3& pos, float radius, const Vector3& vel)
    {
       static int recursionDepth = 0;
+      static Vector3 lastknownGood(0,0,0);
 
       CollisionPair **pick_report;
       Vector3 destinationPoint = pos + vel;
       Vector3 new_vel(0,0,0);
-      Ogre::Sphere cameraSphere = Ogre::Sphere(destinationPoint, 18.0f);
+      Ogre::Sphere cameraSphere = Ogre::Sphere(destinationPoint, radius);
       int numCamColls = 0;
-      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
+      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
 
       // If there was no collision, we're done
       if (numCamColls == 0)
       {
+         lastknownGood = pos + vel;
          recursionDepth = 0;
          return vel;
       }
@@ -143,10 +145,16 @@ public:
       {
          Plane collPlane(pick_report[i]->contact, pick_report[i]->co2_normal);
          new_vel += pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(destinationPoint) - (collPlane.d - radius));
+         //Vector3 planeOrigin = destinationPoint;//pick_report[i]->contact;
+         //Vector3 planeNormal = pick_report[i]->co2_normal;
+         //planeNormal.normalise();
+         //Plane slidingPlane(planeOrigin, planeNormal);
+         //new_vel += (vel - new_vel) * slidingPlane.normal;
          if(recursionDepth > 50)
          {
             recursionDepth = 0;
-            return pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(pick_report[i]->contact) - (collPlane.d - radius));
+            mCamera->setPosition(lastknownGood);
+            return Vector3(0,0,0);
          }
       }
 
@@ -169,17 +177,27 @@ public:
       // Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW (e.g. airplane)
 
       Vector3 camPosition = mCamera->getDerivedPosition();
-      Real camRadius = 18.0f;
+      Real camRadius = 38.0f;
     
       Vector3 amount2Move(mTranslateVector);
 
-      // Yep, pressing SPACEBAR will also turn off crappy camera collision handling ..
+      // Yep, pressing V will also turn off crappy camera collision handling ..
       if(!mVisualizeObjects)
          amount2Move = CheckCollision(camPosition, camRadius, mTranslateVector);
 
       mCamera->yaw(mRotX);
       mCamera->pitch(mRotY);
       mCamera->moveRelative(amount2Move);
+
+      // Apply some gravity
+      amount2Move = Vector3(0, -0.89f, 0);
+      camPosition = mCamera->getDerivedPosition();
+      if(!mVisualizeObjects)
+      {
+         amount2Move = CheckCollision(camPosition, camRadius, amount2Move);
+         mCamera->moveRelative(amount2Move);
+      }
+
    }
 
    bool frameStarted(const FrameEvent& evt)
@@ -412,10 +430,16 @@ public:
             "O: " + StringConverter::toString(mCamera->getDerivedOrientation()));
       }
 
-      if (mInputDevice->isKeyDown(KC_SPACE) && mTimeUntilNextToggle <=0)
+      if (mInputDevice->isKeyDown(KC_V) && mTimeUntilNextToggle <=0)
       {
          mVisualizeObjects = !mVisualizeObjects;
          mTimeUntilNextToggle = 0.5;
+      }
+
+      if (mInputDevice->isKeyDown(KC_SPACE) && mTimeUntilNextToggle <=0)
+      {
+         mCamera->moveRelative(Vector3(0, 3.0f, 0));
+         //mTimeUntilNextToggle = 0.5;
       }
 
       if (mInputDevice->isKeyDown(KC_SEMICOLON) && mTimeUntilNextToggle <= 0)
