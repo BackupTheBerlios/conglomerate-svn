@@ -124,6 +124,8 @@ public:
       static int recursionDepth = 0;
       static Vector3 lastknownGood(0,0,0);
 
+      // I have to do some velocity based tests here!
+      // Do I really need to do the swept sphere tests manually? Or will OPCODE help me here?
       CollisionPair **pick_report;
       Vector3 destinationPoint = pos + vel;
       Vector3 new_vel(0,0,0);
