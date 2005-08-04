@@ -144,6 +144,7 @@ public:
       for(int i = 0; i < numCamColls; ++i)
       {
          Plane collPlane(pick_report[i]->contact, pick_report[i]->co2_normal);
+         //TODO: Check if I passed through the walls! (ie the destinationPoint is behind the collision plane
          new_vel += pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(destinationPoint) - (collPlane.d - radius));
          //Vector3 planeOrigin = destinationPoint;//pick_report[i]->contact;
          //Vector3 planeNormal = pick_report[i]->co2_normal;
