@@ -119,42 +119,89 @@ public:
       switchMouseMode();
    }
 
+   Real IntersectRayPlane(Vector3 rOrigin, Vector3 rVector, Vector3 pOrigin, Vector3 pNormal) 
+   {
+
+      Real d = - pNormal.dotProduct(pOrigin);
+
+      Real numer = pNormal.dotProduct(rOrigin) + d;
+      Real denom = pNormal.dotProduct(rVector);
+
+      if (denom == 0)  // normal is orthogonal to vector, cant intersect
+         return (-1.0f);
+
+      return -(numer / denom);	
+   }
+
+   void SetLength(Vector3& v, Real l)
+   {
+      Real len = Math::Sqrt(v.x*v.x + v.y*v.y + v.z*v.z);	
+      v.x *= l/len;
+      v.y *= l/len;
+      v.z *= l/len;
+   } 
+
    Vector3 CheckCollision(const Vector3& pos, float radius, const Vector3& vel)
    {
-      static int recursionDepth = 0;
-      static Vector3 lastknownGood(0,0,0);
+      static int recursionDepth = 0;         // keeping track of recursions
+      static Vector3 lastknownGood(0,0,0);   // last safe position if everything else fails
 
-      // I have to do some velocity based tests here!
-      // Do I really need to do the swept sphere tests manually? Or will OPCODE help me here?
+      // Collision results
+      CollisionPair **ray_pick_report;
       CollisionPair **pick_report;
+      
+      // The position to test against
       Vector3 destinationPoint = pos + vel;
       Vector3 new_vel(0,0,0);
-      Ogre::Sphere cameraSphere = Ogre::Sphere(destinationPoint, radius);
       int numCamColls = 0;
-      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
-
-      // If there was no collision, we're done
+      
+      // First, construct a ray along the velocity vector and test for collisions.
+      Ray testRay(pos, vel);
+      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(testRay, 600.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, ray_pick_report);
       if (numCamColls == 0)
       {
+         // This means that we are more than 600 units away from any potential collisions
+         // update last known good position, reset recursion count and return original velocity
          lastknownGood = pos + vel;
          recursionDepth = 0;
          return vel;
       }
 
-      // Else a collision has occured
+      // Okay, we are maybe hitting something here..
+      // Measure the distance to the nearest possible collision
+      Real distToPlaneIntersection = IntersectRayPlane(ray_pick_report[0]->contact, vel, pos, ray_pick_report[0]->co2_normal);
+      // Construct a Vector3 and set its length to that distance
+      Vector3 adjVel = vel;
+      SetLength(adjVel, distToPlaneIntersection);
+      // If we are further away than the nearest possible collision, we have travelled too far
+      if(vel.length() > (adjVel.length() + 0.05f))
+         destinationPoint = pos + adjVel;   // modify the destination point if we are behind it.
+      
 
+      // Now - perform the real collision detection - this time with a sphere.
+      Ogre::Sphere cameraSphere = Ogre::Sphere(destinationPoint, radius);
+      numCamColls = 0;
+      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
+
+      if (numCamColls == 0)
+      {
+         // Nope. We are not hitting anything. Update last known good, reset recursion counter and return the velocity.
+         lastknownGood = pos + vel;
+         recursionDepth = 0;
+         return vel;
+      }
+
+      
+      // We are hitting something!
       for(int i = 0; i < numCamColls; ++i)
       {
+         // Adjust the velocity to prevent the camera from passing through walls, etc.
          Plane collPlane(pick_report[i]->contact, pick_report[i]->co2_normal);
-         //TODO: Check if I passed through the walls! (ie the destinationPoint is behind the collision plane
          new_vel += pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(destinationPoint) - (collPlane.d - radius));
-         //Vector3 planeOrigin = destinationPoint;//pick_report[i]->contact;
-         //Vector3 planeNormal = pick_report[i]->co2_normal;
-         //planeNormal.normalise();
-         //Plane slidingPlane(planeOrigin, planeNormal);
-         //new_vel += (vel - new_vel) * slidingPlane.normal;
+         
          if(recursionDepth > 50)
          {
+            // Shit. We are stuck. Update the camera to match the last known good position and return nothing.
             recursionDepth = 0;
             mCamera->setPosition(lastknownGood);
             return Vector3(0,0,0);
@@ -162,7 +209,7 @@ public:
       }
 
       // Don't recurse if the velocity vector is small enough
-      if (new_vel.length() < radius)
+      if (new_vel.length() < 0.001f)
       {
          recursionDepth = 0;
          return new_vel;
@@ -175,13 +222,8 @@ public:
 
    void moveCamera()
    {
-
-      // Make all the changes to the camera
-      // Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW (e.g. airplane)
-
       Vector3 camPosition = mCamera->getDerivedPosition();
       Real camRadius = 38.0f;
-    
       Vector3 amount2Move(mTranslateVector);
 
       // Yep, pressing V will also turn off crappy camera collision handling ..
@@ -192,7 +234,7 @@ public:
       mCamera->pitch(mRotY);
       mCamera->moveRelative(amount2Move);
 
-      // Apply some gravity
+      // Apply some gravity in a second collision detection pass.
       amount2Move = Vector3(0, -0.89f, 0);
       camPosition = mCamera->getDerivedPosition();
       if(!mVisualizeObjects)
