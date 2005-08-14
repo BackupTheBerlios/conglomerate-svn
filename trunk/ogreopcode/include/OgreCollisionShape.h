@@ -67,7 +67,7 @@ namespace OgreOpcode
       /// has object been initialized?
       bool IsInitialized();
       /// get radius of collide mesh
-      Real GetRadius() const;
+      virtual Real GetRadius() const;
       /// load collide geometry from mesh, and build a collision tree
       virtual bool Load(Entity* ent);
       /// Retrieve current vertex data from mesh and refit collision tree.
