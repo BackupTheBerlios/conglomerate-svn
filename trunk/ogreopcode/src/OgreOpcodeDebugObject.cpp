@@ -2,7 +2,7 @@
 ///  @file OgreOpcodeDebugObject.cpp
 ///  @brief <TODO: insert file description here>
 ///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
-///  @author jacmoe @date 28-05-2005
+///  @author The OgreOpcode Team @date 28-05-2005
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.

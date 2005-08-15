@@ -2,7 +2,7 @@
 ///  @file OgreCollisionShape.cpp
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 28-05-2005
+///  @author The OgreOpcode Team @date 28-05-2005
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///

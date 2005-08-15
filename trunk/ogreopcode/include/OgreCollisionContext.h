@@ -2,7 +2,7 @@
 ///  @file OgreCollisionContext.h
 ///  @brief Contains the definition of the CollisionContext class.
 ///
-///  @author jacmoe @date 28-05-2005
+///  @author The OgreOpcode Team @date 28-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  

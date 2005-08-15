@@ -2,7 +2,7 @@
 ///  @file OgreOpcode.h
 ///  @brief Main include file for clients.
 ///
-///  @author jacmoe @date 31-05-2005
+///  @author The OgreOpcode Team @date 31-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  

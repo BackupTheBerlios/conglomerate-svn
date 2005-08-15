@@ -2,7 +2,7 @@
 ///  @file OgreCollisionObject.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 29-05-2005
+///  @author The OgreOpcode Team @date 29-05-2005
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///

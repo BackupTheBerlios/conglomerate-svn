@@ -2,7 +2,7 @@
 ///  @file OgreCollisionManager.cpp
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 28-05-2005
+///  @author The OgreOpcode Team @date 28-05-2005
 ///  
 ///  This file is part of OgreOpcode.
 ///  
@@ -67,6 +67,10 @@ namespace OgreOpcode
       // setup the planes collider
       opcPlanesCollider.SetFirstContact(false);             // report all contacts
       opcPlanesCollider.SetTemporalCoherence(false);        // no temporal coherence
+
+      // setup the LSS collider
+      opcLSSCollider.SetFirstContact(false);
+      opcLSSCollider.SetTemporalCoherence(false);        // no temporal coherence
    }
 
    CollisionManager::~CollisionManager()

@@ -2,7 +2,7 @@
 ///  @file OgreCollisionManager.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author jacmoe @date 29-05-2005
+///  @author The OgreOpcode Team @date 29-05-2005
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
@@ -75,10 +75,12 @@ namespace OgreOpcode
       Opcode::RayCollider      opcRayCollider;
       Opcode::SphereCollider   opcSphereCollider;
       Opcode::PlanesCollider   opcPlanesCollider;
+      Opcode::LSSCollider      opcLSSCollider;
       Opcode::BVTCache         opcTreeCache;
       Opcode::CollisionFaces   opcFaceCache;
       Opcode::SphereCache      opcSphereCache;
       Opcode::PlanesCache      opcPlanesCache;
+      Opcode::LSSCache         opcLSSCache;
    protected:
       int unique_id;
       nList context_list;
