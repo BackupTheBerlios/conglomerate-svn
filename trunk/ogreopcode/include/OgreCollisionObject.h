@@ -9,7 +9,7 @@
 ///  This file is part of OgreOpcode.
 ///
 ///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
-///  
+///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -39,10 +39,10 @@ using namespace OgreOpcode::Details;
 namespace OgreOpcode
 {
    class CollisionObject;
-   
+
    namespace Details
    {
-      /// A node in a sorted 1-dimensional collision list. 
+      /// A node in a sorted 1-dimensional collision list.
       /// Keeps a value (x,y or z coordinate of the node) and a back-pointer
       /// to its CollisionObject.
       class CollisionNode : public nNode
@@ -198,7 +198,7 @@ namespace OgreOpcode
       {
          id = i;
       };
-      
+
       /// <TODO: insert function description here>
       /// @return int <TODO: insert return value description here>
       int GetId(void)
@@ -213,7 +213,7 @@ namespace OgreOpcode
       {
          is_attached = b;
       };
-      
+
       /// <TODO: insert function description here>
       /// @return bool <TODO: insert return value description here>
       bool IsAttached(void)
@@ -228,7 +228,7 @@ namespace OgreOpcode
       {
          mRadius = f;
       };
-      
+
       /// <TODO: insert function description here>
       /// @return float <TODO: insert return value description here>
       float GetRadius(void)
@@ -251,7 +251,7 @@ namespace OgreOpcode
             SetRadius(0.0f);
          }
       };
-      
+
       /// <TODO: insert function description here>
       /// @return CollisionShape * <TODO: insert return value description here>
       CollisionShape *GetShape(void)
@@ -289,7 +289,7 @@ namespace OgreOpcode
       {
          client_data = d;
       };
-      
+
       /// <TODO: insert function description here>
       /// @return void * <TODO: insert return value description here>
       void *GetClientData(void)
@@ -305,7 +305,7 @@ namespace OgreOpcode
          //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&new_matrix);
          return new_matrix;
       };
-      
+
       /// <TODO: insert function description here>
       /// @return const Matrix4 & <TODO: insert return value description here>
       const Matrix4& GetPrevTransform(void)
@@ -314,21 +314,21 @@ namespace OgreOpcode
       };
 
       /// Return the 'time' between the current and previous transforms
-      /// @return Real The elapsted 'time' (actually just whatever the user 
-      ///         told us it was when calling Update()).  Negative if no 
+      /// @return Real The elapsted 'time' (actually just whatever the user
+      ///         told us it was when calling Update()).  Negative if no
       ///         Update()'s have been performed since the last Reset()
       Real GetTimeDelta(void)
       {
          return m_tdelta;
       };
-      
+
       /// <TODO: insert function description here>
       /// @return void <TODO: insert return value description here>
       void ClearCollisions(void)
       {
          num_colls = 0;
       };
-      
+
       /// <TODO: insert function description here>
       /// @return int <TODO: insert return value description here>
       int GetNumCollisions(void)
@@ -337,23 +337,23 @@ namespace OgreOpcode
       };
 
       /// Retrieve current vertex data from mesh and refit collision tree
-      void Refit() 
+      void Refit()
       {
         if (mShape)
           mShape->Refit();
       }
-      
+
       void Update(Real tdelta)
       {
          Matrix4 m;
          Update(tdelta,m);
       }
-      
+
       /// Update the object to its new position/orientation, update the dimensional nodes and the bounding box.
       /// @param [in]       t Real 'time' delta.  Doesn't have to be real time though.
       ///                   Just pass in 1.0 every time if you don't care about actual time.
       ///                   This comes into play when collisions are sub-stepped.
-      ///                   You can get back the portion of t that passed before 
+      ///                   You can get back the portion of t that passed before
       ///                   a collision occurred from the CollisionPair::tstamp member.
       /// @param [in]       m const Matrix4 &    new world transform
       void Update(Real t, Matrix4& m)
@@ -414,7 +414,8 @@ namespace OgreOpcode
          // This object moved from p0 to p0+v0, the other from p1 to p1+v1.
          Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
          Vector3 p1(other->old_matrix[0][3], other->old_matrix[1][3], other->old_matrix[2][3]);
-         Vector3 v0(Vector3(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3])  - p0);
+         Vector3 v0(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
+		 v0 -= p0;
          Vector3 v1(Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]) - p1);
 
          bool has_contact = false;
@@ -469,7 +470,7 @@ namespace OgreOpcode
 
             // WVB:
             // This isn't likely to work particularly well for objects
-            // with large rotational motion.  For that it would be better 
+            // with large rotational motion.  For that it would be better
             // to blend the transformations along the path as well,
             // and to also use amount of rotation in determining how many
             // steps are necessary.  That would bring this another step closer
@@ -645,7 +646,7 @@ namespace OgreOpcode
          if(_global_debug_node)
          {
             SceneNode* sn = static_cast<SceneNode*>(_global_debug_node->getParent());
-            sn->removeAndDestroyChild(_global_debug_node->getName());		
+            sn->removeAndDestroyChild(_global_debug_node->getName());
             _global_debug_node = 0;
          }
 
@@ -662,7 +663,7 @@ namespace OgreOpcode
          if(_debug_node)
          {
             SceneNode* sn = static_cast<SceneNode*>(_debug_node->getParent());
-            sn->removeAndDestroyChild(_debug_node->getName());		
+            sn->removeAndDestroyChild(_debug_node->getName());
             _debug_node = 0;
          }
 
@@ -714,7 +715,7 @@ namespace OgreOpcode
                Vector3 v1_y(sin_r1*mRadius, 0.0f, cos_r1*mRadius); v1_y+=ctr;
                Vector3 v0_z(sin_r0*mRadius, cos_r0*mRadius, 0.0f); v0_z+=ctr;
                Vector3 v1_z(sin_r1*mRadius, cos_r1*mRadius, 0.0f); v1_z+=ctr;
-               
+
                _debug_obj->addLine(v0_x.x,v0_x.y,v0_x.z, v1_x.x,v1_x.y,v1_x.z);
                _debug_obj->addLine(v0_y.x,v0_y.y,v0_y.z, v1_y.x,v1_y.y,v1_y.z);
                _debug_obj->addLine(v0_z.x,v0_z.y,v0_z.z, v1_z.x,v1_z.y,v1_z.z);
@@ -738,17 +739,17 @@ namespace OgreOpcode
                _global_debug_obj->addLine(cnt.x-0.5f,cnt.y,cnt.z, cnt.x+0.5f,cnt.y,cnt.z);
                _global_debug_obj->addLine(cnt.x,cnt.y-0.5f,cnt.z, cnt.x,cnt.y+0.5f,cnt.z);
                _global_debug_obj->addLine(cnt.x,cnt.y,cnt.z-0.5f, cnt.x,cnt.y,cnt.z+0.5f);
-               
+
                Vector3& n = cr->co1_normal;
 
                _global_debug_obj->addLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
-               
+
                n = cr->co2_normal;
                _global_debug_obj->addLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
             }
          }
 
-         
+
          // render the objects bounding boxes (stretched by their movement)
          Vector3& v0 = minv;
          Vector3& v1 = maxv;
@@ -769,4 +770,4 @@ namespace OgreOpcode
    };
 };
 
-#endif // __OGRECOLLIDER_H__
+#endif // __OgreCollisionObject_h__

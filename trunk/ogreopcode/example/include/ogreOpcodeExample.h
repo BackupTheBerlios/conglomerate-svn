@@ -106,10 +106,10 @@ public:
       mEventProcessor->addKeyListener(this);
 
       mMoveSpeed = 300;
-      
-      TargetSight = (Overlay*)OverlayManager::getSingleton().getByName("gunTarget");    
+
+      TargetSight = (Overlay*)OverlayManager::getSingleton().getByName("gunTarget");
       TargetSight->show();
-      hotTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("hotGunTarget");    
+      hotTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("hotGunTarget");
       hotTargetSight->hide();
 
       // Move the debug overlay up a bit so we can get 2 lines in.
@@ -119,7 +119,7 @@ public:
       switchMouseMode();
    }
 
-   Real IntersectRayPlane(Vector3 rOrigin, Vector3 rVector, Vector3 pOrigin, Vector3 pNormal) 
+   Real IntersectRayPlane(Vector3 rOrigin, Vector3 rVector, Vector3 pOrigin, Vector3 pNormal)
    {
 
       Real d = - pNormal.dotProduct(pOrigin);
@@ -130,16 +130,16 @@ public:
       if (denom == 0)  // normal is orthogonal to vector, cant intersect
          return (-1.0f);
 
-      return -(numer / denom);	
+      return -(numer / denom);
    }
 
    void SetLength(Vector3& v, Real l)
    {
-      Real len = Math::Sqrt(v.x*v.x + v.y*v.y + v.z*v.z);	
+      Real len = Math::Sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
       v.x *= l/len;
       v.y *= l/len;
       v.z *= l/len;
-   } 
+   }
 
    Vector3 CheckCollision(const Vector3& pos, float radius, const Vector3& vel)
    {
@@ -149,12 +149,12 @@ public:
       // Collision results
       CollisionPair **ray_pick_report;
       CollisionPair **pick_report;
-      
+
       // The position to test against
       Vector3 destinationPoint = pos + vel;
       Vector3 new_vel(0,0,0);
       int numCamColls = 0;
-      
+
       // First, construct a ray along the velocity vector and test for collisions.
       Ray testRay(pos, vel);
       numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(testRay, 600.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, ray_pick_report);
@@ -176,7 +176,7 @@ public:
       // If we are further away than the nearest possible collision, we have travelled too far
       if(vel.length() > (adjVel.length() + 0.05f))
          destinationPoint = pos + adjVel;   // modify the destination point if we are behind it.
-      
+
 
       // Now - perform the real collision detection - this time with a sphere.
       Ogre::Sphere cameraSphere = Ogre::Sphere(destinationPoint, radius);
@@ -191,14 +191,14 @@ public:
          return vel;
       }
 
-      
+
       // We are hitting something!
       for(int i = 0; i < numCamColls; ++i)
       {
          // Adjust the velocity to prevent the camera from passing through walls, etc.
          Plane collPlane(pick_report[i]->contact, pick_report[i]->co2_normal);
          new_vel += pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(destinationPoint) - (collPlane.d - radius));
-         
+
          if(recursionDepth > 50)
          {
             // Shit. We are stuck. Update the camera to match the last known good position and return nothing.
@@ -275,13 +275,13 @@ public:
 
       // remove level from context - we don't care when ray testing against entities..
       CollisionManager::getSingletonPtr()->GetDefaultContext()->RemoveObject(mCollObj1);
-      
+
       // Do ray testing against everything but the level
       CollisionPair **pick_report;
       int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(ray, 600.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
       const CollisionReporter &rayrept =
         CollisionManager::getSingletonPtr()->GetDefaultContext()->GetCheckReport();
-      
+
       if (num_picks > 0)
       {
          TargetSight->hide();
@@ -315,18 +315,18 @@ public:
       const CollisionReporter &rept =
         CollisionManager::getSingletonPtr()->GetDefaultContext()->GetCollisionReport();
       String dbg = mDbgMsg;
-      dbg += 
-        "\nRayOb: "+ StringConverter::toString(rayrept.mTotalObjObjTests) + 
-        " RayBV: "+ StringConverter::toString(rayrept.mTotalBVBVTests) + 
+      dbg +=
+        "\nRayOb: "+ StringConverter::toString(rayrept.mTotalObjObjTests) +
+        " RayBV: "+ StringConverter::toString(rayrept.mTotalBVBVTests) +
         " RayPr: "+ StringConverter::toString(rayrept.mTotalBVPrimTests);
-      dbg += 
-        "\nObOb: "+ StringConverter::toString(rept.mTotalObjObjTests) + 
-        " BVBV: "+ StringConverter::toString(rept.mTotalBVBVTests) + 
+      dbg +=
+        "\nObOb: "+ StringConverter::toString(rept.mTotalObjObjTests) +
+        " BVBV: "+ StringConverter::toString(rept.mTotalBVBVTests) +
         " BVPr: "+ StringConverter::toString(rept.mTotalBVPrimTests) +
         " PrPr: "+ StringConverter::toString(rept.mTotalPrimPrimTests);
       mWindow->setDebugText(dbg);
-      
-      
+
+
       if(mUseBufferedInputMouse)
       {
          CEGUI::MouseCursor::getSingleton().show( );
@@ -341,6 +341,8 @@ public:
 
    bool processUnbufferedKeyInput(const FrameEvent& evt)
    {
+      if (evt.timeSinceLastFrame == 0.0f) return true;
+
       if (mInputDevice->isKeyDown(KC_A))
       {
          // Move camera left
@@ -388,11 +390,11 @@ public:
       }
 
       if( mInputDevice->isKeyDown( KC_ESCAPE) )
-      {            
+      {
          return false;
       }
 
-      // see if switching is on, and you want to toggle 
+      // see if switching is on, and you want to toggle
       if (mInputTypeSwitchingOn && mInputDevice->isKeyDown(KC_M) && mTimeUntilNextToggle <= 0)
       {
          switchMouseMode();
@@ -471,7 +473,7 @@ public:
       if (displayCameraDetails)
       {
          // Print camera details
-         mWindow->setDebugText("P: " + StringConverter::toString(mCamera->getDerivedPosition()) + " " + 
+         mWindow->setDebugText("P: " + StringConverter::toString(mCamera->getDerivedPosition()) + " " +
             "O: " + StringConverter::toString(mCamera->getDerivedOrientation()));
       }
 
@@ -487,7 +489,7 @@ public:
          //mTimeUntilNextToggle = 0.5;
       }
 
-      if (mInputDevice->isKeyDown(KC_SEMICOLON) && mTimeUntilNextToggle <= 0)
+      if (mInputDevice->isKeyDown(KC_L) && mTimeUntilNextToggle <= 0)
       {
         mPlayAnimation = !mPlayAnimation;
         mSceneMgr->getEntity("Head1")->getAnimationState("Walk")->setEnabled(true);
@@ -523,13 +525,13 @@ public:
    void mouseMoved (MouseEvent *e)
    {
       CEGUI::System::getSingleton().injectMouseMove(
-         e->getRelX() * mGUIRenderer->getWidth(), 
+         e->getRelX() * mGUIRenderer->getWidth(),
          e->getRelY() * mGUIRenderer->getHeight());
       e->consume();
    }
 
-   void mouseDragged (MouseEvent *e) 
-   { 
+   void mouseDragged (MouseEvent *e)
+   {
       mouseMoved(e);
    }
 
@@ -615,7 +617,7 @@ protected:
 	{
       // Create the camera
       mCamera = mSceneMgr->createCamera("PlayerCam");
-      mCamera->setPosition(-7.1680, 292.723, 354.041); 
+      mCamera->setPosition(-7.1680, 292.723, 354.041);
       mCamera->setOrientation(Quaternion(0.998007, 0.0623525, 0.00879721, 0.000549518));
       mCamera->setNearClipDistance(5);
 	}
@@ -676,7 +678,7 @@ protected:
       //mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
 
       // setup GUI system
-      mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow, 
+      mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow,
          Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
 
       mGUISystem = new CEGUI::System(mGUIRenderer);
@@ -694,7 +696,7 @@ protected:
       CEGUI::MouseCursor::getSingleton().show( );
       setupEventHandlers();
 
-      
+
       new CollisionManager(mSceneMgr);
       CollisionManager::getSingletonPtr()->BeginCollClasses();
       CollisionManager::getSingletonPtr()->AddCollClass("level");

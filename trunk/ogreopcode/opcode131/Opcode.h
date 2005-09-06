@@ -61,14 +61,18 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Preprocessor
-#ifndef ICE_NO_DLL
-	#ifdef OPCODE_EXPORTS
-		#define OPCODE_API __declspec(dllexport)
+#ifdef _MSC_VER
+	#ifndef ICE_NO_DLL
+		#ifdef OPCODE_EXPORTS
+			#define OPCODE_API __declspec(dllexport)
+		#else
+			#define OPCODE_API __declspec(dllimport)
+		#endif
 	#else
-		#define OPCODE_API __declspec(dllimport)
+		#define OPCODE_API
 	#endif
 #else
-		#define OPCODE_API
+	#define OPCODE_API
 #endif
 
 	#include "OPC_IceHook.h"

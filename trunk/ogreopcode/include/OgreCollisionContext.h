@@ -3,27 +3,27 @@
 ///  @brief Contains the definition of the CollisionContext class.
 ///
 ///  @author The OgreOpcode Team @date 28-05-2005
-///  
+///
 ///////////////////////////////////////////////////////////////////////////////
-///  
+///
 ///  This file is part of OgreOpcode.
-///  
+///
 ///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
-///  
+///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
 ///  version 2.1 of the License, or (at your option) any later version.
-///  
+///
 ///  OgreOpcode is distributed in the hope that it will be useful,
 ///  but WITHOUT ANY WARRANTY; without even the implied warranty of
 ///  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  Lesser General Public License for more details.
-///  
+///
 ///  You should have received a copy of the GNU Lesser General Public
 ///  License along with OgreOpcode; if not, write to the Free Software
 ///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-///  
+///
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef __OgreCollisionContext_h__
 #define __OgreCollisionContext_h__
@@ -41,7 +41,7 @@ namespace OgreOpcode
    class CollisionObject;
    /// Defines a collision space.
    /// A CollisionContext creates a collision context, defined by
-   /// a collection of CollisionObject%s which can collide with 
+   /// a collection of CollisionObject%s which can collide with
    /// each other. CollisionObject%s can be added and removed
    /// from the context at any time.
    class _OgreOpcode_Export CollisionContext : public nNode
