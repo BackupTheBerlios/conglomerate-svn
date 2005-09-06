@@ -9,7 +9,7 @@
 ///  This file is part of OgreOpcode.
 ///
 ///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
-///  
+///
 ///  OgreOpcode is free software; you can redistribute it and/or
 ///  modify it under the terms of the GNU Lesser General Public
 ///  License as published by the Free Software Foundation; either
@@ -30,11 +30,6 @@
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
-
-// Define the following if you have not yet applied this patch:
-//   http://sourceforge.net/tracker/index.php?func=detail&aid=1243841&group_id=2997&atid=302997
-// to your Ogre installation: 
-// #define NO_BAXISSIMO_OGRE_ENTITY_PATCH
 
 namespace OgreOpcode
 {
@@ -74,7 +69,7 @@ namespace OgreOpcode
     extent.x *= tree.mExtentsCoeff.x;
     extent.y *= tree.mExtentsCoeff.y;
     extent.z *= tree.mExtentsCoeff.z;
-    
+
     center.x *= tree.mCenterCoeff.x;
     center.y *= tree.mCenterCoeff.y;
     center.z *= tree.mCenterCoeff.z;
@@ -251,7 +246,7 @@ namespace OgreOpcode
       // convert Matrix4's into Matrix4x4's
       IceMaths::Matrix4x4 m0, m1;
       for(unsigned int i = 0; i < 4; i++)
-      { 
+      {
          m0.m[0][i] = ownMatrix[i][0];
          m0.m[1][i] = ownMatrix[i][1];
          m0.m[2][i] = ownMatrix[i][2];
@@ -276,13 +271,13 @@ namespace OgreOpcode
 
       // get the number of collided triangle pairs
       int numPairs = collider.GetNbPairs();
-      
+
 
       if (numPairs > 0)
       {
          collided = true;
 
-         // get the list of collided triangles 
+         // get the list of collided triangles
          const Pair* pairs = collider.GetPairs();
 
          // clamp number of collisions to a reasonable amount
@@ -322,7 +317,7 @@ namespace OgreOpcode
 
             // test triangle 0 lines against triangle 1
             // test triangle 1 lines against triangle 0
-            for (j = 0; j < 3; j++) 
+            for (j = 0; j < 3; j++)
             {
                intersects[0][j] = t[1].intersect_both_sides(l[0][j], ipos[0][j]);
                intersects[1][j] = t[0].intersect_both_sides(l[1][j], ipos[1][j]);
@@ -332,11 +327,11 @@ namespace OgreOpcode
             int numIsects = 0;
             int k;
             Vector3 contact(0.0f, 0.0f, 0.0f);
-            for (j = 0; j < 2; j++) 
+            for (j = 0; j < 2; j++)
             {
-               for (k = 0; k < 3; k++) 
+               for (k = 0; k < 3; k++)
                {
-                  if (intersects[j][k]) 
+                  if (intersects[j][k])
                   {
                      contact += l[j][k].ipol(ipos[j][k]);
                      numIsects++;
@@ -349,10 +344,10 @@ namespace OgreOpcode
                }
             }
 
-            if (numIsects>0) 
+            if (numIsects>0)
             {
                contact /= float(numIsects);
-            } 
+            }
 
             // fill the contact point into the collision report
             collPair.contact    += contact;
@@ -361,7 +356,7 @@ namespace OgreOpcode
          }
 
          // average collide results
-         if (numPairs > 0) 
+         if (numPairs > 0)
          {
             float div = 1.0f / float(numPairs);
             collPair.contact    *= div;
@@ -370,8 +365,8 @@ namespace OgreOpcode
             collPair.co1_normal.normalise();
             collPair.co2_normal.normalise();
             return true;
-         } 
-         else 
+         }
+         else
          {
             return false;
          }
@@ -438,7 +433,7 @@ namespace OgreOpcode
       ray.mOrig.z = line.getOrigin().z;
       ray.mDir.x = line.getDirection().x;
       ray.mDir.y = line.getDirection().y;
-      ray.mDir.z = line.getDirection().z;  
+      ray.mDir.z = line.getDirection().z;
 
       // perform collision
       collider.Collide(ray, opcModel, &opcMatrix);
@@ -569,7 +564,7 @@ namespace OgreOpcode
       collPair.numBVBVTests = collider.GetNbVolumeBVTests();
       collPair.numBVPrimTests = collider.GetNbVolumePrimTests();
       collPair.numPrimPrimTests = 0;
-      
+
       // get collision result
       if (collider.GetContactStatus())
       {
@@ -652,7 +647,7 @@ namespace OgreOpcode
          const Opcode::AABBCollisionNode* pos = node->GetPos();
          if (neg)
            VisualizeAABBCollisionNode(neg);
-         if (pos) 
+         if (pos)
            VisualizeAABBCollisionNode(pos);
       }
    }
@@ -792,7 +787,7 @@ namespace OgreOpcode
    /// @param[int] index_count         Number of indices.
    /// @author Yavin from the Ogre4J team
    //////////////////////////////////////////////////////////////////////////
-   void CollisionShape::convertMeshData(Entity * entity, 
+   void CollisionShape::convertMeshData(Entity * entity,
                                         float * vertexBuf, size_t vertex_count,
                                         int * faceBuf, size_t index_count)
    {
@@ -807,16 +802,12 @@ namespace OgreOpcode
       size_t index_offset = 0;
       int numOfSubs = 0;
 
-#ifdef NO_BAXISSIMO_OGRE_ENTITY_PATCH
-      bool useSoftwareBlendingVertices = false;
-#else
       bool useSoftwareBlendingVertices = entity->hasSkeleton();
 
-      if (useSoftwareBlendingVertices) 
+      if (useSoftwareBlendingVertices)
       {
         entity->_updateAnimation();
       }
-#endif
 
       // Run through the submeshes again, adding the data into the arrays
       for ( size_t i = 0; i < mesh->getNumSubMeshes(); ++i)
@@ -824,7 +815,7 @@ namespace OgreOpcode
          SubMesh* submesh = mesh->getSubMesh(i);
          bool useSharedVertices = submesh->useSharedVertices;
 
-         if (vertexBuf) 
+         if (vertexBuf)
          {
            //----------------------------------------------------------------
            // GET VERTEXDATA
@@ -888,11 +879,11 @@ namespace OgreOpcode
            }
          }
 
-         if (faceBuf) 
+         if (faceBuf)
          {
            //----------------------------------------------------------------
            // GET INDEXDATA
-           //----------------------------------------------------------------      
+           //----------------------------------------------------------------
            IndexData* index_data = submesh->indexData;
            size_t numTris = index_data->indexCount / 3;
            HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
@@ -954,7 +945,7 @@ namespace OgreOpcode
          _debug_obj = 0;
       }
    }
-   
+
    //------------------------------------------------------------------------
    /// <TODO: insert function description here>
    /// @param [in]       debug bool     <TODO: insert parameter description here>
@@ -983,7 +974,7 @@ namespace OgreOpcode
       assert(ent);
       assert(!mVertexBuf && !mFaceBuf);
       mEntity = ent;
-      
+
 #ifndef NO_BAXISSIMO_OGRE_ENTITY_PATCH
       if (mEntity->hasSkeleton()) {
         mEntity->addSoftwareSkinningRequest(false);
@@ -1063,7 +1054,7 @@ namespace OgreOpcode
      assert(mEntity && mVertexBuf);
 
      // Rebuild tree
-     if (!opcModel.Refit()) 
+     if (!opcModel.Refit())
      {
        LogManager::getSingleton().logMessage(
          "OgreOpcode::CollisionShape::_RefitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
