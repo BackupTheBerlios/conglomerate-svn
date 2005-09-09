@@ -196,7 +196,7 @@ public:
       for(int i = 0; i < numCamColls; ++i)
       {
          // Adjust the velocity to prevent the camera from passing through walls, etc.
-         Plane collPlane(pick_report[i]->contact, pick_report[i]->co2_normal);
+         Plane collPlane(pick_report[i]->co2_normal, pick_report[i]->contact);
          new_vel += pick_report[i]->co2_normal * ( - pick_report[i]->co2_normal.dotProduct(destinationPoint) - (collPlane.d - radius));
 
          if(recursionDepth > 50)
@@ -249,6 +249,8 @@ public:
 	{
       if (!ExampleFrameListener::frameStarted(evt))
         return false;
+
+      CollisionManager::getSingletonPtr()->GetDefaultContext()->Collide();
 
       static Real transAmount = -0.5f;
       static Real transTraveled = 0.0f;
@@ -305,7 +307,6 @@ public:
       CollisionManager::getSingletonPtr()->GetDefaultContext()->AddObject(mCollObj1);
 
       // Check all collision objects for collision
-      CollisionManager::getSingletonPtr()->GetDefaultContext()->Collide();
       int mCollObj1Picks = mCollObj1->GetCollisions(pick_report);
       if(mCollObj1Picks > 0)
       {
@@ -726,6 +727,7 @@ protected:
       SceneNode* tcamNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cammnode");
       //LogManager::getSingleton().logMessage("Walk enabled initially: " + StringConverter::toString(ogreCam->getAnimationState("Walk")->getEnabled()));
       tcamNode->attachObject(ogreCam);
+      //tcamNode->scale(1.8f, 1.8f, 1.8f);
       tcamNode->setPosition(0.0f,400.0f,0.0f);
 
       Entity* markerEnt = mSceneMgr->createEntity("markerr", "cube.mesh");
@@ -737,6 +739,7 @@ protected:
       Entity* ogreLevel = mSceneMgr->createEntity("Level", "level.mesh");
       SceneNode* levelNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("Headnode");
       levelNode->attachObject(ogreLevel);
+      //levelNode->scale(1.8f, 1.8f, 1.8f);
       //levelNode->rotate(Vector3::UNIT_X,Degree(-90.0f));
 
       CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("level1");
