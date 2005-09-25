@@ -1,6 +1,6 @@
 <HTML DIR="ltr">
 	<HEAD>
-		<TITLE>Ogre 1.0.1 Application Wizard</TITLE>
+		<TITLE>Ogre 1.0.5 Application Wizard</TITLE>
 		<META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 		<STYLE TYPE="text/css">@import url();
@@ -11,25 +11,143 @@
 		strURL += window.external.GetHostLocale();
 		strURL += "/NewStyles.css";
 		document.styleSheets(0).imports(0).href = strURL;
+
+
+// CODE FOR COOKIES FROM OREILLY : http://examples.oreilly.de/english_examples/jscript2/15.1.txt
+
+// The constructor function: creates a cookie object for the specified
+// document, with a specified name and optional attributes.
+// Arguments:
+//   document: the Document object that the cookie is stored for. Required.
+//   name:     a string that specifies a name for the cookie. Required.
+//   hours:    an optional number that specifies the number of hours from now
+//             that the cookie should expire.
+//   path:     an optional string that specifies the cookie path attribute.
+//   domain:   an optional string that specifies the cookie domain attribute.
+//   secure:   an optional Boolean value that, if true, requests a secure cookie.
+//
+function Cookie(document, name, hours, path, domain, secure)
+{
+    // All the predefined properties of this object begin with '$'
+    // to distinguish them from other properties which are the values to
+    // be stored in the cookie.	
+    this.$document = document;
+    this.$name = name;
+    if (hours)
+        this.$expiration = new Date((new Date()).getTime() + hours*3600000);
+    else this.$expiration = null;
+    if (path) this.$path = path; else this.$path = null;
+    if (domain) this.$domain = domain; else this.$domain = null;
+    if (secure) this.$secure = true; else this.$secure = false;
+}
+// This function is the store() method of the Cookie object.
+function _Cookie_store()
+{
+    // First, loop through the properties of the Cookie object and
+    // put together the value of the cookie. Since cookies use the
+    // equals sign and semicolons as separators, we'll use colons
+    // and ampersands for the individual state variables we store 
+    // within a single cookie value. Note that we escape the value
+    // of each state variable, in case it contains punctuation or other
+    // illegal characters.
+    var cookieval = "";
+    for(var prop in this) {
+        // Ignore properties with names that begin with '$' and also methods.
+        if ((prop.charAt(0) == '$') || ((typeof this[prop]) == 'function')) 
+            continue;
+        if (cookieval != "") cookieval += '&';
+        cookieval += prop + ':' + escape(this[prop]);
+    }
+    // Now that we have the value of the cookie, put together the 
+    // complete cookie string, which includes the name, and the various
+    // attributes specified when the Cookie object was created.
+    var cookie = this.$name + '=' + cookieval;
+    if (this.$expiration)
+        cookie += '; expires=' + this.$expiration.toGMTString();
+    if (this.$path) cookie += '; path=' + this.$path;
+    if (this.$domain) cookie += '; domain=' + this.$domain;
+    if (this.$secure) cookie += '; secure';
+    // Now store the cookie by setting the magic Document.cookie property.
+    this.$document.cookie = cookie;
+}
+// This function is the load() method of the Cookie object.
+function _Cookie_load()
+{
+    // First, get a list of all cookies that pertain to this document.
+    // We do this by reading the magic Document.cookie property.
+    var allcookies = this.$document.cookie;
+    if (allcookies == "") return false;
+    // Now extract just the named cookie from that list.
+    var start = allcookies.indexOf(this.$name + '=');
+    if (start == -1) return false;   // cookie not defined for this page.
+    start += this.$name.length + 1;  // skip name and equals sign.
+    var end = allcookies.indexOf(';', start);
+    if (end == -1) end = allcookies.length;
+    var cookieval = allcookies.substring(start, end);
+    // Now that we've extracted the value of the named cookie, we've
+    // got to break that value down into individual state variable 
+    // names and values. The name/value pairs are separated from each
+    // other with ampersands, and the individual names and values are
+    // separated from each other with colons. We use the split method
+    // to parse everything.
+    var a = cookieval.split('&');  // break it into array of name/value pairs
+    for(var i=0; i < a.length; i++)  // break each pair into an array
+        a[i] = a[i].split(':');
+    // Now that we've parsed the cookie value, set all the names and values
+    // of the state variables in this Cookie object. Note that we unescape()
+    // the property value, because we called escape() when we stored it.
+    for(var i = 0; i < a.length; i++) {
+        this[a[i][0]] = unescape(a[i][1]);
+    }
+    // We're done, so return the success code.
+    return true;
+}
+// This function is the remove() method of the Cookie object.
+function _Cookie_remove()
+{
+    var cookie;
+    cookie = this.$name + '=';
+    if (this.$path) cookie += '; path=' + this.$path;
+    if (this.$domain) cookie += '; domain=' + this.$domain;
+    cookie += '; expires=Fri, 02-Jan-1970 00:00:00 GMT';
+    this.$document.cookie = cookie;
+}
+// Create a dummy Cookie object, so we can use the prototype object to make
+// the functions above into methods.
+new Cookie();
+Cookie.prototype.store = _Cookie_store;
+Cookie.prototype.load = _Cookie_load;
+Cookie.prototype.remove = _Cookie_remove;
+
+// cookie for whole document
+var cookieData;
+
+	cookieData = new Cookie(document, "last_settings", 24*365*10);
+
+	// if cookie doesn't exist or is invalid, create it.
+	if (!cookieData.load() || !cookieData.name) {
+		cookieData.name = "last_settings";
+	}
+        document.write("<SYMBOL NAME='SAFE_PROJECT_NAME' TYPE='text'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='UPPER_CASE_PROJECT_NAME' TYPE='text'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='MIN_APP' TYPE='checkbox' VALUE='" + cookieData.min_app + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='STANDARD_APP' TYPE='checkbox' VALUE='" + cookieData.standard_app + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='EMPTY_PROJECT' TYPE='checkbox' VALUE='" + cookieData.empty_project + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='FRAMEWORK_YES' TYPE='checkbox' VALUE='" + cookieData.framework_yes + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='FRAMEWORK_OWN' TYPE='checkbox' VALUE='" + cookieData.framework_own + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='CEGUI_YES' TYPE='checkbox' VALUE='" + cookieData.cegui_yes + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='STATEMANAGER_YES' TYPE='checkbox' VALUE='false'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='LOCATION_SAMPLES' TYPE='checkbox' VALUE='" + cookieData.location_samples + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='LOCATION_OTHER' TYPE='checkbox' VALUE='" + cookieData.location_other + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='LOCATION_OGRENEW' TYPE='checkbox' VALUE='" + cookieData.location_ogrenew + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='LOCATION_ENVVAR' TYPE='checkbox' VALUE='" + cookieData.location_envvar + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='PRE_COMPILED_HEADER' TYPE='checkbox' VALUE='false'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='POSTBUILD_COPY' TYPE='checkbox' VALUE='" + cookieData.postbuild_copy + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='SKIP_CONFIG' TYPE='checkbox' VALUE='" + cookieData.skip_config + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='YEAR' TYPE='text'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='OGRE_FOLDER' TYPE='text' VALUE='" + cookieData.ogre_folder + "'></SYMBOL>\n");
 		</SCRIPT>
-		<SYMBOL NAME="SAFE_PROJECT_NAME" TYPE="text"></SYMBOL>
-		<SYMBOL NAME="UPPER_CASE_PROJECT_NAME" TYPE="text"></SYMBOL>
-		<SYMBOL NAME="MIN_APP" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="STANDARD_APP" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="EMPTY_PROJECT" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="FRAMEWORK_YES" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="FRAMEWORK_OWN" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="CEGUI_YES" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="STATEMANAGER_YES" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="LOCATION_SAMPLES" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="LOCATION_OTHER" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="LOCATION_OGRENEW" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="LOCATION_ENVVAR" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="PRE_COMPILED_HEADER" TYPE="checkbox" VALUE="false"></SYMBOL>
-		<SYMBOL NAME="POSTBUILD_COPY" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="SKIP_CONFIG" TYPE="checkbox" VALUE="true"></SYMBOL>
-		<SYMBOL NAME="YEAR" TYPE="text"></SYMBOL>
-		<SYMBOL NAME="OGRE_FOLDER" TYPE="text"></SYMBOL>
+		
 	</HEAD>
 	<BODY BGCOLOR="buttonface" TOPMARGIN="0" LEFTMARGIN="0" RIGHTMARGIN="0" BOTTOMMARGIN="0"
 		ONLOAD="InitDocument(document);" ONKEYDOWN="if (!bValidating) OnKey();" ONKEYPRESS="if (!bValidating) OnPress();">
@@ -70,7 +188,7 @@
 										&nbsp;
 									</TD>
 									<TD VALIGN="top" HEIGHT="65">
-										<H4 CLASS="HEAD" ID="HEAD">Welcome to the Ogre 1.0.1 Application Wizard</H4>
+										<H4 CLASS="HEAD" ID="HEAD">Welcome to the Ogre 1.0.5 Application Wizard</H4>
 										<P CLASS="SUBHEAD" ID="SUBHEAD">This wizard generates a generic&nbsp;Ogre
 											application project.</P>
 									</TD>
@@ -309,13 +427,14 @@ var tab_array = new Array();
 tab_array[0] = Default;
 tab_array[1] = AppSettings;
 
+
 function InitDocument(document)
 {
 	setDirection();
 
 	if (window.external.FindSymbol("DOCUMENT_FIRST_LOAD"))
 	{
-		var L_WizardDialogTitle_Text = "Ogre 1.0.1 Application Wizard";
+		var L_WizardDialogTitle_Text = "Ogre 1.0.5 Application Wizard";
 		window.external.AddSymbol("WIZARD_DIALOG_TITLE", L_WizardDialogTitle_Text);
 		var strProjName = window.external.FindSymbol("PROJECT_NAME");
 		var coll = document.all.tags("SYMBOL");
@@ -331,6 +450,7 @@ function InitDocument(document)
 		SetLocaleForResources(window.external.GetSystemLCID());
 		window.external.SetDefaults(document);
 	}
+
 	window.external.Load(document);
 	InitControls();
 }

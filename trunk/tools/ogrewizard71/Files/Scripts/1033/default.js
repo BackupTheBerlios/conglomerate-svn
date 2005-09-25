@@ -20,6 +20,12 @@ function OnFinish(selProj, selObj)
 			PchSettings(selProj);
 			InfFile.Delete();
 		}
+		else
+		{
+			var emptyInfFile = CreateEmptyInfFile();
+			AddFilesToCustomProj(selProj, strProjectName, strProjectPath, emptyInfFile);
+			emptyInfFile.Delete();
+		}
 		selProj.Object.Save();
 	}
 	catch(e)
@@ -370,6 +376,32 @@ function CreateCustomInfFile()
 	}
 }
 
+function CreateEmptyInfFile()
+{
+	try
+	{
+		var fso, TemplatesFolder, TemplateFiles, strTemplate;
+		fso = new ActiveXObject('Scripting.FileSystemObject');
+
+		var TemporaryFolder = 2;
+		var tfolder = fso.GetSpecialFolder(TemporaryFolder);
+		var strTempFolder = tfolder.Drive + '\\' + tfolder.Name;
+
+		var strWizTempFile = strTempFolder + "\\" + fso.GetTempName();
+
+		var strTemplatePath = wizard.FindSymbol('TEMPLATES_PATH');
+		var strInfFile = strTemplatePath + '\\EmptyTemplates.inf';
+		wizard.RenderTemplate(strInfFile, strWizTempFile);
+
+		var WizTempFile = fso.GetFile(strWizTempFile);
+		return WizTempFile;
+	}
+	catch(e)
+	{
+		throw e;
+	}
+}
+
 function GetTargetName(strName, strProjectName)
 {
 	try
@@ -415,7 +447,7 @@ function AddFilesToCustomProj(proj, strProjectName, strProjectPath, InfFile)
 
 				var bCopyOnly = false;  //"true" will only copy the file from strTemplate to strTarget without rendering/adding to the project
 				var strExt = strName.substr(strName.lastIndexOf("."));
-				if(strExt==".bmp" || strExt==".ico" || strExt==".gif" || strExt==".rtf" || strExt==".css")
+				if(strExt==".bmp" || strExt==".ico" || strExt==".me" || strExt==".gif" || strExt==".rtf" || strExt==".css")
 					bCopyOnly = true;
 				wizard.RenderTemplate(strTemplate, strFile, bCopyOnly);
 				proj.Object.AddFile(strFile);
