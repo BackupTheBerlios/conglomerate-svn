@@ -21,6 +21,9 @@ Description: A place for me to try out stuff with OGRE.
 #ifndef __[!output PROJECT_NAME]_h_
 #define __[!output PROJECT_NAME]_h_
 
+[!if MIN_APP]
+[!else]
+
 [!if CEGUI_YES]
 #include <CEGUI.h>
 #include <CEGUISystem.h>
@@ -328,5 +331,6 @@ protected:
    }
 [!endif]
 };
+[!endif]
 
 #endif // #ifndef __[!output PROJECT_NAME]_h_

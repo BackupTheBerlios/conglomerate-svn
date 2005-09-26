@@ -28,7 +28,7 @@ Description: Base class for all the OGRE examples
 
 using namespace Ogre;
 
-/** Base class which manages the standard startup of an Ogre application.
+/** Base class which manages the standard startup of an OGRE application.
     Designed to be subclassed for specific examples if required.
 */
 class BaseApplication

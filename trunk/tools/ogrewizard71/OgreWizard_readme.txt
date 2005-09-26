@@ -1,4 +1,4 @@
-Ogre 1.0.1 Application Wizard v.0.13
+Ogre 1.0.5 Application Wizard v.1.0
 ------------------------------------------------------------------------------
 
 
@@ -12,6 +12,25 @@ Quick Install -----------------------------------------------------------------
 3) Remember: Do Not delete this folder - your Ogre Wizard needs the files.
 The install script changes the ABSOLUTE_PATH in OgreWizard71.vsz to point to whereever you put the wizard files.
 
+
+NOTE: This wizard depends upon you having setup Internet Explorer to accept cookies.
+
+
+
+If you have problems with another program having registered with .js files, like Dreamweaver, try this:
+
+[quote="jenocin"][quote="Kageetai"]I have a little problem with the installation of the wizard!
+
+When I click on the setup.js-file, Macromedia Dreamweaver shows up. What program or interpreter do I need to run the script?[/quote]
+
+try adding this to the js extension under run
+[code]C:\WINDOWS\System32\WScript.exe "%1" %*[/code]
+
+or from the run box
+
+[code]C:\WINDOWS\System32\WScript.exe locationofsetupjs[/code]
+
+I personally used the first adding a new command "run" as the default thus still able to right click and edit with dreamweaver.[/quote]
 
 
 Costumizing  -------------------------------------------------------------------

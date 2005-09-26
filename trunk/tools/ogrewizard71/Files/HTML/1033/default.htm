@@ -1,6 +1,6 @@
 <HTML DIR="ltr">
 	<HEAD>
-		<TITLE>Ogre 1.0.5 Application Wizard</TITLE>
+		<TITLE>OGRE 1.0.5 Application Wizard</TITLE>
 		<META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 		<STYLE TYPE="text/css">@import url();
@@ -128,6 +128,22 @@ var cookieData;
 	if (!cookieData.load() || !cookieData.name) {
 		cookieData.name = "last_settings";
 	}
+
+	// store a default value for first session
+	if (cookieData.min_app == null) { cookieData.min_app="false"; cookieData.store();}
+	if (cookieData.standard_app == null) { cookieData.standard_app="true"; cookieData.store();}
+	if (cookieData.empty_project == null) { cookieData.empty_project="false"; cookieData.store();}
+	if (cookieData.framework_yes == null) { cookieData.framework_yes="true"; cookieData.store();}
+	if (cookieData.framework_own == null) { cookieData.framework_own="false"; cookieData.store();}
+	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="false"; cookieData.store();}
+	if (cookieData.location_samples == null) { cookieData.location_samples="true"; cookieData.store();}
+	if (cookieData.location_other == null) { cookieData.location_other="false"; cookieData.store();}
+	if (cookieData.location_ogrenew == null) { cookieData.location_ogrenew="false"; cookieData.store();}
+	if (cookieData.location_envvar == null) { cookieData.location_envvar="false"; cookieData.store();}
+	if (cookieData.postbuild_copy == null) { cookieData.postbuild_copy="true"; cookieData.store();}
+	if (cookieData.skip_config == null) { cookieData.skip_config="false"; cookieData.store();}
+	if (cookieData.ogre_folder == null) { cookieData.ogre_folder="C:\\ogrenew"; cookieData.store();}
+
         document.write("<SYMBOL NAME='SAFE_PROJECT_NAME' TYPE='text'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='UPPER_CASE_PROJECT_NAME' TYPE='text'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='MIN_APP' TYPE='checkbox' VALUE='" + cookieData.min_app + "'></SYMBOL>\n");
@@ -188,8 +204,8 @@ var cookieData;
 										&nbsp;
 									</TD>
 									<TD VALIGN="top" HEIGHT="65">
-										<H4 CLASS="HEAD" ID="HEAD">Welcome to the Ogre 1.0.5 Application Wizard</H4>
-										<P CLASS="SUBHEAD" ID="SUBHEAD">This wizard generates a generic&nbsp;Ogre
+										<H4 CLASS="HEAD" ID="HEAD">Welcome to the OGRE 1.0.5 Application Wizard</H4>
+										<P CLASS="SUBHEAD" ID="SUBHEAD">This wizard generates a generic&nbsp;OGRE
 											application project.</P>
 									</TD>
 									<TD VALIGN="top" HEIGHT="65" WIDTH="12">
@@ -434,7 +450,7 @@ function InitDocument(document)
 
 	if (window.external.FindSymbol("DOCUMENT_FIRST_LOAD"))
 	{
-		var L_WizardDialogTitle_Text = "Ogre 1.0.5 Application Wizard";
+		var L_WizardDialogTitle_Text = "OGRE 1.0.5 Application Wizard";
 		window.external.AddSymbol("WIZARD_DIALOG_TITLE", L_WizardDialogTitle_Text);
 		var strProjName = window.external.FindSymbol("PROJECT_NAME");
 		var coll = document.all.tags("SYMBOL");
@@ -457,9 +473,9 @@ function InitDocument(document)
 
 function InitControls()
 {
-	var L_APPTYPESTANDARD_TEXT = "Standard Ogre application";
-	var L_APPTYPEMIN_TEXT = "Minimal Ogre application";
-	var L_APPTYPEEMPTY_TEXT = "Empty Ogre application";
+	var L_APPTYPESTANDARD_TEXT = "Standard OGRE application";
+	var L_APPTYPEMIN_TEXT = "Minimal OGRE application";
+	var L_APPTYPEEMPTY_TEXT = "Empty OGRE application";
 	if (window.external.FindSymbol("EMPTY_PROJECT"))
 		APPTYPE.innerText = L_APPTYPEEMPTY_TEXT;
 	else
@@ -474,7 +490,9 @@ function InitControls()
 	}
 
 	var L_APPLOCATION_TEXT = "Samples folder";
-	var L_APPLOCATION_CUSTOM_TEXT = "Custom location";
+	var L_APPLOCATION_CUSTOM_TEXT = "Fixed path to OGRE root folder";
+	var L_APPLOCATION_NEXTO_TEXT = "On same level as OGRE root folder";
+	var L_APPLOCATION_ENVVAR_TEXT = "Using 'OGRE_SRC' environment variable.";
 	var L_APPFRAMEWORK_TEXT = "Using Common Samples Framework";
 	var L_APPFRAMEWORKOWN_TEXT = "Using own Framework"
 	var L_APPPOSTBUILD_TEXT = "Postbuild copy";
@@ -488,6 +506,14 @@ function InitControls()
 	else if (window.external.FindSymbol("LOCATION_OTHER"))
 	{
 		APPLOCATION.innerText = L_APPLOCATION_CUSTOM_TEXT;
+	}
+	else if (window.external.FindSymbol("LOCATION_ENVVAR"))
+	{
+		APPLOCATION.innerText = L_APPLOCATION_ENVVAR_TEXT;
+	}
+	else if (window.external.FindSymbol("LOCATION_OGRENEW"))
+	{
+		APPLOCATION.innerText = L_APPLOCATION_NEXTO_TEXT;
 	}
 	else
 	{
@@ -594,7 +620,7 @@ function OnFinish(document)
 	{
 		if (!IsValidDirectory(TrimStr(window.external.FindSymbol("OGRE_FOLDER") ) ) )
 		{
-			L_ErrOgreInvalid_Text = "Empty Ogre Directory!";
+			L_ErrOgreInvalid_Text = "Empty OGRE Directory!";
 			window.external.ReportError(L_ErrOgreInvalid_Text);
 			return;
 		}

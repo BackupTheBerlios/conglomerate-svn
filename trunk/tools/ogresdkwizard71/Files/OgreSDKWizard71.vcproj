@@ -86,46 +86,13 @@
 				RelativePath=".\Templates\include\BaseFrameListener.h">
 			</File>
 			<File
-				RelativePath=".\Templates\src\GameState.cpp">
-			</File>
-			<File
-				RelativePath=".\Templates\include\GameState.h">
-			</File>
-			<File
 				RelativePath=".\Templates\src\main.cpp">
 			</File>
 			<File
 				RelativePath=".\Templates\include\main.h">
 			</File>
 			<File
-				RelativePath=".\Templates\Media\gui\mainmenu.layout">
-			</File>
-			<File
-				RelativePath=".\Templates\src\MainMenuState.cpp">
-			</File>
-			<File
-				RelativePath=".\Templates\include\MainMenuState.h">
-			</File>
-			<File
 				RelativePath=".\Templates\docs\ReadMe.txt">
-			</File>
-			<File
-				RelativePath=".\Templates\src\State.cpp">
-			</File>
-			<File
-				RelativePath=".\Templates\include\State.h">
-			</File>
-			<File
-				RelativePath=".\Templates\src\StateManager.cpp">
-			</File>
-			<File
-				RelativePath=".\Templates\include\StateManager.h">
-			</File>
-			<File
-				RelativePath=".\Templates\src\Walker.cpp">
-			</File>
-			<File
-				RelativePath=".\Templates\include\Walker.h">
 			</File>
 		</Filter>
 		<Filter
@@ -152,6 +119,9 @@
 			Filter="vsz;vsdir;ico;vcproj;csproj;css;inf">
 			<File
 				RelativePath=".\default.vcproj">
+			</File>
+			<File
+				RelativePath=".\Templates\1033\EmptyTemplates.inf">
 			</File>
 			<File
 				RelativePath=".\OgreWizard71.ico">

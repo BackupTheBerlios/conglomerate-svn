@@ -120,7 +120,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strCommonDir = sOgreFolder + '\\samples\\common';
 		if(bGlobalEnvar)
-			strCommonDir = '$(OGRE_HOME)' + '\\samples\\common';
+			strCommonDir = '$(OGRE_SRC)' + '\\samples\\common';
 			
 		var strOgreMainDir = '';
 		if(bSamplesFolder)
@@ -130,7 +130,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strOgreMainDir = sOgreFolder + '\\OgreMain';
 		if(bGlobalEnvar)
-			strOgreMainDir = '$(OGRE_HOME)' + '\\OgreMain';
+			strOgreMainDir = '$(OGRE_SRC)' + '\\OgreMain';
 
 		var strDependenciesDir = '';
 		if(bSamplesFolder)
@@ -140,7 +140,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strDependenciesDir = sOgreFolder + '\\Dependencies';
 		if(bGlobalEnvar)
-			strDependenciesDir = '$(OGRE_HOME)' + '\\Dependencies';
+			strDependenciesDir = '$(OGRE_SRC)' + '\\Dependencies';
 
 		var strCEGUIRendererDir = '';
 		if(bSamplesFolder)
@@ -150,7 +150,7 @@ function AddConfig(proj, strProjectName)
 		if(bOtherFolder)
 			strCEGUIRendererDir = sOgreFolder + '\\samples\\Common\\CEGUIRenderer';
 		if(bGlobalEnvar)
-			strCEGUIRendererDir = '$(OGRE_HOME)' + '\\samples\\Common\\CEGUIRenderer';
+			strCEGUIRendererDir = '$(OGRE_SRC)' + '\\samples\\Common\\CEGUIRenderer';
 
 //DEBUG//////////////////////////////////////////////////////
 		var config = proj.Object.Configurations('Debug');

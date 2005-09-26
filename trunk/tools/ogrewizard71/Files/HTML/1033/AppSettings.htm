@@ -1,6 +1,6 @@
 <HTML DIR="ltr">
 	<HEAD>
-		<TITLE>Ogre 1.0.5 Application Wizard</TITLE>
+		<TITLE>OGRE 1.0.5 Application Wizard</TITLE>
 		<META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 		<STYLE TYPE="text/css">@import url();
@@ -212,19 +212,19 @@
 																ID="LOCATION_OGRENEW" TITLE="">
 															<DIV CLASS="itemTextRadioB" ID="LOCATION_OGRENEW_DIV" TITLE="">
 																<LABEL FOR="LOCATION_OGRENEW" ID="LOCATION_OGRENEW_LABEL">On same <U>l</U>evel
-																	as&nbsp;Ogre root folder.</LABEL>&nbsp;
+																	as&nbsp;OGRE root folder.</LABEL>&nbsp;
 															</DIV>
 															<BR>
 															<INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="l" NAME="applocation"
 																ID="LOCATION_ENVVAR" TITLE="">
 															<DIV CLASS="itemTextRadioB" ID="LOCATION_ENVVAR_DIV" TITLE="">
-																<LABEL FOR="LOCATION_ENVVAR" ID="LOCATION_ENVVAR_LABEL">'OGRE_HOME' environment <U>v</U>ariable</LABEL>
+																<LABEL FOR="LOCATION_ENVVAR" ID="LOCATION_ENVVAR_LABEL">'OGRE_SRC' environment <U>v</U>ariable</LABEL>
 															</DIV>
 															<BR>
 															<INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="O" NAME="applocation"
 																ID="LOCATION_OTHER" TITLE="">
 															<DIV CLASS="itemTextRadioB" ID="LOCATION_OTHER_DIV" TITLE="">
-																<LABEL FOR="LOCATION_OTHER" ID="LOCATION_OTHER_LABEL"><U>Fixed path to&nbsp;Ogre
+																<LABEL FOR="LOCATION_OTHER" ID="LOCATION_OTHER_LABEL"><U>Fixed path to&nbsp;OGRE
 																		root&nbsp;folder</U>:</LABEL>
 															</DIV>
 															<BR>
@@ -492,7 +492,7 @@ function InitDocument(document)
 	if (cookieData.empty_project == null) { cookieData.empty_project="false"; cookieData.store();}
 	if (cookieData.framework_yes == null) { cookieData.framework_yes="true"; cookieData.store();}
 	if (cookieData.framework_own == null) { cookieData.framework_own="false"; cookieData.store();}
-	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="true"; cookieData.store();}
+	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="false"; cookieData.store();}
 	if (cookieData.location_samples == null) { cookieData.location_samples="true"; cookieData.store();}
 	if (cookieData.location_other == null) { cookieData.location_other="false"; cookieData.store();}
 	if (cookieData.location_ogrenew == null) { cookieData.location_ogrenew="false"; cookieData.store();}
@@ -561,7 +561,7 @@ function OnFinish(document)
 	{
 		if (!IsValidDirectory(TrimStr(OGRE_FOLDER.value)))
 		{
-			L_ErrOgreInvalid_Text = "Empty Ogre Directory!";
+			L_ErrOgreInvalid_Text = "Empty OGRE Directory!";
 			window.external.ReportError(L_ErrOgreInvalid_Text);
 			return;
 		}
@@ -629,10 +629,10 @@ function InitControls()
 		STATEMANAGER_YES_LABEL.disabled = true;
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
-		FRAMEWORK_YES.disabled = false;
-		FRAMEWORK_YES_LABEL.disabled = false;
-		FRAMEWORK_OWN.disabled = false;
-		FRAMEWORK_OWN_LABEL.disabled = false;
+		FRAMEWORK_YES.disabled = true;
+		FRAMEWORK_YES_LABEL.disabled = true;
+		FRAMEWORK_OWN.disabled = true;
+		FRAMEWORK_OWN_LABEL.disabled = true;
 		SKIP_CONFIG.disabled = false;
 		skip_config_title.disabled = false;
 	}

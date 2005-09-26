@@ -1,6 +1,6 @@
 <HTML DIR="ltr">
     <HEAD>
-        <TITLE>Ogre SDK 1.0.5 Application Wizard</TITLE>
+        <TITLE>OGRE SDK 1.0.5 Application Wizard</TITLE>
         <META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
         <STYLE TYPE="text/css">@import url();
@@ -183,20 +183,20 @@
                                                         <SPAN CLASS="itemTextTop" ID="APPLICATION_TYPE_LABEL" TITLE="">Application type:
                                                             <P CLASS="Spacer">&nbsp;</P>
                                                             <INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" NAME="apptype" ID="STANDARD_APP"
-                                                                ACCESSKEY="W" TITLE="">
-                                                            <DIV CLASS="itemTextRadioB" ID="STANDARD_APP_DIV" TITLE="">
+                                                                ACCESSKEY="W" TITLE="Creates a standard OGRE application.">
+                                                            <DIV CLASS="itemTextRadioB" ID="STANDARD_APP_DIV" TITLE="Click here to create a standard OGRE application.">
                                                                 <LABEL FOR="STANDARD_APP" ID="STANDARD_APP_LABEL"><U>S</U>tandard application</LABEL>
                                                             </DIV>
                                                             <BR>
                                                             <INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="O" NAME="apptype"
-                                                                ID="MIN_APP" TITLE="">
-                                                            <DIV CLASS="itemTextRadioB" ID="MIN_APP_DIV" TITLE="">
+                                                                ID="MIN_APP" TITLE="Creates a minimal OGRE application.">
+                                                            <DIV CLASS="itemTextRadioB" ID="MIN_APP_DIV" TITLE="Click here to create a minimal OGRE application.">
                                                                 <LABEL FOR="MIN_APP" ID="MIN_APP_LABEL">Minimal&nbsp;application</LABEL>
                                                             </DIV>
                                                             <BR>
                                                             <INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="O" NAME="apptype"
-                                                                ID="EMPTY_PROJECT" TITLE="" VALUE="Radio1">
-                                                            <DIV CLASS="itemTextRadioB" ID="EMPTY_PROJECT_DIV" TITLE="">
+                                                                ID="EMPTY_PROJECT" TITLE="Creates an Empty OGRE project." VALUE="Radio1">
+                                                            <DIV CLASS="itemTextRadioB" ID="EMPTY_PROJECT_DIV" TITLE="Click here to create an Empty OGRE project.">
                                                                 <LABEL FOR="EMPTY_PROJECT" ID="EMPTY_PROJECT_LABEL"><u>E</u>mpty Project</LABEL>
                                                             </DIV>
                                                             <BR>
@@ -209,14 +209,14 @@
                                                             Options:
                                                             <P CLASS="Spacer">&nbsp;</P>
                                                             <INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" NAME="appoptions"
-                                                                ID="FRAMEWORK_YES" ACCESSKEY="a" TITLE="" VALUE="Radio1">
-                                                            <DIV CLASS="itemTextRadioB" ID="FRAMEWORK_YES_DIV" TITLE="">
+                                                                ID="FRAMEWORK_YES" ACCESSKEY="a" TITLE="Using common samples framework (ExampleApplication.h and ExampleFramelistener.h)" VALUE="Radio1">
+                                                            <DIV CLASS="itemTextRadioB" ID="FRAMEWORK_YES_DIV" TITLE="Using common samples framework (ExampleApplication.h and ExampleFramelistener.h)">
                                                                 <LABEL FOR="FRAMEWORK_YES" ID="FRAMEWORK_YES_LABEL">Samples Framework</LABEL>
                                                             </DIV>
                                                             <BR>
                                                             <INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="l" NAME="appoptions"
-                                                                ID="FRAMEWORK_OWN" TITLE="">
-                                                            <DIV CLASS="itemTextRadioB" ID="FRAMEWORK_OWN_DIV" TITLE="">
+                                                                ID="FRAMEWORK_OWN" TITLE="Using a local copy of the example framework (BaseApplication.h and BaseFramelistener.h) You should costumize these to suit your own needs.">
+                                                            <DIV CLASS="itemTextRadioB" ID="FRAMEWORK_OWN_DIV" TITLE="Using a local copy of the example framework (BaseApplication.h and BaseFramelistener.h) You should costumize these to suit your own needs.">
                                                                 <LABEL FOR="FRAMEWORK_OWN" ID="FRAMEWORK_OWN_LABEL">Own Framework</LABEL>
                                                             </DIV>
                                                             <BR>
@@ -229,22 +229,22 @@
                                                             <br>
                                                         </SPAN><SPAN CLASS="itemTextTop" ID="ADD_SUPPORT_SPAN" TITLE="">Additional Options: </SPAN>
                                                         <P CLASS="Spacer">&nbsp;</P>
-                                                        <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="F" ID="CEGUI_YES" NAME="support" TITLE=""
+                                                        <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="F" ID="CEGUI_YES" NAME="support" TITLE="Check this box to add support for CEGUI"
                                                             onPropertyChange="InitControls();">
-                                                        <DIV CLASS="itemTextCheckboxB" TITLE="" ID="support_cegui_title">
+                                                        <DIV CLASS="itemTextCheckboxB" TITLE="Check this box to add support for CEGUI" ID="support_cegui_title">
                                                             <LABEL FOR="CEGUI_YES" ID="CEGUI_YES_LABEL">CEGUI <U>S</U>upport</LABEL>
                                                         </DIV>
                                                         <br>
                                                         <br>
-                                                        <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="C" ID="SKIP_CONFIG" TITLE="" onPropertyChange="InitControls();"
+                                                        <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="C" ID="SKIP_CONFIG" TITLE="Check this box to make your application skip the OGRE configuration dialog, if ogre.cfg is already present. If you want to show the config dialog again, delete ogre.cfg." onPropertyChange="InitControls();"
                                                             NAME="SKIP_CONFIG">
-                                                        <DIV CLASS="itemTextCheckboxB" TITLE="" ID="skip_config_title">
+                                                        <DIV CLASS="itemTextCheckboxB" TITLE="Check this box to make your application skip the OGRE configuration dialog, if ogre.cfg is already present. If you want to show the config dialog again, delete ogre.cfg." ID="skip_config_title">
                                                             Skip Config Dialog
                                                         </DIV>
                                                         <br>
-                                                        <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="b" ID="POSTBUILD_COPY" TITLE="" onPropertyChange="InitControls();"
+                                                        <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="b" ID="POSTBUILD_COPY" TITLE="Copies your application to the samples bin directory." onPropertyChange="InitControls();"
                                                             NAME="POSTBUILD_COPY">
-                                                        <DIV CLASS="itemTextCheckboxB" TITLE="" ID="postbuild_title">
+                                                        <DIV CLASS="itemTextCheckboxB" TITLE="Copies your application to the samples bin directory." ID="postbuild_title">
                                                             Post<U>b</U>uild copy to samples/bin
                                                         </DIV>
                                                         </SPAN>
@@ -333,10 +333,146 @@
 var tab_array = new Array();
 tab_array[0] = Default;
 tab_array[1] = AppSettings;
+// CODE FOR COOKIES FROM OREILLY : http://examples.oreilly.de/english_examples/jscript2/15.1.txt
+
+// The constructor function: creates a cookie object for the specified
+// document, with a specified name and optional attributes.
+// Arguments:
+//   document: the Document object that the cookie is stored for. Required.
+//   name:     a string that specifies a name for the cookie. Required.
+//   hours:    an optional number that specifies the number of hours from now
+//             that the cookie should expire.
+//   path:     an optional string that specifies the cookie path attribute.
+//   domain:   an optional string that specifies the cookie domain attribute.
+//   secure:   an optional Boolean value that, if true, requests a secure cookie.
+//
+function Cookie(document, name, hours, path, domain, secure)
+{
+    // All the predefined properties of this object begin with '$'
+    // to distinguish them from other properties which are the values to
+    // be stored in the cookie.	
+    this.$document = document;
+    this.$name = name;
+    if (hours)
+        this.$expiration = new Date((new Date()).getTime() + hours*3600000);
+    else this.$expiration = null;
+    if (path) this.$path = path; else this.$path = null;
+    if (domain) this.$domain = domain; else this.$domain = null;
+    if (secure) this.$secure = true; else this.$secure = false;
+}
+// This function is the store() method of the Cookie object.
+function _Cookie_store()
+{
+    // First, loop through the properties of the Cookie object and
+    // put together the value of the cookie. Since cookies use the
+    // equals sign and semicolons as separators, we'll use colons
+    // and ampersands for the individual state variables we store 
+    // within a single cookie value. Note that we escape the value
+    // of each state variable, in case it contains punctuation or other
+    // illegal characters.
+    var cookieval = "";
+    for(var prop in this) {
+        // Ignore properties with names that begin with '$' and also methods.
+        if ((prop.charAt(0) == '$') || ((typeof this[prop]) == 'function')) 
+            continue;
+        if (cookieval != "") cookieval += '&';
+        cookieval += prop + ':' + escape(this[prop]);
+    }
+    // Now that we have the value of the cookie, put together the 
+    // complete cookie string, which includes the name, and the various
+    // attributes specified when the Cookie object was created.
+    var cookie = this.$name + '=' + cookieval;
+    if (this.$expiration)
+        cookie += '; expires=' + this.$expiration.toGMTString();
+    if (this.$path) cookie += '; path=' + this.$path;
+    if (this.$domain) cookie += '; domain=' + this.$domain;
+    if (this.$secure) cookie += '; secure';
+    // Now store the cookie by setting the magic Document.cookie property.
+    this.$document.cookie = cookie;
+}
+// This function is the load() method of the Cookie object.
+function _Cookie_load()
+{
+    // First, get a list of all cookies that pertain to this document.
+    // We do this by reading the magic Document.cookie property.
+    var allcookies = this.$document.cookie;
+    if (allcookies == "") return false;
+    // Now extract just the named cookie from that list.
+    var start = allcookies.indexOf(this.$name + '=');
+    if (start == -1) return false;   // cookie not defined for this page.
+    start += this.$name.length + 1;  // skip name and equals sign.
+    var end = allcookies.indexOf(';', start);
+    if (end == -1) end = allcookies.length;
+    var cookieval = allcookies.substring(start, end);
+    // Now that we've extracted the value of the named cookie, we've
+    // got to break that value down into individual state variable 
+    // names and values. The name/value pairs are separated from each
+    // other with ampersands, and the individual names and values are
+    // separated from each other with colons. We use the split method
+    // to parse everything.
+    var a = cookieval.split('&');  // break it into array of name/value pairs
+    for(var i=0; i < a.length; i++)  // break each pair into an array
+        a[i] = a[i].split(':');
+    // Now that we've parsed the cookie value, set all the names and values
+    // of the state variables in this Cookie object. Note that we unescape()
+    // the property value, because we called escape() when we stored it.
+    for(var i = 0; i < a.length; i++) {
+        this[a[i][0]] = unescape(a[i][1]);
+    }
+    // We're done, so return the success code.
+    return true;
+}
+// This function is the remove() method of the Cookie object.
+function _Cookie_remove()
+{
+    var cookie;
+    cookie = this.$name + '=';
+    if (this.$path) cookie += '; path=' + this.$path;
+    if (this.$domain) cookie += '; domain=' + this.$domain;
+    cookie += '; expires=Fri, 02-Jan-1970 00:00:00 GMT';
+    this.$document.cookie = cookie;
+}
+// Create a dummy Cookie object, so we can use the prototype object to make
+// the functions above into methods.
+new Cookie();
+Cookie.prototype.store = _Cookie_store;
+Cookie.prototype.load = _Cookie_load;
+Cookie.prototype.remove = _Cookie_remove;
+
+// cookie for whole document
+var cookieData;
 
 function InitDocument(document)
 {
 	setDirection();
+
+	// for 10 years... :) i hope they will have fixed it before 2013 :)
+	cookieData = new Cookie(document, "sdklast_settings", 24*365*10);
+
+	// if cookie doesn't exist or is invalid, create it.
+	if (!cookieData.load() || !cookieData.name) {
+		cookieData.name = "sdklast_settings";
+	}
+	
+	// store a default value for first session
+	if (cookieData.min_app == null) { cookieData.min_app="false"; cookieData.store();}
+	if (cookieData.standard_app == null) { cookieData.standard_app="true"; cookieData.store();}
+	if (cookieData.empty_project == null) { cookieData.empty_project="false"; cookieData.store();}
+	if (cookieData.framework_yes == null) { cookieData.framework_yes="true"; cookieData.store();}
+	if (cookieData.framework_own == null) { cookieData.framework_own="false"; cookieData.store();}
+	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="false"; cookieData.store();}
+	if (cookieData.postbuild_copy == null) { cookieData.postbuild_copy="true"; cookieData.store();}
+	if (cookieData.skip_config == null) { cookieData.skip_config="false"; cookieData.store();}
+	
+	MIN_APP.checked = cookieData.min_app;
+	STANDARD_APP.checked = cookieData.standard_app;
+	EMPTY_PROJECT.checked = cookieData.empty_project;
+	FRAMEWORK_YES.checked = cookieData.framework_yes;
+	FRAMEWORK_OWN.checked = cookieData.framework_own;
+	CEGUI_YES.checked = cookieData.cegui_yes;
+	POSTBUILD_COPY.checked = cookieData.postbuild_copy;
+	SKIP_CONFIG.checked = cookieData.skip_config;
+
 	window.external.Load(document);
 	InitControls();
 }
@@ -379,6 +515,16 @@ function IsValidDirectory(strDirectory)
 
 function OnFinish(document)
 {
+	cookieData.min_app=MIN_APP.checked;
+	cookieData.standard_app=STANDARD_APP.checked;
+	cookieData.empty_project=EMPTY_PROJECT.checked;
+	cookieData.framework_yes=FRAMEWORK_YES.checked;
+	cookieData.framework_own=FRAMEWORK_OWN.checked;
+	cookieData.cegui_yes=CEGUI_YES.checked;
+	cookieData.postbuild_copy=POSTBUILD_COPY.checked;
+	cookieData.skip_config=SKIP_CONFIG.checked;
+	cookieData.store();
+
 	OnWizFinish(document);
 }
 
@@ -402,10 +548,10 @@ function InitControls()
 		STATEMANAGER_YES_LABEL.disabled = true;
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
-		FRAMEWORK_YES.disabled = false;
-		FRAMEWORK_YES_LABEL.disabled = false;
-		FRAMEWORK_OWN.disabled = false;
-		FRAMEWORK_OWN_LABEL.disabled = false;
+		FRAMEWORK_YES.disabled = true;
+		FRAMEWORK_YES_LABEL.disabled = true;
+		FRAMEWORK_OWN.disabled = true;
+		FRAMEWORK_OWN_LABEL.disabled = true;
 		SKIP_CONFIG.disabled = false;
 		skip_config_title.disabled = false;
 	}
