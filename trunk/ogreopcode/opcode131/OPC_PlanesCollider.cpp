@@ -31,6 +31,7 @@
 #include "Stdafx.h"
 
 using namespace Opcode;
+using namespace IceMaths;
 
 #include "OPC_PlanesAABBOverlap.h"
 #include "OPC_PlanesTriOverlap.h"

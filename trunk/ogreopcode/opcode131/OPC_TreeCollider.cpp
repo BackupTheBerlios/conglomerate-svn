@@ -22,7 +22,7 @@
  *
  *	\class		AABBTreeCollider
  *	\author		Pierre Terdiman
- *	\version	1.3
+ *	\version	1.3.2
  *	\date		March, 20, 2001
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,10 +32,16 @@
 #include "Stdafx.h"
 
 using namespace Opcode;
+using namespace IceMaths;
 
 #include "OPC_BoxBoxOverlap.h"
 #include "OPC_TriBoxOverlap.h"
-#include "OPC_TriTriOverlap.h"
+
+// The tri-tri overlap
+#include "OPC_TriTriOverlap.h"  // Standard OPCODE's tri-tri overlap routine (by Pierre)
+// #include "OPC_TriTriOverlapGilvan.h" // An optional tri-tri overlap routine based on SAT - Separating Axis Theorem (by Gilvan)
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -46,6 +52,8 @@ AABBTreeCollider::AABBTreeCollider() :
 	mNbBVBVTests		(0),
 	mNbPrimPrimTests	(0),
 	mNbBVPrimTests		(0),
+	mScale0                 (1.0,1.0,1.0),
+	mScale1			(1.0,1.0,1.0),
 	mFullBoxBoxTest		(true),
 	mFullPrimBoxTest	(true),
 	mIMesh0				(null),
@@ -246,6 +254,7 @@ void AABBTreeCollider::InitQuery(const IceMaths::Matrix4x4* world0, const IceMat
 	if(world0)
 	{		
 		NormalizePRSMatrix( WorldM0, mScale0,*world0);
+		
 		InvertPRMatrix(InvWorld0, WorldM0);
 	}
 	else
@@ -257,6 +266,7 @@ void AABBTreeCollider::InitQuery(const IceMaths::Matrix4x4* world0, const IceMat
 	if(world1)
 	{
 		NormalizePRSMatrix( WorldM1, mScale1,*world1);		
+		
 		InvertPRMatrix(InvWorld1, WorldM1);
 	}
 	else

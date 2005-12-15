@@ -115,6 +115,7 @@
 #include "Stdafx.h"
 
 using namespace Opcode;
+using namespace IceMaths;
 
 #include "OPC_RayAABBOverlap.h"
 #include "OPC_RayTriOverlap.h"

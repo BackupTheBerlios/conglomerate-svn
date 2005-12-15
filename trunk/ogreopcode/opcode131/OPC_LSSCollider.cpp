@@ -182,11 +182,11 @@ BOOL LSSCollider::InitQuery(LSSCache& cache, const IceMaths::LSS& lss, const Ice
 	{
 		// Matrix normalization & scaling stripping
 		IceMaths::Matrix4x4 normWorldm;
-		NormalizePRSMatrix( normWorldm, mLocalScale, *worldm );
+		IceMaths::NormalizePRSMatrix( normWorldm, mLocalScale, *worldm );
 		
 		// Invert model matrix
 		IceMaths::Matrix4x4 InvWorldM;
-		InvertPRMatrix(InvWorldM, normWorldm); 
+		IceMaths::InvertPRMatrix(InvWorldM, normWorldm); 
 
 		mSeg.mP0 *= InvWorldM;
 		mSeg.mP1 *= InvWorldM;
