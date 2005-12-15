@@ -3,6 +3,11 @@
  *	OPCODE - Optimized Collision Detection
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
+ *
+ *  OPCODE modifications for scaled model support (and other things)
+ *  Copyright (C) 2004 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm for updates.
+ *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -19,10 +24,11 @@
 /**
  *	Contains an AABB tree collider.
  *	This class performs a collision test between two AABB trees.
+ *  This class had changed a bit since jan/2005 in order to support scaled models.
  *
  *	\class		AABBTreeCollider
  *	\author		Pierre Terdiman
- *	\version	1.3.2
+ *	\version	1.3
  *	\date		March, 20, 2001
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,8 +58,8 @@ AABBTreeCollider::AABBTreeCollider() :
 	mNbBVBVTests		(0),
 	mNbPrimPrimTests	(0),
 	mNbBVPrimTests		(0),
-	mScale0                 (1.0,1.0,1.0),
-	mScale1			(1.0,1.0,1.0),
+	mScale0				(1.0,1.0,1.0),
+	mScale1				(1.0,1.0,1.0),
 	mFullBoxBoxTest		(true),
 	mFullPrimBoxTest	(true),
 	mIMesh0				(null),
@@ -97,7 +103,7 @@ const char* AABBTreeCollider::ValidateSettings()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool AABBTreeCollider::Collide(BVTCache& cache, const IceMaths::Matrix4x4* world0, const IceMaths::Matrix4x4* world1)
 {
-	// Checkings
+	// Checkings: olny works for corresponding models(leaf style and quantization )
 	if(!cache.Model0 || !cache.Model1)								return false;
 	if(cache.Model0->HasLeafNodes()!=cache.Model1->HasLeafNodes())	return false;
 	if(cache.Model0->IsQuantized()!=cache.Model1->IsQuantized())	return false;
@@ -174,7 +180,8 @@ bool AABBTreeCollider::Collide(BVTCache& cache, const IceMaths::Matrix4x4* world
 	cache.HullTest = false;
 #endif // __MESHMERIZER_H__
 
-	// Checkings
+	// Checkings: was this modified by someone? Why?
+	// mFlags &= ~OPC_CONTACT;
 	if(!Setup(cache.Model0->GetMeshInterface(), cache.Model1->GetMeshInterface()))	return false;
 
 	// Simple double-dispatch

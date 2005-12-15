@@ -13,13 +13,8 @@
  *	\return		true on overlap. mStabbedFace is filled with relevant info.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0_, const IceMaths::Point& vert1_, const IceMaths::Point& vert2_)
+inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0, const IceMaths::Point& vert1, const IceMaths::Point& vert2)
 {
-	// Applies model's local scale
-	const IceMaths::Point& vert0 = vert0_*mLocalScale;
-	const IceMaths::Point& vert1 = vert1_*mLocalScale;
-	const IceMaths::Point& vert2 = vert2_*mLocalScale;
-
 	// Stats
 	mNbRayPrimTests++;
 

@@ -3,6 +3,11 @@
  *	OPCODE - Optimized Collision Detection
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
+ *
+ *  OPCODE modifications for scaled model support (and other things)
+ *  Copyright (C) 2004 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm for updates.
+ *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -348,9 +353,10 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 	// The (Origin/Dir) form is needed for the ray-triangle test anyway (even for segment tests)
 	if(world)
 	{
-		// Matrix normalization & scaling stripping
+		// Matrix normalization & scaling stripping (notice that mLocalScale scale is not needed anymore here)
+		IceMaths::Point localScale;
 		IceMaths::Matrix4x4 normWorldm;
-		NormalizePRSMatrix( normWorldm, mLocalScale, *world );
+		NormalizePRSMatrix( normWorldm, localScale, *world );
 		
 		// Invert model matrix
 		IceMaths::Matrix3x3 InvWorld = normWorldm;
@@ -359,10 +365,46 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 		IceMaths::Matrix4x4 World;
 		InvertPRMatrix(World, normWorldm);
 		mOrigin = world_ray.mOrig * World;
+			
+
+		// My original code for transforming/normalizing directions (Gilvan)
+		/*mDir /= localScale;
+		mOrigin /= localScale;
+
+		if(IR(mMaxDist)!=IEEE_MAX_FLOAT)
+		{
+			float ds = mDir.Magnitude();
+			mMaxDist *= ds;
+			mDir	 /= ds;
+		}else
+			mDir.Normalize();
+                */
+
+		// NEW CODE - Getting the ray in the model's local space. This avoids the local scale in RayTriOverlap code.
+		//            This means that we
+		//
+		//  1) shots a point in front of the origin (applies the magnitude of origin to avoid innacuracies);
+		//  2) divides the two points by the model's scale
+		//  3) retrieves the direction in model's local space
+		//  4) considers the max distance in the model's local space
+
+		float delta = (IR(mMaxDist)!= IEEE_MAX_FLOAT) ? mMaxDist : mOrigin.Magnitude();
+		IceMaths::Point pointInFront = mOrigin + mDir*delta;
+		// 2)
+		pointInFront /= localScale;
+		mOrigin		 /= localScale;
+		// 3)
+		mDir	= pointInFront - mOrigin; // innaccuracies here??
+		// 4)
+		if(IR(mMaxDist)!=IEEE_MAX_FLOAT)
+			mMaxDist = mDir.Magnitude();
+
+		mDir /= mMaxDist; // equals to mDir.Normalize();
+
+		// 4) Another option is to use the scale... div by localScale.Magnitude()
 	}
 	else
 	{
-		mLocalScale.Set(1.0,1.0,1.0);
 		mDir	= world_ray.mDir;
 		mOrigin	= world_ray.mOrig;
 	}

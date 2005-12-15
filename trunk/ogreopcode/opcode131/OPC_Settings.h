@@ -4,9 +4,9 @@
  *	Copyright (C) 2001 Pierre Terdiman
  *	Homepage: http://www.codercorner.com/Opcode.htm
  *
- *      OPCODE modifications for scaled model support (and some minor things)
- *      Copyright (C) 2004-2005 Gilvan Maia (gilvan 'at' vdl.ufc.br)
- *      Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm  for news, more information and updates.
+ *	OPCODE modifications for scaled model support (and some minor things)
+ *	Copyright (C) 2004-2005 Gilvan Maia (gilvan 'at' vdl.ufc.br)
+ *	Check http://www.vdl.ufc.br/gilvan/coll/opcode/index.htm  for news, more information and updates.
  *
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,10 @@
 #ifndef __OPC_SETTINGS_H__
 #define __OPC_SETTINGS_H__
 
-	//! NEW!!! Use double-precision vertices (storage-only)
+	//! NEW!!!	Use double-precision vertices. Remember that this is a "storage-only" option, because
+	//			avery test performed in OPCODE for collision is done against a triangle. This means a
+	//			double precision triangle is 'cast' into a single precision one before true collision
+	//			tests are performed, trees built, etc.
 	// #define OPC_DOUBLE_PRECISION
 
 	//! Use CPU comparisons (comment that line to use standard FPU compares)

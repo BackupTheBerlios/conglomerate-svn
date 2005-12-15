@@ -12,15 +12,12 @@
  *	\return		true on overlap
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline_ BOOL RayCollider::SegmentAABBOverlap(const IceMaths::Point& center_, const IceMaths::Point& extents_)
+inline_ BOOL RayCollider::SegmentAABBOverlap(const IceMaths::Point& center, const IceMaths::Point& extents)
 {
-	// Applies model's local scale
-	const IceMaths::Point center = center_  * mLocalScale;
-	const IceMaths::Point extents = extents_* mLocalScale;
-
 	// Stats
 	mNbRayBVTests++;
 
+	// Hmmm... Pierre's code looks like an AABB-AABB test
 	float Dx = mData2.x - center.x;		if(fabsf(Dx) > extents.x + mFDir.x)	return FALSE;
 	float Dy = mData2.y - center.y;		if(fabsf(Dy) > extents.y + mFDir.y)	return FALSE;
 	float Dz = mData2.z - center.z;		if(fabsf(Dz) > extents.z + mFDir.z)	return FALSE;
