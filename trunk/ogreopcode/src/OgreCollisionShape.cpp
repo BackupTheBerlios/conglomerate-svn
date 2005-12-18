@@ -746,8 +746,9 @@ namespace OgreOpcode
    void CollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
    {
       Mesh * mesh = entity->getMesh().getPointer();
-      bool hwSkinning = entity->isHardwareSkinningEnabled();
-      bool added_shared = false;
+//      bool hwSkinning = entity->isHardwareSkinningEnabled();
+		bool hwSkinning = entity->isHardwareAnimationEnabled();
+		bool added_shared = false;
       index_count  = 0;
       vertex_count = 0;
 
@@ -822,7 +823,8 @@ namespace OgreOpcode
            //----------------------------------------------------------------
            const VertexData * vertex_data;
            if(useSoftwareBlendingVertices)
-             vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
+			vertex_data = useSharedVertices ? entity->_getSkelAnimVertexData() : entity->getSubEntity(i)->_getSkelAnimVertexData();
+		   //vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
            else
              vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
 
