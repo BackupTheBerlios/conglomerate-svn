@@ -28,8 +28,6 @@
 #ifndef __OgreOpcode_h__
 #define __OgreOpcode_h__
 
-#define BUILD_AGAINST_DAGON 0
-
 #include "OgreOpcodeExports.h"
 
 #include "OgreCollisionManager.h"

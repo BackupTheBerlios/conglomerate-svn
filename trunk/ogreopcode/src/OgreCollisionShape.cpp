@@ -31,6 +31,8 @@
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
 
+#define BUILD_AGAINST_DAGON
+
 namespace OgreOpcode
 {
 
