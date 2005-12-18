@@ -727,7 +727,7 @@ protected:
       SceneNode* tcamNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cammnode");
       //LogManager::getSingleton().logMessage("Walk enabled initially: " + StringConverter::toString(ogreCam->getAnimationState("Walk")->getEnabled()));
       tcamNode->attachObject(ogreCam);
-      //tcamNode->scale(1.8f, 1.8f, 1.8f);
+      tcamNode->scale(1.8f, 1.8f, 1.8f);
       tcamNode->setPosition(0.0f,400.0f,0.0f);
 
       Entity* markerEnt = mSceneMgr->createEntity("markerr", "cube.mesh");
@@ -739,7 +739,7 @@ protected:
       Entity* ogreLevel = mSceneMgr->createEntity("Level", "level.mesh");
       SceneNode* levelNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("Headnode");
       levelNode->attachObject(ogreLevel);
-      //levelNode->scale(1.8f, 1.8f, 1.8f);
+      levelNode->scale(1.8f, 1.8f, 1.8f);
       //levelNode->rotate(Vector3::UNIT_X,Degree(-90.0f));
 
       CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("level1");

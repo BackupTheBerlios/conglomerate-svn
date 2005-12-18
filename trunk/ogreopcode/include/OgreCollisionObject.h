@@ -346,6 +346,10 @@ namespace OgreOpcode
       void Update(Real tdelta)
       {
          Matrix4 m;
+		 //m = GetShape()->getEntity()->_getParentNodeFullTransform();
+		 m = GetShape()->getEntity()->getParentSceneNode()->_getFullTransform();
+         //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
+
          Update(tdelta,m);
       }
 
@@ -359,8 +363,6 @@ namespace OgreOpcode
       void Update(Real t, Matrix4& m)
       {
          assert(is_attached);
-         m = GetShape()->getEntity()->_getParentNodeFullTransform();
-         //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
 
          old_matrix = new_matrix;
          old_center_offset = new_center_offset;
@@ -370,8 +372,11 @@ namespace OgreOpcode
          // Extract position vectors from matrix
 
          // Get center in world space.
-         Vector3 ctr = GetShape()->getCenter();
-         mRadius = GetShape()->GetRadius();
+         Vector3 ctr = GetShape()->getLocalCenter();
+		 Vector3 lMin,lMax;
+		 GetShape()->getMinMax(lMin,lMax);
+		 lMax-=lMin;
+		 mRadius = lMax.length()*0.5;
          // We need center's world offset from object's world origin
          // (And object's world origin is just translation part of m)
          new_center_offset = Vector3(ctr.x-new_matrix[0][3],
@@ -392,12 +397,13 @@ namespace OgreOpcode
          p0 += old_center_offset;
          Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
          p1 += new_center_offset;
-         minv = Vector3(n_min(p0.x,p1.x)-mRadius,
-                        n_min(p0.y,p1.y)-mRadius,
-                        n_min(p0.z,p1.z)-mRadius);
-         maxv = Vector3(n_max(p0.x,p1.x)+mRadius,
-                        n_max(p0.y,p1.y)+mRadius,
-                        n_max(p0.z,p1.z)+mRadius);
+		GetShape()->getMinMax(minv,maxv);
+//         minv = Vector3(n_min(p0.x,p1.x)-mRadius,
+//                        n_min(p0.y,p1.y)-mRadius,
+//                        n_min(p0.z,p1.z)-mRadius);
+//         maxv = Vector3(n_max(p0.x,p1.x)+mRadius,
+//                        n_max(p0.y,p1.y)+mRadius,
+//                        n_max(p0.z,p1.z)+mRadius);
 
          // update the x-dimension node, nCNode::SetVal() automatically
          // makes sure that the nodes keep their correct orders
