@@ -12,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogreOpcodeExample", "..\exa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Opcode", "..\opcode132\Opcode_vc8.vcproj", "{6B19233C-49A3-467D-BFA0-2B5CE77745D9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Example2", "..\Example2\scripts\Example2.vcproj", "{697C0F40-D838-4131-8D4C-ADF3FF09F284}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,6 +32,10 @@ Global
 		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Debug|Win32.Build.0 = Debug|Win32
 		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Release|Win32.ActiveCfg = Release|Win32
 		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Release|Win32.Build.0 = Release|Win32
+		{697C0F40-D838-4131-8D4C-ADF3FF09F284}.Debug|Win32.ActiveCfg = Debug|Win32
+		{697C0F40-D838-4131-8D4C-ADF3FF09F284}.Debug|Win32.Build.0 = Debug|Win32
+		{697C0F40-D838-4131-8D4C-ADF3FF09F284}.Release|Win32.ActiveCfg = Release|Win32
+		{697C0F40-D838-4131-8D4C-ADF3FF09F284}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
