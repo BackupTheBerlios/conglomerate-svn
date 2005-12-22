@@ -294,7 +294,7 @@ public:
             mDbgMsg = "";
             CollisionObject* yeah = pick_report[i]->co1;
             Vector3 contact = pick_report[i]->contact;
-            mDbgMsg = mDbgMsg + yeah->GetShape()->GetName() + " Contact: " + StringConverter::toString(contact);
+            mDbgMsg = mDbgMsg + yeah->GetShape()->GetName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
          }
       }
       else
@@ -739,7 +739,7 @@ protected:
       Entity* ogreLevel = mSceneMgr->createEntity("Level", "level.mesh");
       SceneNode* levelNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("Headnode");
       levelNode->attachObject(ogreLevel);
-      levelNode->scale(1.8f, 1.8f, 1.8f);
+      //levelNode->scale(1.8f, 1.8f, 1.8f);
       //levelNode->rotate(Vector3::UNIT_X,Degree(-90.0f));
 
       CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("level1");

@@ -346,8 +346,7 @@ namespace OgreOpcode
       void Update(Real tdelta)
       {
          Matrix4 m;
-		 //m = GetShape()->getEntity()->_getParentNodeFullTransform();
-		 m = GetShape()->getEntity()->getParentSceneNode()->_getFullTransform();
+		 m = GetShape()->getEntity()->_getParentNodeFullTransform();
          //GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
 
          Update(tdelta,m);
@@ -372,7 +371,7 @@ namespace OgreOpcode
          // Extract position vectors from matrix
 
          // Get center in world space.
-         Vector3 ctr = GetShape()->getLocalCenter();
+         Vector3 ctr = GetShape()->getCenter() * 1.18f;
 		 Vector3 lMin,lMax;
 		 GetShape()->getMinMax(lMin,lMax);
 		 lMax-=lMin;

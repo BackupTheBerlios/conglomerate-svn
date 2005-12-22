@@ -400,8 +400,6 @@ namespace OgreOpcode
 
       // setup ray collider
       Opcode::RayCollider& collider = CollisionManager::getSingletonPtr()->opcRayCollider;
-      // callbacks in opcode 1.3 go through the model's meshinterface - GJH
-      //    collider.SetCallback(collCallback, udword(this));
       collider.SetMaxDist(dist);
       collider.SetClosestHit(false);
       switch (collType)
@@ -479,6 +477,7 @@ namespace OgreOpcode
             ownMatrix.extract3x3Matrix(m33);
 
             collPair.contact    = line.getOrigin() + (line.getDirection().normalisedCopy() * dist);
+			collPair.distance = dist;
             collPair.co1_normal = m33 * tri.normal();
             collPair.co2_normal = collPair.co1_normal;
 

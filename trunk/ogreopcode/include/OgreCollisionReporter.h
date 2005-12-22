@@ -47,7 +47,8 @@ namespace OgreOpcode
       CollisionObject *co1; ///< the first object involved in the collision
       CollisionObject *co2; ///< the second object involved in the collision
       Real tstamp; ///< the timestamp at which the collision occured
-      Vector3 contact; ///< the point of contact 
+      Vector3 contact; ///< the point of contact
+	  Real distance; ///< distance to point of contact (for ray checks)
       Vector3 co1_normal; ///< co1's collision plane normal
       Vector3 co2_normal; ///< co2's collision plane normal
       unsigned int numBVBVTests;
