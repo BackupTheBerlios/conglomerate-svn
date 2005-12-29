@@ -1,0 +1,7 @@
+CC = g++
+
+OGRE_CFLAGS = `pkg-config OGRE --cflags`
+OGRE_LIBS = `pkg-config OGRE --libs`
+CEGUI_CFLAGS = `pkg-config CEGUI-OGRE --cflags` `pkg-config CEGUI --cflags`
+CEGUI_LIBS = `pkg-config CEGUI-OGRE --libs` `pkg-config CEGUI --libs`
+
