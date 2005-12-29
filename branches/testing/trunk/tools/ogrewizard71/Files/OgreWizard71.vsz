@@ -1,6 +1,0 @@
-VSWIZARD 7.0
-Wizard=VsWizard.VsWizardEngine.7.1
-
-Param="WIZARD_NAME = OgreWizard71"
-Param="ABSOLUTE_PATH = E:\Programming\3D\OgreWizard71"
-Param="FALLBACK_LCID = 1033"
