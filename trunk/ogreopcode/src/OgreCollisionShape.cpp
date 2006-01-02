@@ -263,12 +263,17 @@ namespace OgreOpcode
         m1.m[3][i] = otherMatrix[i][3];
       }
 
-      // perform collision test
-      collider.Collide(*(opcTreeCache), &m0, &m1);
+      // validate settings: asserts that we can check collision
+	  // another option is to display some annoying error windows using: String(collider.ValidateSettings() )
+      assert( collider.ValidateSettings() == NULL );
+
+      // perform collision test and checks errors
+      if( !collider.Collide(*(opcTreeCache), &m0, &m1) )
+		  return false;
 
       collPair.numBVBVTests = collider.GetNbBVBVTests();
       collPair.numBVPrimTests = collider.GetNbBVPrimTests();
-      collPair.numPrimPrimTests = collider.GetNbPrimPrimTests();
+      collPair.numPrimPrimTests = collider.GetNbPrimPrimTests();	  
 
       bool collided = false;
 
@@ -276,7 +281,7 @@ namespace OgreOpcode
       int numPairs = collider.GetNbPairs();
 
 
-      if (numPairs > 0)
+      if ( collider.GetContactStatus() && numPairs > 0 )
       {
          collided = true;
 
@@ -436,8 +441,13 @@ namespace OgreOpcode
       ray.mDir.y = line.getDirection().y;
       ray.mDir.z = line.getDirection().z;
 
+	  // validate settings: asserts that we can check collision
+	  // another option is to display some annoying error windows using: String(collider.ValidateSettings() )
+      assert( collider.ValidateSettings() == NULL );
+
       // perform collision
-      collider.Collide(ray, opcModel, &opcMatrix);
+      if( !collider.Collide(ray, opcModel, &opcMatrix) )
+		  return false;
 
       collPair.numBVBVTests = collider.GetNbRayBVTests();
       collPair.numBVPrimTests = collider.GetNbRayPrimTests();
@@ -560,8 +570,13 @@ namespace OgreOpcode
       // build an Opcode Sphere from sphere object
       const IceMaths::Sphere opcSphere(IceMaths::Point(collBall.p.x, collBall.p.y, collBall.p.z), collBall.r);
 
+	  // validate settings: asserts that we can check collision
+	  // another option is to display some annoying error windows using: String(collider.ValidateSettings() )
+      assert( collider.ValidateSettings() == NULL );
+
       // perform collision
-      collider.Collide(cache, opcSphere, opcModel, &identity, &opcMatrix);
+      if( !collider.Collide(cache, opcSphere, opcModel, &identity, &opcMatrix) )
+		  return false;
 
       collPair.numBVBVTests = collider.GetNbVolumeBVTests();
       collPair.numBVPrimTests = collider.GetNbVolumePrimTests();
