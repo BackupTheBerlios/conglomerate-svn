@@ -565,13 +565,13 @@ void AABBTreeCollider::PrimTest(udword id0, udword id1)
 	mIMesh0->GetTriangle(VP0, id0);
 	mIMesh1->GetTriangle(VP1, id1);
 
-	// Transform from space 1 to space 0
+	// Transform from space 1 to space 0 (applies scale 1 to u0u1u2)
 	IceMaths::Point u0,u1,u2;
 	TransformPoint(u0, *VP1.Vertex[0], mSR1to0, mT1to0);
 	TransformPoint(u1, *VP1.Vertex[1], mSR1to0, mT1to0);
 	TransformPoint(u2, *VP1.Vertex[2], mSR1to0, mT1to0);
 
-	// Perform triangle-triangle overlap test
+	// Perform triangle-triangle overlap test (includes scale 0 to v0v1v2)
 	if(TriTriOverlap((*VP0.Vertex[0])*mScale0, (*VP0.Vertex[1])*mScale0, (*VP0.Vertex[2])*mScale0, u0, u1, u2))
 	{
 		// Keep track of colliding pairs
@@ -593,7 +593,7 @@ inline_ void AABBTreeCollider::PrimTestTriIndex(udword id1)
 	VertexPointers VP;
 	mIMesh1->GetTriangle(VP, id1);
 
-	// Perform triangle-triangle overlap test
+	// Perform triangle-triangle overlap test (uses mScale1)
 	if(TriTriOverlap(mLeafVerts[0], mLeafVerts[1], mLeafVerts[2], *VP.Vertex[0]*mScale1, *VP.Vertex[1]*mScale1, *VP.Vertex[2]*mScale1))
 	{
 		// Keep track of colliding pairs
@@ -615,7 +615,7 @@ inline_ void AABBTreeCollider::PrimTestIndexTri(udword id0)
 	VertexPointers VP;
 	mIMesh0->GetTriangle(VP, id0);
 
-	// Perform triangle-triangle overlap test
+	// Perform triangle-triangle overlap test (uses mScale0)
 	if(TriTriOverlap(mLeafVerts[0], mLeafVerts[1], mLeafVerts[2], *VP.Vertex[0]*mScale0, *VP.Vertex[1]*mScale0, *VP.Vertex[2]*mScale0))
 	{
 		// Keep track of colliding pairs
@@ -633,7 +633,7 @@ inline_ void AABBTreeCollider::PrimTestIndexTri(udword id0)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AABBTreeCollider::_CollideTriBox(const AABBNoLeafNode* b)
 {
-	// Perform triangle-box overlap test
+	// Perform triangle-box overlap test (applies mScale1 on the box first!)
 	if(!TriBoxOverlap(b->mAABB.mCenter*mScale1, b->mAABB.mExtents*mScale1))	return;
 
 	// Keep same triangle, deal with first child
@@ -655,7 +655,7 @@ void AABBTreeCollider::_CollideTriBox(const AABBNoLeafNode* b)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AABBTreeCollider::_CollideBoxTri(const AABBNoLeafNode* b)
 {
-	// Perform triangle-box overlap test
+	// Perform triangle-box overlap test (applies mScale0 on the box first!)
 	if(!TriBoxOverlap(b->mAABB.mCenter*mScale0, b->mAABB.mExtents*mScale0))	return;
 
 	// Keep same triangle, deal with first child
@@ -688,7 +688,7 @@ void AABBTreeCollider::_CollideBoxTri(const AABBNoLeafNode* b)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AABBTreeCollider::_Collide(const AABBNoLeafNode* a, const AABBNoLeafNode* b)
 {
-	// Perform BV-BV overlap test
+	// Perform BV-BV overlap test (uses )
 	if(!BoxBoxOverlap(a->mAABB.mExtents, a->mAABB.mCenter, b->mAABB.mExtents, b->mAABB.mCenter))	return;
 
 	// Catch leaf status
@@ -840,7 +840,7 @@ void AABBTreeCollider::_CollideTriBox(const AABBQuantizedNoLeafNode* b)
 	const IceMaths::Point Pb(float(bb->mCenter[0]) * mCenterCoeff1.x, float(bb->mCenter[1]) * mCenterCoeff1.y, float(bb->mCenter[2]) * mCenterCoeff1.z);
 	const IceMaths::Point eb(float(bb->mExtents[0]) * mExtentsCoeff1.x, float(bb->mExtents[1]) * mExtentsCoeff1.y, float(bb->mExtents[2]) * mExtentsCoeff1.z);
 
-	// Perform triangle-box overlap test
+	// Perform triangle-box overlap test (box comes from B, so apply mScale1 to it)
 	if(!TriBoxOverlap(Pb*mScale1, eb*mScale1))	return;
 
 	if(b->HasPosLeaf())	PrimTestTriIndex(b->GetPosPrimitive());
@@ -866,7 +866,7 @@ void AABBTreeCollider::_CollideBoxTri(const AABBQuantizedNoLeafNode* b)
 	const IceMaths::Point Pa(float(bb->mCenter[0]) * mCenterCoeff0.x, float(bb->mCenter[1]) * mCenterCoeff0.y, float(bb->mCenter[2]) * mCenterCoeff0.z);
 	const IceMaths::Point ea(float(bb->mExtents[0]) * mExtentsCoeff0.x, float(bb->mExtents[1]) * mExtentsCoeff0.y, float(bb->mExtents[2]) * mExtentsCoeff0.z);
 
-	// Perform triangle-box overlap test
+	// Perform triangle-box overlap test  (box comes from A, so apply mScale0 to it)
 	if(!TriBoxOverlap(Pa*mScale0, ea*mScale0))	return;
 
 	if(b->HasPosLeaf())	PrimTestIndexTri(b->GetPosPrimitive());
@@ -896,7 +896,7 @@ void AABBTreeCollider::_Collide(const AABBQuantizedNoLeafNode* a, const AABBQuan
 	const IceMaths::Point Pb(float(bb->mCenter[0]) * mCenterCoeff1.x, float(bb->mCenter[1]) * mCenterCoeff1.y, float(bb->mCenter[2]) * mCenterCoeff1.z);
 	const IceMaths::Point eb(float(bb->mExtents[0]) * mExtentsCoeff1.x, float(bb->mExtents[1]) * mExtentsCoeff1.y, float(bb->mExtents[2]) * mExtentsCoeff1.z);
 
-	// Perform BV-BV overlap test
+	// Perform BV-BV overlap test (don't use scales)
 	if(!BoxBoxOverlap(ea, Pa, eb, Pb))	return;
 
 	// Catch leaf status

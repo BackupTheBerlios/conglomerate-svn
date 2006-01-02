@@ -26,7 +26,7 @@
 #define __OPC_SETTINGS_H__
 
 	//! NEW!!!	Use double-precision vertices. Remember that this is a "storage-only" option, because
-	//			avery test performed in OPCODE for collision is done against a triangle. This means a
+	//			every test performed in OPCODE for collision is done against a triangle. This means a
 	//			double precision triangle is 'cast' into a single precision one before true collision
 	//			tests are performed, trees built, etc.
 	// #define OPC_DOUBLE_PRECISION
