@@ -1,9 +1,9 @@
 include ../../Makefile.global
 
 CFLAGS = $(CEGUI_CFLAGS)
-INCLUDES = -I../include -I../../include -I../../opcode131
+INCLUDES = -I../include -I../../include -I../../opcode132
 LIBS = $(CEGUI_LIBS)  ../../src/libOgreOpcode.a
-LIBS_DYNAMIC = $(CEGUI_LIBS) -L../../src/ -L../../opcode131 -lOpcode -lOgreOpcode
+LIBS_DYNAMIC = $(CEGUI_LIBS) -L../../src/ -L../../opcode132 -lOpcode -lOgreOpcode
 TARGET = OgreOpcodeExample
 
 OBJECT = main.o

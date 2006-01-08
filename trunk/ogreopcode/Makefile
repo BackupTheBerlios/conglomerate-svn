@@ -4,7 +4,7 @@ CFLAGS =
 INCLUDES = 
 LIBS = 
 
-OPCODE_DIR = opcode131/
+OPCODE_DIR = opcode132/
 OGREOPCODE_DIR = src/
 EXAMPLE_DIR = example/src/
 

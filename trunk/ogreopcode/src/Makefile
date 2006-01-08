@@ -1,7 +1,7 @@
 include ../Makefile.global
 
 CFLAGS = $(OGRE_CFLAGS)
-INCLUDES = -I../include/ -I../opcode131
+INCLUDES = -I../include/ -I../opcode132
 LIBS = 
 
 TARGET_DYNAMIC_SO = libOgreOpcode.so
@@ -41,7 +41,7 @@ OBJECTS_DYNAMIC: $(SOURCES) $(HEADERS)
 	$(CC) -c $(SOURCES) $(CFLAGS_DYNAMIC) $(INCLUDES)
 
 $(TARGET_STATIC): $(OBJECTS)
-	ar rcs $(TARGET_STATIC) $(OBJECTS) ../opcode131/*.o
+	ar rcs $(TARGET_STATIC) $(OBJECTS) ../opcode132/*.o
 
 $(TARGET_DYNAMIC): OBJECTS_DYNAMIC
 	$(CC) $(LIBS_DYNAMIC) -o $(TARGET_DYNAMIC) $(OBJECTS)
