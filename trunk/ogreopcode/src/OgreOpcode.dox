@@ -11,13 +11,13 @@
 ///
 /// @section collide_initialization Initialization and Setup
 ///
-/// - @ref collide_create_server
+/// - @ref collide_create_manager
 /// - @ref collide_define_classes
 /// - @ref collide_define_types
 /// - @ref collide_create_context
 /// - @ref collide_app_objects
 ///
-/// @subsection collide_create_server Create Collision Manager
+/// @subsection collide_create_manager Create Collision Manager
 ///
 /// The collision manager must be created prior to using the collision
 /// detection system.
@@ -94,9 +94,9 @@
 ///
 /// To do this, you need to do the following things:
 ///
-///    - Create an CollisionShape
+///    - Create a CollisionShape
 ///    - Load the collision geometry
-///    - Create an CollisionObject
+///    - Create a CollisionObject
 ///    - Add the collision object to the CollisionContext
 ///
 /// @code

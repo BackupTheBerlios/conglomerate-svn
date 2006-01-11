@@ -1,0 +1,6 @@
+VSWIZARD 7.0
+Wizard=VsWizard.VsWizardEngine.8.0
+
+Param="WIZARD_NAME = OgreAppWizard80"
+Param="ABSOLUTE_PATH = C:\Documents and Settings\jacmoe\My Documents\Visual Studio 2005\Projects\OgreAppWizard80\OgreAppWizard80"
+Param="FALLBACK_LCID = 1033"
