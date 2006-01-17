@@ -30,6 +30,7 @@
 
 #include <Ogre.h>
 #include "OgreOpcodeExports.h"
+#include "OgreOBB.h"
 
 namespace OgreOpcode
 {
