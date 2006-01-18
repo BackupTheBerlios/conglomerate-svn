@@ -261,6 +261,10 @@
 				RelativePath="..\include\OgreOpcodeMath.h"
 				>
 			</File>
+			<File
+				RelativePath="..\include\OgreOrientedBox.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

@@ -1373,6 +1373,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\OPC_TriTriOverlapGilvan.h"
+			>
+		</File>
+		<File
 			RelativePath="ReadMe.txt"
 			>
 		</File>
