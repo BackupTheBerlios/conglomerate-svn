@@ -313,6 +313,66 @@ namespace OgreOpcode
 			return true;
 	   }
 
+	   bool intersects( const Details::sphere& s )
+	   {
+		   //  Modified from Magic-Software http://www.magic-software.com
+		   Vector3 kCDiff = s.p - center;
+           
+		   Real fAx = Math::Abs(kCDiff.dotProduct(rot.GetColumn(0)) );
+           Real fAy = Math::Abs(kCDiff.dotProduct(rot.GetColumn(1)) );
+           Real fAz = Math::Abs(kCDiff.dotProduct(rot.GetColumn(2)) );
+           Real fDx = fAx - extents.x;
+           Real fDy = fAy - extents.y;
+           Real fDz = fAz - extents.z;
+
+           if ( fAx <= extents[0] )
+           {
+				if ( fAy <= extents[1] )
+				{
+					if ( fAz <= extents[2] )
+						// sphere center inside box
+						return true;
+					else
+						// potential sphere-face intersection with face z
+						return fDz <= s.r;
+				}
+				else
+				{
+					if ( fAz <= extents[2] )
+						// potential sphere-face intersection with face y
+						return fDy <= s.r;
+					else
+						// potential sphere-edge intersection with edge formed
+						// by faces y and z							
+						return fDy*fDy + fDz*fDz <= (s.r*s.r);
+				}
+			}
+			else
+			{
+				if ( fAy <= extents[1] )
+				{
+					if ( fAz <= extents[2] )
+						// potential sphere-face intersection with face x
+						return fDx <= s.r;
+					else
+						// potential sphere-edge intersection with edge formed
+						// by faces x and z
+						return fDx*fDx + fDz*fDz <= (s.r*s.r);
+				}
+				else
+				{
+					if ( fAz <= extents[2] )
+						// potential sphere-edge intersection with edge formed
+						// by faces x and y
+						return fDx*fDx + fDy*fDy <= (s.r*s.r);
+					else
+						// potential sphere-vertex intersection at corner formed
+						// by faces x,y,z
+						return fDx*fDx + fDy*fDy + fDz*fDz <= (s.r*s.r);
+				}
+			}
+	   }
+
 
    public:
 
