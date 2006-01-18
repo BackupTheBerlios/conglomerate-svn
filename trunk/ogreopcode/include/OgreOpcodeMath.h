@@ -306,6 +306,13 @@ namespace OgreOpcode
             }
          };
 
+		 //--- utility getters ------------------------------------------
+		 Vector3 getCenter() const { return (vmin + vmax)*0.5; }
+		 void getCenter(Vector3& v) const { v = (vmin + vmax)*0.5; }
+
+		 Vector3 getExtents() const { return (vmax - vmin)*0.5; }
+		 void getExtents( Vector3& v) const { v = (vmax - vmin)*0.5; }
+
          //--- setting elements ------------------------------------------
          void set(const Vector3& _vmin, const Vector3& _vmax)
          {
