@@ -30,7 +30,6 @@
 
 #include <Ogre.h>
 #include "OgreOpcodeExports.h"
-#include "OgreOBB.h"
 
 namespace OgreOpcode
 {
@@ -671,4 +670,8 @@ namespace OgreOpcode
       };
    }
 }
+
+// includes the OBB header. looks strange, huh ? :P 
+#include "OgreOrientedBox.h"
+
 #endif // __OgreOpcodeMath_h__
