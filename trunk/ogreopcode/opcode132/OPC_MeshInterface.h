@@ -151,7 +151,7 @@
 		#ifndef OPC_DOUBLE_PRECISION
 			//! UTILITY macro for unpacking the K-th triangle vertex from a given index (using strides)
 			#define OPC_UNPACK_VERTEX(K, ind )		\
-				vp.Vertex[K] = (const IceMaths::Point*)(((ubyte*)mVerts) + ind * mVertexStride);			
+				vp.Vertex[K] = (const IceMaths::Point*)(((ubyte*)mVerts) + (ind) * mVertexStride);
 		#else
 			//! UTILITY macro for shorter code when using double-precision vertices 
 			#define OPC_COPY_VERTEX(K)				\
@@ -163,7 +163,7 @@
 			//! UTILITY macro for unpacking the K-th triangle vertex from a given index (using strides)
 			#define OPC_UNPACK_VERTEX(K, ind )		\
 			{										\
-				const double* v = (const double*)(((ubyte*)mVerts) + ind * mVertexStride);
+				const double* v = (const double*)(((ubyte*)mVerts) + (ind) * mVertexStride);
 				OPC_COPY_VERTEX(K)
 			}
 		#endif
@@ -281,7 +281,7 @@
 			//! UTILITY macro for unpacking the K-th triangle vertex from a given index (not using strides)
 			#define OPC_UNPACK_VERTEX(K, ind )												 \
 			{																				 \
-				const double* v = (const double*)(((ubyte*)mVerts) + ind * 3*sizeof(double));\
+				const double* v = (const double*)(((ubyte*)mVerts) + (ind) * 3*sizeof(double));\
 				OPC_COPY_VERTEX(K)															 \
 			}
 		#endif
