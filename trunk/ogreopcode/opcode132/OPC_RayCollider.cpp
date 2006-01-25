@@ -270,7 +270,12 @@ bool RayCollider::Collide(const IceMaths::Ray& world_ray, const Model& model, co
 	if(!Setup(&model))	return false;
 
 	// Init collision query
-	if(InitQuery(world_ray, world, cache))	return true;
+	float maxDistanceBkp = mMaxDist;
+	if(InitQuery(world_ray, world, cache))
+	{
+		mMaxDist = maxDistanceBkp;
+		return true;
+	}
 
 	if(!model.HasLeafNodes())
 	{
@@ -319,6 +324,9 @@ bool RayCollider::Collide(const IceMaths::Ray& world_ray, const Model& model, co
 		}
 	}
 
+        // reverts max distance
+	mMaxDist = maxDistanceBkp;
+	
 	// Update cache if needed
 	UPDATE_CACHE
 	return true;
@@ -399,7 +407,21 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 		if(IR(mMaxDist)!=IEEE_MAX_FLOAT)
 			mMaxDist = mDir.Magnitude();
 
-		mDir /= mMaxDist; // equals to mDir.Normalize();
+		mDir.Normalize();
+		
+		float delta = IR(mMaxDist)!=IEEE_MAX_FLOAT ? mMaxDist : mOrigin.Magnitude();
+		Point pointInFront = mOrigin + mDir*delta;
+		// 2)
+		pointInFront /= localScale;
+		mOrigin		 /= localScale;
+		// 3)
+		mDir	= pointInFront - mOrigin; // innaccuracies here??
+		// 4)
+		if(IR(mMaxDist)!=IEEE_MAX_FLOAT)
+			mMaxDist = mDir.Magnitude();
+
+		//mDir /= mMaxDist; // equals to mDir.Normalize();
+		mDir.Normalize();
 
 		// 4) Another option is to use the scale... div by localScale.Magnitude()
 	}
