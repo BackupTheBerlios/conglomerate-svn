@@ -379,7 +379,7 @@ namespace OgreOpcode
 	   /// Center of this box
 	   Vector3 center;
 
-	   /// The extents of this box, ie, the semi-lengths of this box.
+	   /// The extents of this box, ie, the semi-lengths of this box 0.5*(width,height,depth )
 	   Vector3 extents;
 
 	   /// A rotation matrix describing the orientation of this box.
