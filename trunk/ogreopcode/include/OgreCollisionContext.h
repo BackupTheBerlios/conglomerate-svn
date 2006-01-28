@@ -37,7 +37,11 @@ using namespace OgreOpcode::Details;
 
 namespace OgreOpcode
 {
-	typedef int CollisionClass;
+	namespace Details
+	{
+		typedef int CollisionClass;
+	}
+	
 	class CollisionObject;
 	/// Defines a collision space.
 	/// A CollisionContext creates a collision context, defined by

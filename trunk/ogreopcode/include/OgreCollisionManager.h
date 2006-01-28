@@ -44,7 +44,10 @@ using namespace OgreOpcode::Details;
 /// Main %OgreOpcode namespace
 namespace OgreOpcode
 {
-	typedef int CollisionClass;
+	namespace Details
+	{
+		typedef int CollisionClass;
+	}
 
 	/// Collision manager.
 	/// The CollisionManager object serves as factory object of the

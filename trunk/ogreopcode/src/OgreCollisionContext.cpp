@@ -32,16 +32,18 @@
 
 namespace OgreOpcode
 {
-	inline bool intervalOverlap(Real a0, Real a1, Real b0, Real b1)
+	namespace Details
 	{
-		// Only two ways for intervals to not overlap -- 
-		//  a's max less than b's min, or a's min greater than b's max.
-		// Otherwise they overlap.
-		// return !(a1<b0 || a0>b1);
-		// I just applyied the De Morgan's law here in order to obtain short-circuit
-		return (a1>=b0) && (a0<=b1);
-	}
-
+		inline bool intervalOverlap(Real a0, Real a1, Real b0, Real b1)
+		{
+			// Only two ways for intervals to not overlap -- 
+			//  a's max less than b's min, or a's min greater than b's max.
+			// Otherwise they overlap.
+			// return !(a1<b0 || a0>b1);
+			// I just applyied the De Morgan's law here in order to obtain short-circuit
+			return (a1>=b0) && (a0<=b1);
+		}
+	} // Details
 
 	// release all owned collide objects
 	CollisionContext::~CollisionContext()

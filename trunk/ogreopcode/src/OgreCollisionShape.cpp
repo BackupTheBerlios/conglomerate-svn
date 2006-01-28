@@ -36,100 +36,101 @@
 
 namespace OgreOpcode
 {
-
-	template<class NodeT>
-	inline void GetOpcodeNodeCenter(const NodeT &n, Vector3 &ctr)
+	namespace Details
 	{
-		ctr.x = n.mAABB.mCenter.x;
-		ctr.y = n.mAABB.mCenter.y;
-		ctr.z = n.mAABB.mCenter.z;
-	}
-	template<class TreeT, class NodeT>
-	inline void GetOpcodeQuantizedNodeCenter(const TreeT &tree, const NodeT &n, Vector3 &ctr)
-	{
-		ctr = Vector3(float(n.mAABB.mCenter[0]),  float(n.mAABB.mCenter[1]), float(n.mAABB.mCenter[2]));
-		ctr.x *= tree.mCenterCoeff.x;
-		ctr.y *= tree.mCenterCoeff.y;
-		ctr.z *= tree.mCenterCoeff.z;
-	}
-	template<class NodeT>
-	inline void GetOpcodeNodeMinMaxBox(const NodeT &n, Vector3 &bmin, Vector3 &bMax)
-	{
-		Vector3 center(n.mAABB.mCenter.x,  n.mAABB.mCenter.y,  n.mAABB.mCenter.z);
-		Vector3 extent(n.mAABB.mExtents.x, n.mAABB.mExtents.y, n.mAABB.mExtents.z);
+		template<class NodeT>
+		inline void GetOpcodeNodeCenter(const NodeT &n, Vector3 &ctr)
+		{
+			ctr.x = n.mAABB.mCenter.x;
+			ctr.y = n.mAABB.mCenter.y;
+			ctr.z = n.mAABB.mCenter.z;
+		}
+		template<class TreeT, class NodeT>
+		inline void GetOpcodeQuantizedNodeCenter(const TreeT &tree, const NodeT &n, Vector3 &ctr)
+		{
+			ctr = Vector3(float(n.mAABB.mCenter[0]),  float(n.mAABB.mCenter[1]), float(n.mAABB.mCenter[2]));
+			ctr.x *= tree.mCenterCoeff.x;
+			ctr.y *= tree.mCenterCoeff.y;
+			ctr.z *= tree.mCenterCoeff.z;
+		}
+		template<class NodeT>
+		inline void GetOpcodeNodeMinMaxBox(const NodeT &n, Vector3 &bmin, Vector3 &bMax)
+		{
+			Vector3 center(n.mAABB.mCenter.x,  n.mAABB.mCenter.y,  n.mAABB.mCenter.z);
+			Vector3 extent(n.mAABB.mExtents.x, n.mAABB.mExtents.y, n.mAABB.mExtents.z);
 
-		bmin  = center;
-		bmin -= extent;
-		bMax  = center;
-		bMax += extent;
-	}
-	template<class TreeT, class NodeT>
-	inline void GetOpcodeQuantizedNodeMinMaxBox(const TreeT &tree, const NodeT &n, Vector3 &bmin, Vector3 &bMax)
-	{
-		Vector3 center(float(n.mAABB.mCenter[0]),  float(n.mAABB.mCenter[1]), float(n.mAABB.mCenter[2]));
-		Vector3 extent(float(n.mAABB.mExtents[0]), float(n.mAABB.mExtents[1]), float(n.mAABB.mExtents[2]));
+			bmin  = center;
+			bmin -= extent;
+			bMax  = center;
+			bMax += extent;
+		}
+		template<class TreeT, class NodeT>
+		inline void GetOpcodeQuantizedNodeMinMaxBox(const TreeT &tree, const NodeT &n, Vector3 &bmin, Vector3 &bMax)
+		{
+			Vector3 center(float(n.mAABB.mCenter[0]),  float(n.mAABB.mCenter[1]), float(n.mAABB.mCenter[2]));
+			Vector3 extent(float(n.mAABB.mExtents[0]), float(n.mAABB.mExtents[1]), float(n.mAABB.mExtents[2]));
 
-		extent.x *= tree.mExtentsCoeff.x;
-		extent.y *= tree.mExtentsCoeff.y;
-		extent.z *= tree.mExtentsCoeff.z;
+			extent.x *= tree.mExtentsCoeff.x;
+			extent.y *= tree.mExtentsCoeff.y;
+			extent.z *= tree.mExtentsCoeff.z;
 
-		center.x *= tree.mCenterCoeff.x;
-		center.y *= tree.mCenterCoeff.y;
-		center.z *= tree.mCenterCoeff.z;
+			center.x *= tree.mCenterCoeff.x;
+			center.y *= tree.mCenterCoeff.y;
+			center.z *= tree.mCenterCoeff.z;
 
-		bmin  = center;
-		bmin -= extent;
-		bMax  = center;
-		bMax += extent;
-	}
+			bmin  = center;
+			bmin -= extent;
+			bMax  = center;
+			bMax += extent;
+		}
 
-	inline void GetOpcodeRootCenter(const Opcode::Model &mdl, Vector3 &ctr)
-	{
-		if (mdl.IsQuantized()) {
-			if (mdl.HasLeafNodes()) {
-				const Opcode::AABBQuantizedTree& tree = *static_cast<const Opcode::AABBQuantizedTree*>(mdl.GetTree());
-				GetOpcodeQuantizedNodeCenter(tree, *tree.GetNodes(), ctr);
+		inline void GetOpcodeRootCenter(const Opcode::Model &mdl, Vector3 &ctr)
+		{
+			if (mdl.IsQuantized()) {
+				if (mdl.HasLeafNodes()) {
+					const Opcode::AABBQuantizedTree& tree = *static_cast<const Opcode::AABBQuantizedTree*>(mdl.GetTree());
+					GetOpcodeQuantizedNodeCenter(tree, *tree.GetNodes(), ctr);
+				}
+				else{
+					const Opcode::AABBQuantizedNoLeafTree& tree = *static_cast<const Opcode::AABBQuantizedNoLeafTree*>(mdl.GetTree());
+					GetOpcodeQuantizedNodeCenter(tree, *tree.GetNodes(), ctr);
+				}
 			}
 			else{
-				const Opcode::AABBQuantizedNoLeafTree& tree = *static_cast<const Opcode::AABBQuantizedNoLeafTree*>(mdl.GetTree());
-				GetOpcodeQuantizedNodeCenter(tree, *tree.GetNodes(), ctr);
+				if (mdl.HasLeafNodes()) {
+					const Opcode::AABBCollisionNode& root = *static_cast<const Opcode::AABBCollisionTree*>(mdl.GetTree())->GetNodes();
+					GetOpcodeNodeCenter(root, ctr);
+				}
+				else{
+					const Opcode::AABBNoLeafNode& root = *static_cast<const Opcode::AABBNoLeafTree*>(mdl.GetTree())->GetNodes();
+					GetOpcodeNodeCenter(root, ctr);
+				}
 			}
 		}
-		else{
-			if (mdl.HasLeafNodes()) {
-				const Opcode::AABBCollisionNode& root = *static_cast<const Opcode::AABBCollisionTree*>(mdl.GetTree())->GetNodes();
-				GetOpcodeNodeCenter(root, ctr);
+		inline void GetOpcodeRootMinMaxBox(const Opcode::Model &mdl, Vector3 &bmin, Vector3 &bMax)
+		{
+			if (mdl.IsQuantized()) {
+				if (mdl.HasLeafNodes()) {
+					const Opcode::AABBQuantizedTree& tree = *static_cast<const Opcode::AABBQuantizedTree*>(mdl.GetTree());
+					GetOpcodeQuantizedNodeMinMaxBox(tree, *tree.GetNodes(), bmin, bMax);
+				}
+				else{
+					const Opcode::AABBQuantizedNoLeafTree& tree = *static_cast<const Opcode::AABBQuantizedNoLeafTree*>(mdl.GetTree());
+					GetOpcodeQuantizedNodeMinMaxBox(tree, *tree.GetNodes(), bmin, bMax);
+				}
 			}
 			else{
-				const Opcode::AABBNoLeafNode& root = *static_cast<const Opcode::AABBNoLeafTree*>(mdl.GetTree())->GetNodes();
-				GetOpcodeNodeCenter(root, ctr);
+				if (mdl.HasLeafNodes()) {
+					const Opcode::AABBCollisionNode& root = *static_cast<const Opcode::AABBCollisionTree*>(mdl.GetTree())->GetNodes();
+					GetOpcodeNodeMinMaxBox(root, bmin, bMax);
+				}
+				else{
+					const Opcode::AABBNoLeafNode& root = *static_cast<const Opcode::AABBNoLeafTree*>(mdl.GetTree())->GetNodes();
+					GetOpcodeNodeMinMaxBox(root, bmin, bMax);
+				}
 			}
 		}
-	}
-	inline void GetOpcodeRootMinMaxBox(const Opcode::Model &mdl, Vector3 &bmin, Vector3 &bMax)
-	{
-		if (mdl.IsQuantized()) {
-			if (mdl.HasLeafNodes()) {
-				const Opcode::AABBQuantizedTree& tree = *static_cast<const Opcode::AABBQuantizedTree*>(mdl.GetTree());
-				GetOpcodeQuantizedNodeMinMaxBox(tree, *tree.GetNodes(), bmin, bMax);
-			}
-			else{
-				const Opcode::AABBQuantizedNoLeafTree& tree = *static_cast<const Opcode::AABBQuantizedNoLeafTree*>(mdl.GetTree());
-				GetOpcodeQuantizedNodeMinMaxBox(tree, *tree.GetNodes(), bmin, bMax);
-			}
-		}
-		else{
-			if (mdl.HasLeafNodes()) {
-				const Opcode::AABBCollisionNode& root = *static_cast<const Opcode::AABBCollisionTree*>(mdl.GetTree())->GetNodes();
-				GetOpcodeNodeMinMaxBox(root, bmin, bMax);
-			}
-			else{
-				const Opcode::AABBNoLeafNode& root = *static_cast<const Opcode::AABBNoLeafTree*>(mdl.GetTree())->GetNodes();
-				GetOpcodeNodeMinMaxBox(root, bmin, bMax);
-			}
-		}
-	}
-
+	} // Details
 	//------------------------------------------------------------------------
 	String CollisionShape::getName() const
 	{
