@@ -31,54 +31,55 @@
 
 namespace OgreOpcode
 {
-   
-   /// Defines an Oriented Bounding Box (OBB). Courtesy from Gilvan Maia :P
-   /// Diferently from AABB's (Axis-Aligned Bounding-Boxes), OBBs are not
-   /// limited to be aligned with the coordinate axes. Thus, it can fit objects
-   /// much more tighly just because it is adaptative to the object's orientation,
-   /// ie, its orientation can be adjusted in order to reduce its volume - this is.
-   /// why it would be preferred for collision detection.
-   class _OgreOpcode_Export OgreOpcodeUtils
-   {
-   public:
-   
-          static void ogreToIceVector3( const Vector3& ogreVec, IceMaths::Point& opcPoint )
-          {
-               opcPoint.x = ogreVec.x;
-               opcPoint.y = ogreVec.y;
-               opcPoint.z = ogreVec.z;
-          }
-   
-          static void ogreToIceMatrix4( const Matrix4& ogreMatrix, IceMaths::Matrix4x4& opcMatrix )
-          {
-            for(unsigned int i = 0; i < 4; i++)
-            {
-               opcMatrix.m[0][i] = ogreMatrix[i][0];
-               opcMatrix.m[1][i] = ogreMatrix[i][1];
-               opcMatrix.m[2][i] = ogreMatrix[i][2];
-               opcMatrix.m[3][i] = ogreMatrix[i][3];
-            }
-          }
+	namespace Details
+	{
+		/// Defines an Oriented Bounding Box (OBB). Courtesy from Gilvan Maia :P
+		/// Diferently from AABB's (Axis-Aligned Bounding-Boxes), OBBs are not
+		/// limited to be aligned with the coordinate axes. Thus, it can fit objects
+		/// much more tighly just because it is adaptative to the object's orientation,
+		/// ie, its orientation can be adjusted in order to reduce its volume - this is.
+		/// why it would be preferred for collision detection.
+		class _OgreOpcode_Export OgreOpcodeUtils
+		{
+		public:
 
-          static void ogreToIceRay(  const Ray& line, IceMaths::Ray& opcRay )
-          {
-            ray.mOrig.x = line.getOrigin().x;
-            ray.mOrig.y = line.getOrigin().y;
-            ray.mOrig.z = line.getOrigin().z;
+			static void ogreToIceVector3( const Vector3& ogreVec, IceMaths::Point& opcPoint )
+			{
+				opcPoint.x = ogreVec.x;
+				opcPoint.y = ogreVec.y;
+				opcPoint.z = ogreVec.z;
+			}
 
-            ray.mDir.x = line.getDirection().x;
-            ray.mDir.y = line.getDirection().y;
-            ray.mDir.z = line.getDirection().z;
-          }
-          
-          static void ogreToIceSphere(  const Ray& line, IceMaths::Sphere& opcRay )
-          {
-             // TODO
-          }
+			static void ogreToIceMatrix4( const Matrix4& ogreMatrix, IceMaths::Matrix4x4& opcMatrix )
+			{
+				for(unsigned int i = 0; i < 4; i++)
+				{
+					opcMatrix.m[0][i] = ogreMatrix[i][0];
+					opcMatrix.m[1][i] = ogreMatrix[i][1];
+					opcMatrix.m[2][i] = ogreMatrix[i][2];
+					opcMatrix.m[3][i] = ogreMatrix[i][3];
+				}
+			}
 
-   };
+			static void ogreToIceRay(  const Ray& line, IceMaths::Ray& opcRay )
+			{
+				ray.mOrig.x = line.getOrigin().x;
+				ray.mOrig.y = line.getOrigin().y;
+				ray.mOrig.z = line.getOrigin().z;
 
-}
+				ray.mDir.x = line.getDirection().x;
+				ray.mDir.y = line.getDirection().y;
+				ray.mDir.z = line.getDirection().z;
+			}
+
+			static void ogreToIceSphere(  const Ray& line, IceMaths::Sphere& opcRay )
+			{
+				// TODO
+			}
+
+		};
+	} // namespace Details
+} // namespace OgreOpcode
 
 
 #endif // __OgreOpcodeUtils_h__

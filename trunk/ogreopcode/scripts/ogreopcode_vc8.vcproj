@@ -234,14 +234,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\OgreHash.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\OgreKeyArray.h"
-				>
-			</File>
-			<File
 				RelativePath="..\include\OgreNodes.h"
 				>
 			</File>

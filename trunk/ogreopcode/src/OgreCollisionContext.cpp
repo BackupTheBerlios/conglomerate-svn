@@ -135,8 +135,8 @@ namespace OgreOpcode
 			collObj->SetAttached(false);
 			attached_list.remove(collObj);
 			//         collObj->context_node.Remove();
-			         collObj->xmin_cnode.Remove();
-			         collObj->xmax_cnode.Remove();
+			collObj->xmin_cnode.Remove();
+			collObj->xmax_cnode.Remove();
 		}
 	}
 

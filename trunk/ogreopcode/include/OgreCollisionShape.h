@@ -31,7 +31,6 @@
 #include "OgreOpcodeExports.h"
 # include <Ogre.h>
 
-#include "OgreHash.h"
 #include "OgreCollisionTypes.h"
 #include "OgreOpcodeDebugObject.h"
 #include "Opcode.h"
@@ -104,7 +103,7 @@ namespace OgreOpcode
 		const Entity* getEntity() const;
 
 		String getName() const;
-		
+
 		/// return current center in world space
 		Vector3 getCenter() const;
 		/// return current center in object space
