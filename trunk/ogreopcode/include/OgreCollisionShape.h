@@ -58,28 +58,28 @@ namespace OgreOpcode
 		virtual ~CollisionShape();
 
 		/// has object been initialized?
-		bool IsInitialized();
+		bool isInitialized();
 		/// get radius of collide mesh
-		virtual Real GetRadius() const;
+		virtual Real getRadius() const;
 		/// load collide geometry from mesh, and build a collision tree
-		virtual bool Load(Entity* ent);
+		virtual bool load(Entity* ent);
 		/// Retrieve current vertex data from mesh and refit collision tree.
 		/// This is an O(n) operation in the number of vertices in the mesh.
-		virtual bool Refit();
+		virtual bool refit();
 		/// Reload the collision geometry from mesh, rebuild collision tree from scratch. 
 		/// Potentially very slow. Only necessary if the mesh has drastically changed,
 		/// like topology changing deformations, or a change in the number of tris.
 		/// In most cases RefitToMesh() is sufficient, and much faster.
 		/// Under usual circumstances there is no need to call this method.
-		virtual bool Rebuild();
+		virtual bool rebuild();
 		/// Refits the collision tree to the currently cached vertex data.
 		/// This is an O(n) operation in the number of vertices in the mesh.
 		/// This is an advanced method.  It assumes that the user is manually 
 		/// updating both the CollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like 
 		/// deformable body physics.
-		virtual bool _RefitToCachedData();
-		/// Rebuild collision tree from scratch using currently cached vertex data
+		virtual bool _refitToCachedData();
+		/// rebuild collision tree from scratch using currently cached vertex data
 		/// This is potentially quite slow.  Only necessary if the mesh has drastically changed,
 		/// like topology changing deformations, or a change in the number of tris.
 		/// In most cases _RefitToCachedGeometry() is sufficient, and much faster.
@@ -87,20 +87,28 @@ namespace OgreOpcode
 		/// updating both the CollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like
 		/// deformable body physics.
-		virtual bool _RebuildFromCachedData();
+		virtual bool _rebuildFromCachedData();
 		/// perform collision with other CollisionShape
-		virtual bool Collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
+		virtual bool collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
 		/// perform collision with line
-		virtual bool RayCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& line, const Real dist, CollisionPair& collPair);
+		virtual bool rayCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& line, const Real dist, CollisionPair& collPair);
 		/// perform a sphere check
-		virtual bool SphereCheck(CollisionType collType, const Matrix4& ownMatrix, const Sphere& ball, CollisionPair& collPair);
+		virtual bool sphereCheck(CollisionType collType, const Matrix4& ownMatrix, const Sphere& ball, CollisionPair& collPair);
 		/// visualize the collide shape
-		virtual void Visualize();
+		virtual void visualize();
 		/// toggle debug rendering.
 		virtual void setDebug(bool debug);
 		/// return entity
-		Entity* getEntity();
-		const Entity* getEntity() const;
+		virtual void setDynamic(bool iAmDynamic = true)
+		{
+			this->isDynamic = iAmDynamic;
+		}
+
+		/// return the full transformation matrix
+		virtual Matrix4 getFullTransform(void) const;
+		/// return the local transformation matrix
+		virtual Matrix4 getLocalTransform(void) const;
+        virtual SceneNode* getParentSceneNode(void) const;
 
 		String getName() const;
 
@@ -119,11 +127,11 @@ namespace OgreOpcode
 		/// Convert ogre Mesh to simple float and int arrays
 		void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData=0, size_t index_count=0);
 		/// get tri coords from tri index
-		void GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2);
+		void getTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2);
 		/// visualize the AABBTree of the opcode model
-		void VisualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node);
+		void visualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node);
 		/// visualize the AABBTree of the opcode model (for no leaf trees)
-		void VisualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node);
+		void visualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node);
 		void _prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc);
 
 		void calculateSize();
@@ -140,10 +148,13 @@ namespace OgreOpcode
 		float* mVertexBuf;
 		int*   mFaceBuf;
 		Entity* mEntity;
+		SceneNode* mParentNode;
 		String mName;
-		bool isInitialized;
+		bool mInitialized;
+		bool isDynamic;
 		int refCount;
-
+		mutable Matrix4 mFullTransform;
+		mutable Matrix4 mLocalTransform;
 		/// prevent default construction
 		CollisionShape();
 
@@ -154,23 +165,46 @@ namespace OgreOpcode
 
 	inline
 		bool
-		CollisionShape::IsInitialized()
+		CollisionShape::isInitialized()
 	{
-		return isInitialized;
+		return mInitialized;
 	}
 
-	inline Entity* CollisionShape::getEntity()
+	inline Matrix4 CollisionShape::getFullTransform(void) const
 	{
-		return mEntity;
+		if(isDynamic)
+		{
+			mFullTransform = getParentSceneNode()->_getFullTransform();
+		}
+			return mFullTransform;
 	}
-	inline const Entity* CollisionShape::getEntity() const
+
+	inline Matrix4 CollisionShape::getLocalTransform(void) const
 	{
-		return mEntity;
+		if(isDynamic)
+		{
+			//TODO
+		}
+		return mLocalTransform;
 	}
+
+	inline SceneNode* CollisionShape::getParentSceneNode(void) const
+	{
+		return this->mParentNode;
+	}
+
+	//inline Entity* CollisionShape::getEntity()
+	//{
+	//	return mEntity;
+	//}
+	//inline const Entity* CollisionShape::getEntity() const
+	//{
+	//	return mEntity;
+	//}
 
 	inline
 		Real
-		CollisionShape::GetRadius() const
+		CollisionShape::getRadius() const
 	{
 		return mRadius;
 	}
@@ -178,7 +212,7 @@ namespace OgreOpcode
 	/// Extract triangle coordinates from triangle index.
 	inline
 		void
-		CollisionShape::GetTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
+		CollisionShape::getTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
 	{
 		int* indexPtr = &(mFaceBuf[3 * index]);
 		float* vp0 = &(mVertexBuf[3 * indexPtr[0]]);

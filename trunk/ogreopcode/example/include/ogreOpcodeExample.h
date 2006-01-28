@@ -157,7 +157,7 @@ public:
 
       // First, construct a ray along the velocity vector and test for collisions.
       Ray testRay(pos, vel);
-      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(testRay, 600.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, ray_pick_report);
+      numCamColls = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(testRay, 600.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, ray_pick_report);
       if (numCamColls == 0)
       {
          // This means that we are more than 600 units away from any potential collisions
@@ -181,7 +181,7 @@ public:
       // Now - perform the real collision detection - this time with a sphere.
       Ogre::Sphere cameraSphere = Ogre::Sphere(destinationPoint, radius);
       numCamColls = 0;
-      numCamColls = CollisionManager::getSingletonPtr()->GetDefaultContext()->SphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
+      numCamColls = CollisionManager::getSingletonPtr()->getDefaultContext()->sphereCheck(cameraSphere, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
 
       if (numCamColls == 0)
       {
@@ -250,7 +250,7 @@ public:
       if (!ExampleFrameListener::frameStarted(evt))
         return false;
 
-      CollisionManager::getSingletonPtr()->GetDefaultContext()->Collide();
+      CollisionManager::getSingletonPtr()->getDefaultContext()->collide();
 
       static Real transAmount = -0.5f;
       static Real transTraveled = 0.0f;
@@ -264,7 +264,7 @@ public:
 
       if (mPlayAnimation) {
         mSceneMgr->getEntity("Head1")->getAnimationState("Walk")->addTime(evt.timeSinceLastFrame/5);
-        mCollObj2->Refit();
+        mCollObj2->refit();
       }
       // This has to be here - debug visualization needs to be updated each frame..
       // but only after we update objects!
@@ -276,13 +276,13 @@ public:
         ray = mCamera->getCameraToViewportRay(0.5, 0.5);
 
       // remove level from context - we don't care when ray testing against entities..
-      CollisionManager::getSingletonPtr()->GetDefaultContext()->RemoveObject(mCollObj1);
+      CollisionManager::getSingletonPtr()->getDefaultContext()->removeObject(mCollObj1);
 
       // Do ray testing against everything but the level
       CollisionPair **pick_report;
-      int num_picks = CollisionManager::getSingletonPtr()->GetDefaultContext()->RayCheck(ray, 600.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
+      int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(ray, 600.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
       const CollisionReporter &rayrept =
-        CollisionManager::getSingletonPtr()->GetDefaultContext()->GetCheckReport();
+        CollisionManager::getSingletonPtr()->getDefaultContext()->getCheckReport();
 
       if (num_picks > 0)
       {
@@ -294,7 +294,7 @@ public:
             mDbgMsg = "";
             CollisionObject* yeah = pick_report[i]->co1;
             Vector3 contact = pick_report[i]->contact;
-            mDbgMsg = mDbgMsg + yeah->GetShape()->getName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
+            mDbgMsg = mDbgMsg + yeah->getShape()->getName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
          }
       }
       else
@@ -304,17 +304,17 @@ public:
       }
 
       // Done ray testing - Now add the level back into context
-      CollisionManager::getSingletonPtr()->GetDefaultContext()->AddObject(mCollObj1);
+      CollisionManager::getSingletonPtr()->getDefaultContext()->addObject(mCollObj1);
 
       // Check all collision objects for collision
-      int mCollObj1Picks = mCollObj1->GetCollisions(pick_report);
+      int mCollObj1Picks = mCollObj1->getCollisions(pick_report);
       if(mCollObj1Picks > 0)
       {
          transAmount = 0.5f;
          mDbgMsg = "Level encountered " + Ogre::StringConverter::toString(mCollObj1Picks) + " collisions";
       }
       const CollisionReporter &rept =
-        CollisionManager::getSingletonPtr()->GetDefaultContext()->GetCollisionReport();
+        CollisionManager::getSingletonPtr()->getDefaultContext()->getCollisionReport();
       String dbg = mDbgMsg;
       dbg +=
         "\nRayOb: "+ StringConverter::toString(rayrept.mTotalObjObjTests) +
@@ -699,25 +699,25 @@ protected:
 
 
       new CollisionManager(mSceneMgr);
-      CollisionManager::getSingletonPtr()->BeginCollClasses();
-      CollisionManager::getSingletonPtr()->AddCollClass("level");
-      CollisionManager::getSingletonPtr()->AddCollClass("bullet");
-      CollisionManager::getSingletonPtr()->AddCollClass("ogrehead");
-      CollisionManager::getSingletonPtr()->AddCollClass("powerup");
-      CollisionManager::getSingletonPtr()->EndCollClasses();
+      CollisionManager::getSingletonPtr()->beginCollClasses();
+      CollisionManager::getSingletonPtr()->addCollClass("level");
+      CollisionManager::getSingletonPtr()->addCollClass("bullet");
+      CollisionManager::getSingletonPtr()->addCollClass("ogrehead");
+      CollisionManager::getSingletonPtr()->addCollClass("powerup");
+      CollisionManager::getSingletonPtr()->endCollClasses();
 
-      CollisionManager::getSingletonPtr()->BeginCollTypes();
-      CollisionManager::getSingletonPtr()->AddCollType("level", "level", COLLTYPE_EXACT);
-      CollisionManager::getSingletonPtr()->AddCollType("ogrehead", "bullet", COLLTYPE_EXACT);
-      CollisionManager::getSingletonPtr()->AddCollType("level", "ogrehead", COLLTYPE_EXACT);
-      CollisionManager::getSingletonPtr()->AddCollType("level", "powerup", COLLTYPE_QUICK);
-      CollisionManager::getSingletonPtr()->AddCollType("level", "ogrehead", COLLTYPE_EXACT);
-      CollisionManager::getSingletonPtr()->AddCollType("powerup", "powerup", COLLTYPE_IGNORE);
-      CollisionManager::getSingletonPtr()->AddCollType("powerup", "bullet", COLLTYPE_IGNORE);
-      CollisionManager::getSingletonPtr()->AddCollType("bullet", "bullet", COLLTYPE_IGNORE);
-      CollisionManager::getSingletonPtr()->EndCollTypes();
+      CollisionManager::getSingletonPtr()->beginCollTypes();
+      CollisionManager::getSingletonPtr()->addCollType("level", "level", COLLTYPE_EXACT);
+      CollisionManager::getSingletonPtr()->addCollType("ogrehead", "bullet", COLLTYPE_EXACT);
+      CollisionManager::getSingletonPtr()->addCollType("level", "ogrehead", COLLTYPE_EXACT);
+      CollisionManager::getSingletonPtr()->addCollType("level", "powerup", COLLTYPE_QUICK);
+      CollisionManager::getSingletonPtr()->addCollType("level", "ogrehead", COLLTYPE_EXACT);
+      CollisionManager::getSingletonPtr()->addCollType("powerup", "powerup", COLLTYPE_IGNORE);
+      CollisionManager::getSingletonPtr()->addCollType("powerup", "bullet", COLLTYPE_IGNORE);
+      CollisionManager::getSingletonPtr()->addCollType("bullet", "bullet", COLLTYPE_IGNORE);
+      CollisionManager::getSingletonPtr()->endCollTypes();
 
-      collideContext = CollisionManager::getSingletonPtr()->GetDefaultContext();
+      collideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
 
       camNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("cameraSceneNode");
       //camNode->attachObject(mCamera);
@@ -742,21 +742,22 @@ protected:
       //levelNode->scale(1.8f, 1.8f, 1.8f);
       //levelNode->rotate(Vector3::UNIT_X,Degree(-90.0f));
 
-      CollisionShape *collideShape = CollisionManager::getSingletonPtr()->NewShape("level1");
-      collideShape->Load(ogreLevel);
-      collideObject = collideContext->NewObject();
-      collideObject->SetCollClass("level");
-      collideObject->SetShape(collideShape);
-      collideContext->AddObject(collideObject);
+      CollisionShape *collideShape = CollisionManager::getSingletonPtr()->newShape("level1");
+      collideShape->load(ogreLevel);
+      collideObject = collideContext->newObject();
+      collideObject->setCollClass("level");
+      collideObject->setShape(collideShape);
+      collideContext->addObject(collideObject);
 
-      CollisionShape *collideShape1 = CollisionManager::getSingletonPtr()->NewShape("ogrehead1");
-      collideShape1->Load(ogreCam);
-      collideObject1 = collideContext->NewObject();
-      collideObject1->SetCollClass("ogrehead");
-      collideObject1->SetShape(collideShape1);
-      collideContext->AddObject(collideObject1);
+      CollisionShape *collideShape1 = CollisionManager::getSingletonPtr()->newShape("ogrehead1");
+	  collideShape1->setDynamic();
+	  collideShape1->load(ogreCam);
+      collideObject1 = collideContext->newObject();
+      collideObject1->setCollClass("ogrehead");
+      collideObject1->setShape(collideShape1);
+      collideContext->addObject(collideObject1);
 
-      collideContext->Reset();
+      collideContext->reset();
 
       // Set ambient light
       mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));

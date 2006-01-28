@@ -101,7 +101,7 @@ namespace OgreOpcode
 		{}
 
 		/// initialize data for new collision frame
-		void BeginFrame()
+		void beginFrame()
 		{
 			test_pairs.clear();
 			coll_pairs.clear();
@@ -113,7 +113,7 @@ namespace OgreOpcode
 		};
 
 		/// check if a collision has already been reported
-		bool CollisionExists(int id1, int id2)
+		bool collisionExists(int id1, int id2)
 		{
 			// generate the merged 32 bit id, and query key array
 			// for the collision
@@ -123,7 +123,7 @@ namespace OgreOpcode
 		};
 
 		/// add a new collision 
-		void AddCollision(CollisionPair& cr, int id1, int id2)
+		void addCollision(CollisionPair& cr, int id1, int id2)
 		{
 			// generate the merged 32 bit id and add collision report
 			unsigned int key;
@@ -133,7 +133,7 @@ namespace OgreOpcode
 		};
 
 		/// check if a collision has already been tested for
-		bool CollisionTested(int id1, int id2)
+		bool collisionTested(int id1, int id2)
 		{
 			// generate the merged 32 bit id, and query key array
 			// for the collision
@@ -143,7 +143,7 @@ namespace OgreOpcode
 		};
 
 		/// Register that a test has been performed already
-		void AddCollisionTest(int id1, int id2)
+		void addCollisionTest(int id1, int id2)
 		{
 			// generate the merged 32 bit id and add record
 			unsigned int key;
@@ -152,16 +152,16 @@ namespace OgreOpcode
 		};
 
 		/// end a collision frame
-		void EndFrame() { };
+		void endFrame() { };
 
 		/// get overall number of collisions recorded
-		int GetNumCollisions()
+		int getNumCollisions()
 		{
 			return coll_pairs.size();
 		};
 
 		/// get overall number of tests performed
-		int GetNumCollisionTests()
+		int getNumCollisionTests()
 		{
 			return test_pairs.size();
 		};
@@ -169,7 +169,7 @@ namespace OgreOpcode
 		/// report collisions for a specific object.
 		/// returns number of collisions and pointer to an array of collision report
 		/// pointers into the nKeyArray.
-		int GetCollisions(CollisionObject *co, CollisionPair **& cr_ptr)
+		int getCollisions(CollisionObject *co, CollisionPair **& cr_ptr)
 		{
 			// fill report array with all collisions which this
 			// object is involved in.
@@ -195,7 +195,7 @@ namespace OgreOpcode
 		}
 
 		/// get all recorded collisions.
-		int GetAllCollisions(CollisionPair **& cr_ptr) 
+		int getAllCollisions(CollisionPair **& cr_ptr) 
 		{
 			int num = coll_pairs.size();
 			int i;
@@ -218,7 +218,7 @@ namespace OgreOpcode
 		/// @param  v       [in] origin coordinate
 		/// @param  crPtr   [out] pointer to collide report pointer array
 		/// @return         number of entries in collide report pointer array (0 or 1)
-		int GetClosestCollision(const Vector3& v, CollisionPair **& crPtr)
+		int getClosestCollision(const Vector3& v, CollisionPair **& crPtr)
 		{
 			int num = coll_pairs.size();
 			if (0 == num)

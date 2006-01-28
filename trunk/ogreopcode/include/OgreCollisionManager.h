@@ -60,28 +60,28 @@ namespace OgreOpcode
 
 		static CollisionManager& getSingleton(void);
 
-		CollisionContext *NewContext(const String&);
-		CollisionShape   *NewShape(const String&);
-		void ReleaseContext(CollisionContext *);
-		void ReleaseShape(CollisionShape *);
+		CollisionContext *newContext(const String&);
+		CollisionShape   *newShape(const String&);
+		void releaseContext(CollisionContext *);
+		void releaseShape(CollisionShape *);
 
-		CollisionContext *GetDefaultContext(void);
-		CollisionContext *GetContext(const String& name);
+		CollisionContext *getDefaultContext(void);
+		CollisionContext *getContext(const String& name);
 		SceneManager *getSceneManager(void);
 
 		// define collision classes and collision check relationships
-		void BeginCollClasses(void);
-		void AddCollClass(const String &);
-		void EndCollClasses(void);
+		void beginCollClasses(void);
+		void addCollClass(const String &);
+		void endCollClasses(void);
 
-		void BeginCollTypes(void);
-		void AddCollType(const String&, const String&, CollisionType);
-		void EndCollTypes(void);
+		void beginCollTypes(void);
+		void addCollType(const String&, const String&, CollisionType);
+		void endCollTypes(void);
 
-		CollisionClass QueryCollClass(const String&);
-		CollisionType QueryCollType(const String&, const String&);
+		CollisionClass queryCollClass(const String&);
+		CollisionType queryCollType(const String&, const String&);
 
-		CollisionType QueryCollType(CollisionClass cc1, CollisionClass cc2)
+		CollisionType queryCollType(CollisionClass cc1, CollisionClass cc2)
 		{
 
 			// check for CollClass override cases

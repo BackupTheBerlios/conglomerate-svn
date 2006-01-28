@@ -94,7 +94,7 @@ namespace OgreOpcode
 		shape_list.clear();
 	}
 
-	CollisionContext *CollisionManager::NewContext(const String& contextName)
+	CollisionContext *CollisionManager::newContext(const String& contextName)
 	{
 		ContextIterator i = context_list.find(contextName);
 		if (i != context_list.end())
@@ -108,7 +108,7 @@ namespace OgreOpcode
 	}
 
 	/// Create a new, possibly shared shape object.
-	CollisionShape *CollisionManager::NewShape(const String &id)
+	CollisionShape *CollisionManager::newShape(const String &id)
 	{
 		//      assert(id);
 
@@ -125,7 +125,7 @@ namespace OgreOpcode
 		return cs;
 	}
 
-	void CollisionManager::ReleaseContext(CollisionContext *cc)
+	void CollisionManager::releaseContext(CollisionContext *cc)
 	{
 		assert(cc);
 		ContextIterator i, iend;
@@ -140,7 +140,7 @@ namespace OgreOpcode
 		}
 	}
 
-	void CollisionManager::ReleaseShape(CollisionShape *cs)
+	void CollisionManager::releaseShape(CollisionShape *cs)
 	{
 		assert(cs);
 		ShapeIterator i, iend;
@@ -160,7 +160,7 @@ namespace OgreOpcode
 		return mSceneMgr;
 	}
 
-	CollisionContext *CollisionManager::GetContext(const String& name)
+	CollisionContext *CollisionManager::getContext(const String& name)
 	{
 		ContextIterator i = context_list.find(name);
 
@@ -174,11 +174,11 @@ namespace OgreOpcode
 		return i->second;
 	}
 
-	CollisionContext *CollisionManager::GetDefaultContext(void)
+	CollisionContext *CollisionManager::getDefaultContext(void)
 	{
 		if (!default_context)
 		{
-			default_context = NewContext("default");
+			default_context = newContext("default");
 		}
 		return default_context;
 	}
@@ -212,7 +212,7 @@ namespace OgreOpcode
 		return String(buf);
 	}
 
-	void CollisionManager::BeginCollClasses(void)
+	void CollisionManager::beginCollClasses(void)
 	{
 		assert(!in_begin_collclasses);
 
@@ -223,7 +223,7 @@ namespace OgreOpcode
 		in_begin_collclasses = true;
 	}
 
-	void CollisionManager::AddCollClass(const String& cl_name)
+	void CollisionManager::addCollClass(const String& cl_name)
 	{
 		assert(in_begin_collclasses);
 		//      assert(cl_name);
@@ -238,13 +238,13 @@ namespace OgreOpcode
 		num_coll_classes++;
 	}
 
-	void CollisionManager::EndCollClasses(void)
+	void CollisionManager::endCollClasses(void)
 	{
 		assert(in_begin_collclasses);
 		in_begin_collclasses = false;
 	}
 
-	void CollisionManager::BeginCollTypes(void)
+	void CollisionManager::beginCollTypes(void)
 	{
 		colltype_table.clear();
 	}
@@ -255,7 +255,7 @@ namespace OgreOpcode
 	/// Due to the implementation of the top-level-collision check,
 	/// one of the 2 checks may return false, although a collision may
 	/// take place!
-	void CollisionManager::AddCollType(const String& cl1, const String& cl2, CollisionType collType)
+	void CollisionManager::addCollType(const String& cl1, const String& cl2, CollisionType collType)
 	{
 		//      assert(cl1);
 		//      assert(cl2);
@@ -288,13 +288,13 @@ namespace OgreOpcode
 		return;
 	}
 
-	void CollisionManager::EndCollTypes(void)
+	void CollisionManager::endCollTypes(void)
 	{
 		//assert(in_begin_colltypes);
 		//in_begin_colltypes = false;
 	}
 
-	CollisionClass CollisionManager::QueryCollClass(const String& cc)
+	CollisionClass CollisionManager::queryCollClass(const String& cc)
 	{
 		CollClassIterator i = collclass_list.find(cc);
 
@@ -306,7 +306,7 @@ namespace OgreOpcode
 		return i->second;
 	}
 
-	CollisionType CollisionManager::QueryCollType(const String& s_cc1, const String& s_cc2)
+	CollisionType CollisionManager::queryCollType(const String& s_cc1, const String& s_cc2)
 	{
 		CollClassIterator i = collclass_list.find(s_cc1);
 		if (i == collclass_list.end())
@@ -321,7 +321,7 @@ namespace OgreOpcode
 		}
 		CollisionClass class2 = i->second;
 
-		return QueryCollType(class1,class2);
+		return queryCollType(class1,class2);
 	}
 
 };

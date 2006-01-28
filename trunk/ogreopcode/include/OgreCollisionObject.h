@@ -146,7 +146,7 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in, out]  c CollisionContext *    <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void SetContext(CollisionContext *c)
+		void setContext(CollisionContext *c)
 		{
 			// c may be NULL!!!
 			mContext = c;
@@ -154,7 +154,7 @@ namespace OgreOpcode
 
 		/// <TODO: insert function description here>
 		/// @return CollisionContext * <TODO: insert return value description here>
-		CollisionContext *GetContext(void)
+		CollisionContext *getContext(void)
 		{
 			return mContext;
 		};
@@ -162,14 +162,14 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in]       i int     <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void SetId(int i)
+		void setId(int i)
 		{
 			id = i;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return int <TODO: insert return value description here>
-		int GetId(void)
+		int getId(void)
 		{
 			return id;
 		};
@@ -177,14 +177,14 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in]       b bool     <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void SetAttached(bool b)
+		void setAttached(bool b)
 		{
 			is_attached = b;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return bool <TODO: insert return value description here>
-		bool IsAttached(void)
+		bool isAttached(void)
 		{
 			return is_attached;
 		};
@@ -192,14 +192,14 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in]       f float     <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void SetRadius(float f)
+		void setRadius(float f)
 		{
 			mRadius = f;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return float <TODO: insert return value description here>
-		float GetRadius(void)
+		float getRadius(void)
 		{
 			return mRadius;
 		};
@@ -207,22 +207,22 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in, out]  s CollisionShape *    <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void SetShape(CollisionShape *s)
+		void setShape(CollisionShape *s)
 		{
 			mShape = s;
 			if (s)
 			{
-				SetRadius(s->GetRadius());
+				setRadius(s->getRadius());
 			}
 			else
 			{
-				SetRadius(0.0f);
+				setRadius(0.0f);
 			}
 		};
 
 		/// <TODO: insert function description here>
 		/// @return CollisionShape * <TODO: insert return value description here>
-		CollisionShape *GetShape(void)
+		CollisionShape *getShape(void)
 		{
 			return mShape;
 		};
@@ -230,7 +230,7 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in] cc CollisionClass     <TODO: insert parameter description here>
 		/// @return void
-		void SetCollClass(CollisionClass cc)
+		void setCollClass(CollisionClass cc)
 		{
 			coll_class = cc;
 		};
@@ -238,14 +238,14 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in]       ccstr registered CollisionClass string
 		/// @return void
-		void SetCollClass(const char *ccstr)
+		void setCollClass(const char *ccstr)
 		{
-			coll_class = CollisionManager::getSingletonPtr()->QueryCollClass(ccstr);
+			coll_class = CollisionManager::getSingletonPtr()->queryCollClass(ccstr);
 		};
 
 		/// <TODO: insert function description here>
 		/// @return CollisionClass <TODO: insert return value description here>
-		CollisionClass GetCollClass(void)
+		CollisionClass getCollClass(void)
 		{
 			return coll_class;
 		};
@@ -253,81 +253,81 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in, out]  d void *    <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void SetClientData(void *d)
+		void setClientData(void *d)
 		{
 			client_data = d;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return void * <TODO: insert return value description here>
-		void *GetClientData(void)
+		void *getClientData(void)
 		{
 			return client_data;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return const Matrix4 & <TODO: insert return value description here>
-		const Matrix4& GetTransform(void)
+		const Matrix4& getTransform(void)
 		{
-			new_matrix = GetShape()->getEntity()->_getParentNodeFullTransform();
-			//GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&new_matrix);
+			new_matrix = getShape()->getFullTransform();
+			//getShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&new_matrix);
 			return new_matrix;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return const Matrix4 & <TODO: insert return value description here>
-		const Matrix4& GetPrevTransform(void)
+		const Matrix4& getPrevTransform(void)
 		{
 			return old_matrix;
 		};
 
 		/// Return the 'time' between the current and previous transforms
 		/// @return Real The elapsted 'time' (actually just whatever the user
-		///         told us it was when calling Update()).  Negative if no
-		///         Update()'s have been performed since the last Reset()
-		Real GetTimeDelta(void)
+		///         told us it was when calling update()).  Negative if no
+		///         update()'s have been performed since the last reset()
+		Real getTimeDelta(void)
 		{
 			return m_tdelta;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return void <TODO: insert return value description here>
-		void ClearCollisions(void)
+		void clearCollisions(void)
 		{
 			num_colls = 0;
 		};
 
 		/// <TODO: insert function description here>
 		/// @return int <TODO: insert return value description here>
-		int GetNumCollisions(void)
+		int getNumCollisions(void)
 		{
 			return num_colls;
 		};
 
 		/// Retrieve current vertex data from mesh and refit collision tree
-		void Refit()
+		void refit()
 		{
 			if (mShape)
-				mShape->Refit();
+				mShape->refit();
 		}
 
-		void Update(Real tdelta)
+		void update(Real tdelta)
 		{
 			Matrix4 m;
-			m = GetShape()->getEntity()->_getParentNodeFullTransform();
-			//GetShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
+			m = getShape()->getFullTransform();
+			//getShape()->getEntity()->getSubEntity(0)->getWorldTransforms(&m);
 
-			Update(tdelta,m);
+			update(tdelta,m);
 		}
 
-		/// Update the object to its new position/orientation, update the dimensional nodes and the bounding box.
+		/// update the object to its new position/orientation, update the dimensional nodes and the bounding box.
 		/// @param [in]       t Real 'time' delta.  Doesn't have to be real time though.
 		///                   Just pass in 1.0 every time if you don't care about actual time.
 		///                   This comes into play when collisions are sub-stepped.
 		///                   You can get back the portion of t that passed before
 		///                   a collision occurred from the CollisionPair::tstamp member.
 		/// @param [in]       m const Matrix4 &    new world transform
-		void Update(Real t, Matrix4& m)
+		void update(Real t, Matrix4& m)
 		{
 			assert(is_attached);
 
@@ -335,13 +335,13 @@ namespace OgreOpcode
 			old_center_offset = new_center_offset;
 			new_matrix = m;
 
-			// Update the swept bounding-box
+			// update the swept bounding-box
 			// Extract position vectors from matrix
 
 			// Get center in world space.
-			Vector3 ctr = GetShape()->getCenter() * 1.18f;
+			Vector3 ctr = getShape()->getCenter() * 1.18f;
 			Vector3 lMin,lMax;
-			GetShape()->getMinMax(lMin,lMax);
+			getShape()->getMinMax(lMin,lMax);
 			lMax-=lMin;
 			mRadius = lMax.length()*0.5;
 			// We need center's world offset from object's world origin
@@ -364,7 +364,7 @@ namespace OgreOpcode
 			p0 += old_center_offset;
 			Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
 			p1 += new_center_offset;
-			GetShape()->getMinMax(minv,maxv);
+			getShape()->getMinMax(minv,maxv);
 			//         minv = Vector3(n_min(p0.x,p1.x)-mRadius,
 			//                        n_min(p0.y,p1.y)-mRadius,
 			//                        n_min(p0.z,p1.z)-mRadius);
@@ -478,7 +478,7 @@ namespace OgreOpcode
 						other_matrix[0][3] = p1.x;
 						other_matrix[1][3] = p1.y;
 						other_matrix[2][3] = p1.z;
-						if (mShape->Collide(ct, self_matrix, other->GetShape(), other_matrix, cr))
+						if (mShape->collide(ct, self_matrix, other->getShape(), other_matrix, cr))
 						{
 							// CONTACT!!!
 							double dt = (m_tdelta) / num;
@@ -498,8 +498,8 @@ namespace OgreOpcode
 		/// For each overlapping object in all 3 dimensions,
 		/// which doesn't fall into the ignore_types category,
 		/// do a collision check, and if the check is positive,
-		/// record collision by doing an AddCollision().
-		void Collide(void)
+		/// record collision by doing an addCollision().
+		void collide(void)
 		{
 			assert(is_attached);
 			assert(mContext);
@@ -515,7 +515,7 @@ namespace OgreOpcode
 				CollisionObject *other = cnx->GetCollideObject();
 
 				// query the collision type defined for those two objects
-				CollisionType ct = CollisionManager::getSingletonPtr()->QueryCollType(GetCollClass(),other->GetCollClass());
+				CollisionType ct = CollisionManager::getSingletonPtr()->queryCollType(getCollClass(),other->getCollClass());
 
 				// ignore collision?
 				if (COLLTYPE_IGNORE == ct) continue;
@@ -527,11 +527,11 @@ namespace OgreOpcode
 					// we have an overlap, mister
 
 					// has this collision already been checked by the other object?
-					if (!crh->CollisionTested(id,other->id))
+					if (!crh->collisionTested(id,other->id))
 					{
 						// no, we're first...
 						crh->mTotalObjObjTests++;
-						crh->AddCollisionTest(id,other->id);
+						crh->addCollisionTest(id,other->id);
 
 						// ask objects whether they collide...
 						// FIXME: probably do velocity-based finer
@@ -545,7 +545,7 @@ namespace OgreOpcode
 						{
 							cr.co1 = this;
 							cr.co2 = other;
-							crh->AddCollision(cr,id,other->id);
+							crh->addCollision(cr,id,other->id);
 							num_colls++;
 							other->num_colls++;
 						}
@@ -556,11 +556,11 @@ namespace OgreOpcode
 		};
 
 		/// Return collision reports for all collisions this object is involved in.
-		int GetCollisions(CollisionPair **&crp)
+		int getCollisions(CollisionPair **&crp)
 		{
 			assert(mContext);
 			assert(is_attached);
-			return mContext->collideReportHandler.GetCollisions(this,crp);
+			return mContext->collideReportHandler.getCollisions(this,crp);
 			return 0;
 		};
 
@@ -568,13 +568,13 @@ namespace OgreOpcode
 		{
 			_debug_obj = new DebugObject();
 
-			VisualizeLocal();
+			visualizeLocal();
 			_debug_obj->draw();
 
 			if(!_debug_node)
 			{
 				SceneNode* parent = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode();
-				_debug_node = static_cast<SceneNode*>(parent->createChildSceneNode("collDebugNode" + Ogre::StringConverter::toString(GetId())));
+				_debug_node = static_cast<SceneNode*>(parent->createChildSceneNode("collDebugNode" + Ogre::StringConverter::toString(getId())));
 
 				if(_debug_obj)
 				{
@@ -586,8 +586,8 @@ namespace OgreOpcode
 			}
 			if(_debug_node)
 			{
-				_debug_node->setPosition(GetShape()->getEntity()->getParentNode()->_getDerivedPosition());
-				_debug_node->setOrientation(GetShape()->getEntity()->getParentNode()->_getDerivedOrientation());
+				_debug_node->setPosition(getShape()->getParentSceneNode()->_getDerivedPosition());
+				_debug_node->setOrientation(getShape()->getParentSceneNode()->_getDerivedOrientation());
 			}
 		}
 
@@ -596,13 +596,13 @@ namespace OgreOpcode
 		{
 			_global_debug_obj = new DebugObject();
 
-			VisualizeGlobal();
+			visualizeGlobal();
 			_global_debug_obj->draw();
 
 			if(!_global_debug_node)
 			{
 				SceneNode* parent = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode();
-				_global_debug_node = static_cast<SceneNode*>(parent->createChildSceneNode("collGlobalDebugNode" + Ogre::StringConverter::toString(GetId())));
+				_global_debug_node = static_cast<SceneNode*>(parent->createChildSceneNode("collGlobalDebugNode" + Ogre::StringConverter::toString(getId())));
 
 				if(_global_debug_obj)
 				{
@@ -666,13 +666,13 @@ namespace OgreOpcode
 			}
 		}
 
-		/// Visualize stuff in local coordinate space.
-		void VisualizeLocal()
+		/// visualize stuff in local coordinate space.
+		void visualizeLocal()
 		{
 			// render the objects radii
 			int dim;
 			Real dr = Ogre::Math::DegreesToRadians(5.0f);
-			Vector3 ctr = GetShape()->getLocalCenter();
+			Vector3 ctr = getShape()->getLocalCenter();
 			for (dim=0; dim<3; dim++)
 			{
 				Real r;
@@ -696,14 +696,14 @@ namespace OgreOpcode
 			}
 		};
 
-		/// Visualize stuff in global space.
-		void VisualizeGlobal()
+		/// visualize stuff in global space.
+		void visualizeGlobal()
 		{
 			// render any collision contact points
 			if (num_colls > 0)
 			{
 				CollisionPair **pcr;
-				int num = mContext->GetCollisions(this,pcr);
+				int num = mContext->getCollisions(this,pcr);
 				int i;
 				for (i=0; i<num; i++)
 				{

@@ -53,39 +53,39 @@ namespace OgreOpcode
 		/// destructor
 		virtual ~CollisionContext();
 		/// create a collide object
-		virtual CollisionObject *NewObject(void);
+		virtual CollisionObject *newObject(void);
 		/// release a collide object
-		virtual void ReleaseObject(CollisionObject *collObj);
+		virtual void releaseObject(CollisionObject *collObj);
 		/// add collide object to context
-		virtual void AddObject(CollisionObject *collObj);
+		virtual void addObject(CollisionObject *collObj);
 		/// remove collide object from context
-		virtual void RemoveObject(CollisionObject *collObj);
+		virtual void removeObject(CollisionObject *collObj);
 		/// compute contacts between collision objects in context
-		virtual int Collide(Real dt=1.0);
+		virtual int collide(Real dt=1.0);
 		/// debug visualization of the collide context
-		virtual void Visualize(void);
-		/// get the collide reports for the collisions computed inside Collide()
-		virtual int GetCollisions(CollisionObject *collObj, CollisionPair **&cpPtr);
-		/// get reporter for for last Collide() call.
-		const CollisionReporter& GetCollisionReport() const;
+		virtual void visualize(void);
+		/// get the collide reports for the collisions computed inside collide()
+		virtual int getCollisions(CollisionObject *collObj, CollisionPair **&cpPtr);
+		/// get reporter for for last collide() call.
+		const CollisionReporter& getCollisionReport() const;
 		/// get reporter for for last Check...() call.
-		const CollisionReporter& GetCheckReport() const;
+		const CollisionReporter& getCheckReport() const;
 		/// do a "moving sphere" check against collide object radii in the context
-		virtual int MovingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
+		virtual int movingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
 		/// do a line-model check
-		virtual int RayCheck(const Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+		virtual int rayCheck(const Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
 		/// do a sphere-model check
-		virtual int SphereCheck(const Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+		virtual int sphereCheck(const Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
 		/// reset position and timestamp of all objects
-		void Reset();
-		void Update(Real dt=1.0);
+		void reset();
+		void update(Real dt=1.0);
 
 	private:
 		friend class CollisionObject;
 
 		static const int maxnum_collisions = 4096;
 
-		CollisionReporter collideReportHandler;     ///< collide reports for Collide()
+		CollisionReporter collideReportHandler;     ///< collide reports for collide()
 		CollisionReporter checkReportHandler;       ///< collide reports for Check() functions
 		nList xdim_list;        ///< the x-dimension sorted list (2 nodes per object)
 
