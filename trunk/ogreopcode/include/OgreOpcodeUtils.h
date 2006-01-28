@@ -42,14 +42,14 @@ namespace OgreOpcode
    {
    public:
    
-          void ogreToIceVector3( const Vector3& ogreVec, IceMaths::Point& opcPoint )
+          static void ogreToIceVector3( const Vector3& ogreVec, IceMaths::Point& opcPoint )
           {
                opcPoint.x = ogreVec.x;
                opcPoint.y = ogreVec.y;
                opcPoint.z = ogreVec.z;
           }
    
-          void ogreToIceMatrix4( const Matrix4& ogreMatrix, IceMaths::Matrix4x4& opcMatrix )
+          static void ogreToIceMatrix4( const Matrix4& ogreMatrix, IceMaths::Matrix4x4& opcMatrix )
           {
             for(unsigned int i = 0; i < 4; i++)
             {
@@ -60,7 +60,7 @@ namespace OgreOpcode
             }
           }
 
-          void ogreToIceRay(  const Ray& line, IceMaths::Ray& opcRay )
+          static void ogreToIceRay(  const Ray& line, IceMaths::Ray& opcRay )
           {
             ray.mOrig.x = line.getOrigin().x;
             ray.mOrig.y = line.getOrigin().y;
@@ -71,7 +71,7 @@ namespace OgreOpcode
             ray.mDir.z = line.getDirection().z;
           }
           
-          void ogreToIceSphere(  const Ray& line, IceMaths::Sphere& opcRay )
+          static void ogreToIceSphere(  const Ray& line, IceMaths::Sphere& opcRay )
           {
              // TODO
           }

@@ -294,7 +294,7 @@ public:
             mDbgMsg = "";
             CollisionObject* yeah = pick_report[i]->co1;
             Vector3 contact = pick_report[i]->contact;
-            mDbgMsg = mDbgMsg + yeah->GetShape()->GetName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
+            mDbgMsg = mDbgMsg + yeah->GetShape()->getName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
          }
       }
       else

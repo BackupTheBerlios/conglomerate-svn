@@ -325,163 +325,163 @@ namespace OgreOpcode
       }
 
 
-      /// A node in a nStrList.
-      class nStrNode: public nNode
-      {
-      public:
-         /// default constructor
-         nStrNode();
-         /// constructor providing custom data pointer
-         nStrNode(void* ptr);
-         /// constructor providing node name
-         nStrNode(const char* str);
-         /// constructor providing custom data pointer and node name
-         nStrNode(const char* str, void* ptr);
-         /// set the name of this node
-         void SetName(const char* str);
-         /// get the name of this node
-         const char* GetName() const;
-         /// get next node in list
-         nStrNode* GetSucc() const;
-         /// get previous node in list
-         nStrNode* GetPred() const;
+      ///// A node in a nStrList.
+      //class nStrNode: public nNode
+      //{
+      //public:
+      //   /// default constructor
+      //   nStrNode();
+      //   /// constructor providing custom data pointer
+      //   nStrNode(void* ptr);
+      //   /// constructor providing node name
+      //   nStrNode(const char* str);
+      //   /// constructor providing custom data pointer and node name
+      //   nStrNode(const char* str, void* ptr);
+      //   /// set the name of this node
+      //   void SetName(const char* str);
+      //   /// get the name of this node
+      //   const char* GetName() const;
+      //   /// get next node in list
+      //   nStrNode* GetSucc() const;
+      //   /// get previous node in list
+      //   nStrNode* GetPred() const;
 
-      private:
-         String name;
-      };
+      //private:
+      //   String name;
+      //};
 
-      inline
-         nStrNode::nStrNode()
-      {
-         // empty
-      }
+      //inline
+      //   nStrNode::nStrNode()
+      //{
+      //   // empty
+      //}
 
-      inline
-         nStrNode::nStrNode(void* ptr) :
-      nNode(ptr)
-      {
-         // empty
-      }
+      //inline
+      //   nStrNode::nStrNode(void* ptr) :
+      //nNode(ptr)
+      //{
+      //   // empty
+      //}
 
-      inline
-         nStrNode::nStrNode(const char* str) :
-      name(str)
-      {
-         // empty
-      }
+      //inline
+      //   nStrNode::nStrNode(const char* str) :
+      //name(str)
+      //{
+      //   // empty
+      //}
 
-      inline
-         nStrNode::nStrNode(const char* str, void* ptr) :
-      nNode(ptr),
-         name(str)
-      {
-         // empty
-      }
+      //inline
+      //   nStrNode::nStrNode(const char* str, void* ptr) :
+      //nNode(ptr),
+      //   name(str)
+      //{
+      //   // empty
+      //}
 
-      inline
-         void
-         nStrNode::SetName(const char* str)
-      {
-         this->name = str;
-      }
+      //inline
+      //   void
+      //   nStrNode::SetName(const char* str)
+      //{
+      //   this->name = str;
+      //}
 
-      inline
-         const char*
-         nStrNode::GetName() const
-      {
-         return this->name == "" ? 0 : this->name.c_str();
-      }
+      //inline
+      //   const char*
+      //   nStrNode::GetName() const
+      //{
+      //   return this->name == "" ? 0 : this->name.c_str();
+      //}
 
-      inline
-         nStrNode*
-         nStrNode::GetSucc() const
-      {
-         return (nStrNode *) nNode::GetSucc();
-      }
+      //inline
+      //   nStrNode*
+      //   nStrNode::GetSucc() const
+      //{
+      //   return (nStrNode *) nNode::GetSucc();
+      //}
 
-      inline
-         nStrNode*
-         nStrNode::GetPred() const
-      {
-         return (nStrNode *) nNode::GetPred();
-      }
+      //inline
+      //   nStrNode*
+      //   nStrNode::GetPred() const
+      //{
+      //   return (nStrNode *) nNode::GetPred();
+      //}
 
 
-      /// A doubly linked list for named nodes with slow linear search.
-      class nStrList: public nList
-      {
-      public:
-         /// return first element of list
-         nStrNode* GetHead() const;
-         /// return last element of list
-         nStrNode* GetTail() const;
-         /// remove first element of list
-         nStrNode* RemHead();
-         /// remove last element of list
-         nStrNode* RemTail();
-         /// search for named element (slow)
-         nStrNode* Find(const char* str) const;
-      };
+      ///// A doubly linked list for named nodes with slow linear search.
+      //class nStrList: public nList
+      //{
+      //public:
+      //   /// return first element of list
+      //   nStrNode* GetHead() const;
+      //   /// return last element of list
+      //   nStrNode* GetTail() const;
+      //   /// remove first element of list
+      //   nStrNode* RemHead();
+      //   /// remove last element of list
+      //   nStrNode* RemTail();
+      //   /// search for named element (slow)
+      //   nStrNode* Find(const char* str) const;
+      //};
 
-      //------------------------------------------------------------------------------
-      /**
-      */
-      inline
-         nStrNode*
-         nStrList::GetHead() const
-      {
-         return (nStrNode *) this->nList::GetHead();
-      }
+      ////------------------------------------------------------------------------------
+      ///**
+      //*/
+      //inline
+      //   nStrNode*
+      //   nStrList::GetHead() const
+      //{
+      //   return (nStrNode *) this->nList::GetHead();
+      //}
 
-      //------------------------------------------------------------------------------
-      /**
-      */
-      inline
-         nStrNode*
-         nStrList::GetTail() const
-      {
-         return (nStrNode *) this->nList::GetTail();
-      }
+      ////------------------------------------------------------------------------------
+      ///**
+      //*/
+      //inline
+      //   nStrNode*
+      //   nStrList::GetTail() const
+      //{
+      //   return (nStrNode *) this->nList::GetTail();
+      //}
 
-      //------------------------------------------------------------------------------
-      /**
-      */
-      inline
-         nStrNode*
-         nStrList::RemHead()
-      {
-         return (nStrNode *) this->nList::RemHead();
-      }
+      ////------------------------------------------------------------------------------
+      ///**
+      //*/
+      //inline
+      //   nStrNode*
+      //   nStrList::RemHead()
+      //{
+      //   return (nStrNode *) this->nList::RemHead();
+      //}
 
-      //------------------------------------------------------------------------------
-      /**
-      */
-      inline
-         nStrNode*
-         nStrList::RemTail()
-      {
-         return (nStrNode *) this->nList::RemTail();
-      }
+      ////------------------------------------------------------------------------------
+      ///**
+      //*/
+      //inline
+      //   nStrNode*
+      //   nStrList::RemTail()
+      //{
+      //   return (nStrNode *) this->nList::RemTail();
+      //}
 
-      //------------------------------------------------------------------------------
-      /**
-      */
-      inline
-         nStrNode*
-         nStrList::Find(const char* str) const
-      {
-         nStrNode* n;
-         for (n = this->GetHead(); n; n = n->GetSucc())
-         {
-            const char* nodeName = n->GetName();
-            assert(nodeName);
-            if (strcmp(str, nodeName) == 0)
-            {
-               return n;
-            }
-         }
-         return 0;
-      };
+      ////------------------------------------------------------------------------------
+      ///**
+      //*/
+      //inline
+      //   nStrNode*
+      //   nStrList::Find(const char* str) const
+      //{
+      //   nStrNode* n;
+      //   for (n = this->GetHead(); n; n = n->GetSucc())
+      //   {
+      //      const char* nodeName = n->GetName();
+      //      assert(nodeName);
+      //      if (strcmp(str, nodeName) == 0)
+      //      {
+      //         return n;
+      //      }
+      //   }
+      //   return 0;
+      //};
 
    } // namespace Details
 } // namespace OgreOpcode

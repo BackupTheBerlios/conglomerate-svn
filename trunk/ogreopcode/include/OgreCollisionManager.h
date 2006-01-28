@@ -36,121 +36,136 @@
 #include "OgreCollisionShape.h"
 #include "Opcode.h"
 
+#include <list>
+#include <map>
+
 using namespace OgreOpcode::Details;
 
 /// Main %OgreOpcode namespace
 namespace OgreOpcode
 {
-   typedef int CollisionClass;
-   
-   namespace Details
-   {
-      /// Linked list of Collision class types.
-      class CollisionClassNode : public nStrNode
-      {
-         CollisionClass coll_class;
-      public:
-         CollisionClassNode(const char *n, CollisionClass cl)
-            : nStrNode(n),
-            coll_class(cl)
-         { };
+	typedef int CollisionClass;
 
-         CollisionClass GetCollClass(void)
-         {
-            return coll_class;
-         };
-      };
-   }
-   
-   /// Collision manager.
-   /// The CollisionManager object serves as factory object of the
-   /// different classes of the collision system, namely
-   /// CollisionContext and CollisionShape. A CollisionContext
-   /// serves as factory for CollisionObject%s.
-   class _OgreOpcode_Export CollisionManager : public Singleton<CollisionManager>
-   {
-      friend class CollisionShape;
-   private:
-      Opcode::AABBTreeCollider opcTreeCollider;
-      Opcode::RayCollider      opcRayCollider;
-      Opcode::SphereCollider   opcSphereCollider;
-      Opcode::PlanesCollider   opcPlanesCollider;
-      Opcode::LSSCollider      opcLSSCollider;
-      Opcode::BVTCache         opcTreeCache;
-      Opcode::CollisionFaces   opcFaceCache;
-      Opcode::SphereCache      opcSphereCache;
-      Opcode::PlanesCache      opcPlanesCache;
-      Opcode::LSSCache         opcLSSCache;
-   protected:
-      int unique_id;
-      nList context_list;
-      nHashList shape_list;
-      CollisionContext *default_context;
+	/// Collision manager.
+	/// The CollisionManager object serves as factory object of the
+	/// different classes of the collision system, namely
+	/// CollisionContext and CollisionShape. A CollisionContext
+	/// serves as factory for CollisionObject%s.
+	class _OgreOpcode_Export CollisionManager : public Singleton<CollisionManager>
+	{
+		friend class CollisionShape;
+	public:
+		CollisionManager(SceneManager *);
+		virtual ~CollisionManager();
 
-      bool in_begin_collclasses;
-      bool in_begin_colltypes;
-      int num_coll_classes;
-      nStrList collclass_list;
-      CollisionType *colltype_table;  
-      SceneManager *mSceneMgr;
-   public:
+		static CollisionManager& getSingleton(void);
 
-      CollisionManager(SceneManager *);
-      virtual ~CollisionManager();
+		CollisionContext *NewContext(const String&);
+		CollisionShape   *NewShape(const String&);
+		void ReleaseContext(CollisionContext *);
+		void ReleaseShape(CollisionShape *);
 
-      static CollisionManager& getSingleton(void);
+		CollisionContext *GetDefaultContext(void);
+		CollisionContext *GetContext(const String& name);
+		SceneManager *getSceneManager(void);
 
-      virtual CollisionContext *NewContext(void);
-      virtual CollisionShape   *NewShape(const char *id);
-      virtual void ReleaseContext(CollisionContext *);
-      virtual void ReleaseShape(CollisionShape *);
+		// define collision classes and collision check relationships
+		void BeginCollClasses(void);
+		void AddCollClass(const String &);
+		void EndCollClasses(void);
 
-      virtual CollisionContext *GetDefaultContext(void);
-      virtual SceneManager *getSceneManager(void);
+		void BeginCollTypes(void);
+		void AddCollType(const String&, const String&, CollisionType);
+		void EndCollTypes(void);
 
-      // define collision classes and collision check relationships
-      void BeginCollClasses(void);
-      void AddCollClass(const char *);
-      void EndCollClasses(void);
+		CollisionClass QueryCollClass(const String&);
+		CollisionType QueryCollType(const String&, const String&);
 
-      void BeginCollTypes(void);
-      void AddCollType(const char *, const char *, CollisionType);
-      void EndCollTypes(void);
+		CollisionType QueryCollType(CollisionClass cc1, CollisionClass cc2)
+		{
 
-      virtual CollisionClass QueryCollClass(const char *);
-      virtual CollisionType QueryCollType(const char *, const char *);
+			// check for CollClass override cases
+			if ((cc1 == COLLTYPE_ALWAYS_IGNORE) || (cc2 == COLLTYPE_ALWAYS_IGNORE))
+			{
+				return COLLTYPE_IGNORE;
+			}
+			else if ((cc1 == COLLTYPE_ALWAYS_QUICK) || (cc2 == COLLTYPE_ALWAYS_QUICK))
+			{
+				return COLLTYPE_QUICK;
+			}
+			else if ((cc1 == COLLTYPE_ALWAYS_CONTACT) || (cc2 == COLLTYPE_ALWAYS_CONTACT))
+			{
+				return COLLTYPE_CONTACT;
+			}
+			else if ((cc1 == COLLTYPE_ALWAYS_EXACT) || (cc2 == COLLTYPE_ALWAYS_EXACT))
+			{
+				return COLLTYPE_EXACT;
+			}
+			//			assert(colltype_table);
+			assert((cc1 >= 0) && (cc2 >= 0));
+			assert(int(cc1) < num_coll_classes);
+			assert(int(cc2) < num_coll_classes);
 
-      CollisionType QueryCollType(CollisionClass cc1, CollisionClass cc2)
-      {
+			int key;
+			get_merged_id(cc1, cc2, key);
+			return colltype_table[key];
+		};
+	protected:
+		int unique_id;
+		typedef std::map<String,CollisionContext*> ContextList;
+		typedef ContextList::const_iterator ContextIterator;
+		ContextList context_list;
 
-         // check for CollClass override cases
-         if ((cc1 == COLLTYPE_ALWAYS_IGNORE) || (cc2 == COLLTYPE_ALWAYS_IGNORE))
-         {
-            return COLLTYPE_IGNORE;
-         }
-         else if ((cc1 == COLLTYPE_ALWAYS_QUICK) || (cc2 == COLLTYPE_ALWAYS_QUICK))
-         {
-            return COLLTYPE_QUICK;
-         }
-         else if ((cc1 == COLLTYPE_ALWAYS_CONTACT) || (cc2 == COLLTYPE_ALWAYS_CONTACT))
-         {
-            return COLLTYPE_CONTACT;
-         }
-         else if ((cc1 == COLLTYPE_ALWAYS_EXACT) || (cc2 == COLLTYPE_ALWAYS_EXACT))
-         {
-            return COLLTYPE_EXACT;
-         }
-         assert(colltype_table);
-         assert((cc1 >= 0) && (cc2 >= 0));
-         assert(int(cc1) < num_coll_classes);
-         assert(int(cc2) < num_coll_classes);
+		typedef HashMap<String,CollisionShape*> ShapeList;
+		// TODO: Do I own these shapes? Or do I pass the responsibility on?
+		ShapeList shape_list;
+		typedef ShapeList::const_iterator ShapeIterator;
 
-         int index = (int(cc1)*num_coll_classes) + int(cc2);
-         return colltype_table[index];
-      };
-   protected:
-      char *getResourceID(const char *, char *, int);
-   };
+		typedef std::map<String, CollisionClass> CollClassList;
+		CollClassList collclass_list;
+		typedef CollClassList::const_iterator CollClassIterator;
+		typedef std::map<int, CollisionType> CollTypeList;
+		CollTypeList colltype_table;
+		typedef CollTypeList::const_iterator CollTypeIterator;
+
+		CollisionContext *default_context;
+
+		bool in_begin_collclasses;
+		bool in_begin_colltypes;
+		int num_coll_classes;
+
+		SceneManager *mSceneMgr;
+		String getResourceID(const String&);
+	private:
+		Opcode::AABBTreeCollider opcTreeCollider;
+		Opcode::RayCollider      opcRayCollider;
+		Opcode::SphereCollider   opcSphereCollider;
+		Opcode::PlanesCollider   opcPlanesCollider;
+		Opcode::LSSCollider      opcLSSCollider;
+		Opcode::BVTCache         opcTreeCache;
+		Opcode::CollisionFaces   opcFaceCache;
+		Opcode::SphereCache      opcSphereCache;
+		Opcode::PlanesCache      opcPlanesCache;
+		Opcode::LSSCache         opcLSSCache;
+
+		// Merge the 2 object id's into 1 32 bit id,
+		// order them, so that any combination of 2 id's
+		// results in the same merged id. Return true
+		// a swap happend (because other attributes
+		// may have to be swapped as well).
+		bool get_merged_id(int id1, int id2, int& mrg)
+		{
+			if (id1 > id2)
+			{
+				mrg = ((id2 & 0xffff)<<16) | (id1 & 0xffff);
+				return true;
+			} else
+			{
+				mrg = ((id1 & 0xffff)<<16) | (id2 & 0xffff);
+				return false;
+			}
+		};
+	};
 
 }; // namespace OgreOpcode
 

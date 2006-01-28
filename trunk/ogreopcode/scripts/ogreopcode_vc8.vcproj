@@ -262,6 +262,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\OgreOpcodeUtils.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\OgreOrientedBox.h"
 				>
 			</File>
