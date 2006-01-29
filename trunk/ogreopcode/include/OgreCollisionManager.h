@@ -47,7 +47,7 @@ namespace OgreOpcode
 	namespace Details
 	{
 		typedef int CollisionClass;
-	}
+	};
 
 	/// Collision manager.
 	/// The CollisionManager object serves as factory object of the
@@ -56,8 +56,20 @@ namespace OgreOpcode
 	/// serves as factory for CollisionObject%s.
 	class _OgreOpcode_Export CollisionManager : public Singleton<CollisionManager>
 	{
-		friend class CollisionShape;
+		//friend class CollisionShape;
 	public:
+		///TODO: Put these back into the private section!!
+		Opcode::AABBTreeCollider opcTreeCollider;
+		Opcode::RayCollider      opcRayCollider;
+		Opcode::SphereCollider   opcSphereCollider;
+		Opcode::PlanesCollider   opcPlanesCollider;
+		Opcode::LSSCollider      opcLSSCollider;
+		Opcode::BVTCache         opcTreeCache;
+		Opcode::CollisionFaces   opcFaceCache;
+		Opcode::SphereCache      opcSphereCache;
+		Opcode::PlanesCache      opcPlanesCache;
+		Opcode::LSSCache         opcLSSCache;
+
 		CollisionManager(SceneManager *);
 		virtual ~CollisionManager();
 
@@ -140,16 +152,6 @@ namespace OgreOpcode
 		SceneManager *mSceneMgr;
 		String getResourceID(const String&);
 	private:
-		Opcode::AABBTreeCollider opcTreeCollider;
-		Opcode::RayCollider      opcRayCollider;
-		Opcode::SphereCollider   opcSphereCollider;
-		Opcode::PlanesCollider   opcPlanesCollider;
-		Opcode::LSSCollider      opcLSSCollider;
-		Opcode::BVTCache         opcTreeCache;
-		Opcode::CollisionFaces   opcFaceCache;
-		Opcode::SphereCache      opcSphereCache;
-		Opcode::PlanesCache      opcPlanesCache;
-		Opcode::LSSCache         opcLSSCache;
 
 		// Merge the 2 object id's into 1 32 bit id,
 		// order them, so that any combination of 2 id's

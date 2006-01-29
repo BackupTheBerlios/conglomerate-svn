@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
-///  @file OgreCollisionShape.h
-///  @brief <TODO: insert file description here>
+///  @file DotsceneOgreCollisionShape.h
+///  @brief Specialization of the DotsceneCollisionShape to handle dotscene shapes
 ///
-///  @author The OgreOpcode Team @date 29-05-2005
+///  @author The OgreOpcode Team @date 29-01-2006
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -25,13 +25,13 @@
 ///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ///
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef __OgreCollisionShape_h__
-# define __OgreCollisionShape_h__
+#ifndef __DotsceneOgreCollisionShape_h__
+# define __DotsceneOgreCollisionShape_h__
 
 #include "OgreOpcodeExports.h"
 # include <Ogre.h>
 
-#include "IOgreCollisionShape.h"
+#include "OgreCollisionShape.h"
 #include "OgreCollisionTypes.h"
 #include "OgreOpcodeDebugObject.h"
 #include "Opcode.h"
@@ -44,18 +44,18 @@ namespace OgreOpcode
 
 	/// Describes shapes for collision system.
 	/// Holds a triangle list describing a collision shape.
-	/// One CollisionShape object may be shared between several
-	/// CollisionObject%s. 2 CollisionShape objects may also
+	/// One DotsceneCollisionShape object may be shared between several
+	/// CollisionObject%s. 2 DotsceneCollisionShape objects may also
 	/// be queried directly whether they intersect.
 	///
-	/// CollisionShape objects are also able to load themselves
+	/// DotsceneCollisionShape objects are also able to load themselves
 	/// from a mesh file.
-	class _OgreOpcode_Export CollisionShape
+	class _OgreOpcode_Export DotsceneCollisionShape : public CollisionShape
 	{
 	public:
-		/// Constructs a CollisionShape
-		CollisionShape(const String& name);
-		virtual ~CollisionShape();
+		/// Constructs a DotsceneCollisionShape
+		DotsceneCollisionShape(const String& name);
+		virtual ~DotsceneCollisionShape();
 
 		/// load collide geometry from mesh, and build a collision tree
 		virtual bool load(Entity* ent);
@@ -88,8 +88,8 @@ namespace OgreOpcode
 		virtual void getMinMax(Vector3& bMin, Vector3& bMax) const; 
 		/// return current object space AABB min and max
 		virtual void getLocalMinMax(Vector3& bMin, Vector3& bMax) const; 
-		/// perform collision with other CollisionShape
-		virtual bool collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
+		/// perform collision with other DotsceneCollisionShape
+		virtual bool collide(CollisionType collType, Matrix4& ownMatrix, DotsceneCollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
 		/// perform collision with line
 		virtual bool rayCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& line, const Real dist, CollisionPair& collPair);
 		/// perform a sphere check
@@ -108,7 +108,7 @@ namespace OgreOpcode
 		/// Refits the collision tree to the currently cached vertex data.
 		/// This is an O(n) operation in the number of vertices in the mesh.
 		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the CollisionShape's cached data and the actual mesh
+		/// updating both the DotsceneCollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like 
 		/// deformable body physics.
 		virtual bool _refitToCachedData();
@@ -117,7 +117,7 @@ namespace OgreOpcode
 		/// like topology changing deformations, or a change in the number of tris.
 		/// In most cases _RefitToCachedGeometry() is sufficient, and much faster.
 		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the CollisionShape's cached data and the actual mesh
+		/// updating both the DotsceneCollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like
 		/// deformable body physics.
 		virtual bool _rebuildFromCachedData();
@@ -159,18 +159,18 @@ namespace OgreOpcode
 		void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData=0, size_t index_count=0);
 
 		/// prevent default construction
-		CollisionShape();
+		DotsceneCollisionShape();
 
 	};
 
 	inline
 		bool
-		CollisionShape::isInitialized()
+		DotsceneCollisionShape::isInitialized()
 	{
 		return mInitialized;
 	}
 
-	inline Matrix4 CollisionShape::getFullTransform(void) const
+	inline Matrix4 DotsceneCollisionShape::getFullTransform(void) const
 	{
 		if(isDynamic)
 		{
@@ -179,7 +179,7 @@ namespace OgreOpcode
 			return mFullTransform;
 	}
 
-	inline Matrix4 CollisionShape::getLocalTransform(void) const
+	inline Matrix4 DotsceneCollisionShape::getLocalTransform(void) const
 	{
 		if(isDynamic)
 		{
@@ -188,23 +188,23 @@ namespace OgreOpcode
 		return mLocalTransform;
 	}
 
-	inline SceneNode* CollisionShape::getParentSceneNode(void) const
+	inline SceneNode* DotsceneCollisionShape::getParentSceneNode(void) const
 	{
 		return this->mParentNode;
 	}
 
-	//inline Entity* CollisionShape::getEntity()
+	//inline Entity* DotsceneCollisionShape::getEntity()
 	//{
 	//	return mEntity;
 	//}
-	//inline const Entity* CollisionShape::getEntity() const
+	//inline const Entity* DotsceneCollisionShape::getEntity() const
 	//{
 	//	return mEntity;
 	//}
 
 	inline
 		Real
-		CollisionShape::getRadius() const
+		DotsceneCollisionShape::getRadius() const
 	{
 		return mRadius;
 	}
@@ -212,7 +212,7 @@ namespace OgreOpcode
 	/// Extract triangle coordinates from triangle index.
 	inline
 		void
-		CollisionShape::getTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
+		DotsceneCollisionShape::getTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
 	{
 		int* indexPtr = &(mFaceBuf[3 * index]);
 		float* vp0 = &(mVertexBuf[3 * indexPtr[0]]);
@@ -225,4 +225,4 @@ namespace OgreOpcode
 
 }; // namespace OgreOpcode
 
-#endif // __OgreCollisionEntity_h__
+#endif // __DotsceneOgreCollisionShape_h__

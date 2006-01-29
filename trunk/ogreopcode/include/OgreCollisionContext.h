@@ -40,7 +40,7 @@ namespace OgreOpcode
 	namespace Details
 	{
 		typedef int CollisionClass;
-	}
+	};
 	
 	class CollisionObject;
 	/// Defines a collision space.

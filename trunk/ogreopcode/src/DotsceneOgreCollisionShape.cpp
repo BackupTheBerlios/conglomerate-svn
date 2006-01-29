@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
-///  @file OgreCollisionShape.cpp
-///  @brief <TODO: insert file description here>
+///  @file DotsceneOgreCollisionShape.cpp
+///  @brief Specialization of the DotsceneCollisionShape to handle dotscene shapes
 ///
 ///  @author The OgreOpcode Team @date 28-05-2005
 ///
@@ -26,7 +26,7 @@
 ///
 ///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeExports.h"
-#include "OgreCollisionShape.h"
+#include "DotsceneOgreCollisionShape.h"
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
@@ -132,12 +132,12 @@ namespace OgreOpcode
 		}
 	} // Details
 	//------------------------------------------------------------------------
-	String CollisionShape::getName() const
+	String DotsceneCollisionShape::getName() const
 	{
 		return mName;
 	}
 	//------------------------------------------------------------------------
-	Vector3 CollisionShape::getCenter() const
+	Vector3 DotsceneCollisionShape::getCenter() const
 	{
 		// World space center
 		const Matrix4 &m = getFullTransform();
@@ -146,7 +146,7 @@ namespace OgreOpcode
 		return m*center;
 	}
 	//------------------------------------------------------------------------
-	Vector3 CollisionShape::getLocalCenter() const
+	Vector3 DotsceneCollisionShape::getLocalCenter() const
 	{
 		// Object space center
 		Vector3 center;
@@ -154,7 +154,7 @@ namespace OgreOpcode
 		return center;
 	}
 	//------------------------------------------------------------------------
-	void CollisionShape::getMinMax(Vector3& bMin, Vector3& bMax) const
+	void DotsceneCollisionShape::getMinMax(Vector3& bMin, Vector3& bMax) const
 	{
 		// Compute the tightest world space box around the current opcode AABB tree
 		const Matrix4 &m = getFullTransform();
@@ -172,13 +172,13 @@ namespace OgreOpcode
 		v=m*Vector3(lMax.x,lMax.y,lMax.z); bMin.makeFloor(v); bMax.makeCeil(v);
 	}
 	//------------------------------------------------------------------------
-	void CollisionShape::getLocalMinMax(Vector3& lMin, Vector3& lMax) const
+	void DotsceneCollisionShape::getLocalMinMax(Vector3& lMin, Vector3& lMax) const
 	{
 		// Get the local object space box around the current opcode AABB tree
 		GetOpcodeRootMinMaxBox(opcModel, lMin, lMax);
 	}
 	//------------------------------------------------------------------------
-	void CollisionShape::calculateSize()
+	void DotsceneCollisionShape::calculateSize()
 	{
 		// This just calcs the radius.  The world AABB has to be computed on demand
 		// because it depends on the current parent node transform.
@@ -191,8 +191,9 @@ namespace OgreOpcode
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	CollisionShape::CollisionShape(const String& name)
-		: mInitialized(false),
+	DotsceneCollisionShape::DotsceneCollisionShape(const String& name)
+		: CollisionShape(name),
+		mInitialized(false),
 		isDynamic(false),
 		mName(name),
 		mRadius(0.0f),
@@ -205,12 +206,12 @@ namespace OgreOpcode
 		mLocalTransform(Matrix4::IDENTITY)
 	{
 		// initialize pointers to global OPCODE objects
-		opcTreeCache    = &(CollisionManager::getSingletonPtr()->opcTreeCache);
-		opcFaceCache    = &(CollisionManager::getSingletonPtr()->opcFaceCache);
+		//opcTreeCache    = &(CollisionManager::getSingletonPtr()->opcTreeCache);
+		//opcFaceCache    = &(CollisionManager::getSingletonPtr()->opcFaceCache);
 	}
 
 	//------------------------------------------------------------------------
-	CollisionShape::~CollisionShape()
+	DotsceneCollisionShape::~DotsceneCollisionShape()
 	{
 		if (mEntity && mEntity->hasSkeleton())
 		{
@@ -222,19 +223,19 @@ namespace OgreOpcode
 	}
 
 	//------------------------------------------------------------------------
-	/// perform collision with other CollisionShape.
+	/// perform collision with other DotsceneCollisionShape.
 	/// @param collType CollisionType     Collision type.
 	/// @param ownMatrix Matrix4          Own matrix.
-	/// @param otherShape CollisionShape     Shape to test against.
+	/// @param otherShape DotsceneCollisionShape     Shape to test against.
 	/// @param otherMatrix Matrix4     Other matrix.
 	/// @param collPair CollisionPair     Collision report.
 	/// @return bool return true on collision.
-	bool CollisionShape::collide(CollisionType collType, Matrix4& ownMatrix, CollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair)
+	bool DotsceneCollisionShape::collide(CollisionType collType, Matrix4& ownMatrix, DotsceneCollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair)
 	{
 		assert(otherShape);
 		assert((collType == COLLTYPE_EXACT) || (collType == COLLTYPE_CONTACT));
 
-		CollisionShape* opcodeOther = (CollisionShape*) otherShape;
+		DotsceneCollisionShape* opcodeOther = (DotsceneCollisionShape*) otherShape;
 		Opcode::AABBTreeCollider& collider = CollisionManager::getSingletonPtr()->opcTreeCollider;
 
 		if (collType == COLLTYPE_EXACT)
@@ -399,7 +400,7 @@ namespace OgreOpcode
 	/// @param  line            line definition in world space
 	/// @param  collPair      will be filled with result
 	/// @return                 true if line intersects shape
-	bool CollisionShape::rayCheck(CollisionType collType,
+	bool DotsceneCollisionShape::rayCheck(CollisionType collType,
 		const Matrix4& ownMatrix,
 		const Ray& line,
 		const Real dist,
@@ -519,7 +520,7 @@ namespace OgreOpcode
 	/// @param  ball          sphere definition in world space
 	/// @param  collPair      will be filled with result
 	/// @return                 true if line intersects shape
-	bool CollisionShape::sphereCheck(CollisionType collType,
+	bool DotsceneCollisionShape::sphereCheck(CollisionType collType,
 		const Matrix4& ownMatrix,
 		const Sphere& ball,
 		CollisionPair& collPair)
@@ -605,7 +606,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// Render a AABBCollisionNode and recurse.
 	///  @param [in, out]  node const Opcode::AABBCollisionNode * AABBCollisionNode to visualize.
-	void CollisionShape::visualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node)
+	void DotsceneCollisionShape::visualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node)
 	{
 		assert(node);
 
@@ -654,7 +655,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// Render a AABBCollisionNode and recurse.
 	///  @param [in, out]  node const Opcode::AABBNoLeafNode * AABBNoLeafNode to visualize.
-	void CollisionShape::visualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node)
+	void DotsceneCollisionShape::visualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node)
 	{
 		assert(node);
 
@@ -703,7 +704,7 @@ namespace OgreOpcode
 
 	//------------------------------------------------------------------------
 	/// Renders the collide model triangle soup.
-	void CollisionShape::visualize()
+	void DotsceneCollisionShape::visualize()
 	{
 		assert(mVertexBuf && mFaceBuf);
 
@@ -742,7 +743,7 @@ namespace OgreOpcode
 	/// @param[out] vertex_count Number of vertices.
 	/// @author Yavin from the Ogre4J team
 	///////////////////////////////////////////////////////////////////////////////
-	void CollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
+	void DotsceneCollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
 	{
 		Mesh * mesh = entity->getMesh().getPointer();
 #ifdef BUILD_AGAINST_DAGON
@@ -790,7 +791,7 @@ namespace OgreOpcode
 	/// @param[int] index_count         Number of indices.
 	/// @author Yavin from the Ogre4J team
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionShape::convertMeshData(Entity * entity,
+	void DotsceneCollisionShape::convertMeshData(Entity * entity,
 		float * vertexBuf, size_t vertex_count,
 		int * faceBuf, size_t index_count)
 	{
@@ -927,7 +928,7 @@ namespace OgreOpcode
 
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
-	void CollisionShape::createDebugObject()
+	void DotsceneCollisionShape::createDebugObject()
 	{
 		_debug_obj = new DebugObject();
 
@@ -944,7 +945,7 @@ namespace OgreOpcode
 
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
-	void CollisionShape::destroyDebugObject()
+	void DotsceneCollisionShape::destroyDebugObject()
 	{
 		if(_debug_obj)
 		{
@@ -956,14 +957,14 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @param [in]       debug bool     <TODO: insert parameter description here>
-	void CollisionShape::setDebug(bool debug)
+	void DotsceneCollisionShape::setDebug(bool debug)
 	{
 		destroyDebugObject();
 		if(debug) createDebugObject();
 	}
 
 	//------------------------------------------------------------------------
-	void CollisionShape::_prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc)
+	void DotsceneCollisionShape::_prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc)
 	{
 		opcc.mIMesh = &opcMeshAccess;
 		//opcc.mSettings.mRules = Opcode::SPLIT_BEST_AXIS;//Opcode::SPLIT_SPLATTER_POINTS;   // split by splattering primitive centers (???)
@@ -976,7 +977,7 @@ namespace OgreOpcode
 	/// <TODO: insert function description here>
 	/// @param [in, out]  ent Entity *    <TODO: insert parameter description here>
 	/// @return bool <TODO: insert return value description here>
-	bool CollisionShape::load(Entity* ent)
+	bool DotsceneCollisionShape::load(Entity* ent)
 	{
 		assert(ent);
 		assert(!mVertexBuf && !mFaceBuf);
@@ -994,7 +995,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool CollisionShape::rebuild()
+	bool DotsceneCollisionShape::rebuild()
 	{
 		assert(mEntity);
 
@@ -1036,7 +1037,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool CollisionShape::refit()
+	bool DotsceneCollisionShape::refit()
 	{
 		// bail if we don't need to refit
 		if ( !isDynamic )
@@ -1060,7 +1061,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool CollisionShape::_refitToCachedData()
+	bool DotsceneCollisionShape::_refitToCachedData()
 	{
 		assert(mEntity && mVertexBuf);
 
@@ -1068,7 +1069,7 @@ namespace OgreOpcode
 		if (!opcModel.Refit())
 		{
 			LogManager::getSingleton().logMessage(
-				"OgreOpcode::CollisionShape::_refitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
+				"OgreOpcode::DotsceneCollisionShape::_refitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
 			// Backup plan -- rebuild full tree
 			opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
 			Opcode::OPCODECREATE opcc;
@@ -1088,7 +1089,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool CollisionShape::_rebuildFromCachedData()
+	bool DotsceneCollisionShape::_rebuildFromCachedData()
 	{
 		assert(mEntity && mVertexBuf && mFaceBuf);
 
