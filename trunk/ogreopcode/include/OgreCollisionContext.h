@@ -67,7 +67,7 @@ namespace OgreOpcode
 		/// compute contacts between collision objects in context
 		virtual int collide(Real dt=1.0);
 		/// debug visualization of the collide context
-		virtual void visualize(void);
+		virtual void visualize(bool doit);
 		/// get the collide reports for the collisions computed inside collide()
 		virtual int getCollisions(CollisionObject *collObj, CollisionPair **&cpPtr);
 		/// get reporter for for last collide() call.

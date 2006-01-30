@@ -210,7 +210,7 @@ namespace OgreOpcode
 	}
 
 	/// visualize all objects in the context.
-	void CollisionContext::visualize(void)
+	void CollisionContext::visualize(bool doit)
 	{
 		if (!attached_list.empty())
 		{
@@ -219,7 +219,7 @@ namespace OgreOpcode
 			{
 				//co->visualizeLocal();
 				//co->visualizeGlobal();
-				(*i)->setDebug(true);
+				(*i)->setDebug(doit);
 			}
 		}
 	}

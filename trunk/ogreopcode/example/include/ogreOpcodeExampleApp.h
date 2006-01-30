@@ -55,8 +55,20 @@ public:
 
 protected:
 	virtual void createScene(void);
+   virtual bool processUnbufferedKeyInput(const FrameEvent& evt);
+   virtual bool frameStarted(const FrameEvent& evt);
 private:
 	void parseDotScene( const String &SceneName);
+
+	bool mVisualizeObjects;
+	Overlay* TargetSight;
+	Overlay* hotTargetSight;
+	CollisionContext* collideContext;
+	CollisionObject* mRobotCollObj;
+	CollisionShape* mRobotCollShape;
+	Ray ray;
+	bool mPlayAnimation;
+	String mDbgMsg;
 };
 
 #endif // #ifndef __ogreOpcodeExampleApp_h_
