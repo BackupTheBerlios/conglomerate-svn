@@ -55,10 +55,11 @@ public:
 
 protected:
 	virtual void createScene(void);
-   virtual bool processUnbufferedKeyInput(const FrameEvent& evt);
-   virtual bool frameStarted(const FrameEvent& evt);
+	virtual bool processUnbufferedKeyInput(const FrameEvent& evt);
+	virtual bool frameStarted(const FrameEvent& evt);
 private:
-	void parseDotScene( const String &SceneName);
+	void parseDotScene( const String& SceneName);
+	void addCollisionShape( const String& shapeName, Entity* entity);
 
 	bool mVisualizeObjects;
 	Overlay* TargetSight;

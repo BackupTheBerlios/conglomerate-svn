@@ -137,15 +137,48 @@
 			<File
 				RelativePath="..\src\main.cpp">
 			</File>
+			<File
+				RelativePath="..\src\ogreOpcodeExample.cpp">
+			</File>
+			<File
+				RelativePath="..\src\ogreOpcodeExampleApp.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinystr.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinyxml.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinyxmlerror.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinyxmlparser.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
+				RelativePath="..\include\LoadingBar.h">
+			</File>
+			<File
+				RelativePath="..\include\NikkiDotscene.h">
+			</File>
+			<File
 				RelativePath="..\include\ogreOpcodeExample.h">
 			</File>
 			<File
+				RelativePath="..\include\ogreOpcodeExampleApp.h">
+			</File>
+			<File
 				RelativePath=".\res\resource.h">
+			</File>
+			<File
+				RelativePath="..\include\tinystr.h">
+			</File>
+			<File
+				RelativePath="..\include\tinyxml.h">
 			</File>
 		</Filter>
 		<Filter

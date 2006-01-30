@@ -97,11 +97,11 @@ bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 {
-      if (mPlayAnimation)
-	  {
-        mSceneMgr->getEntity("theRobot")->getAnimationState("Walk")->addTime(evt.timeSinceLastFrame/5);
-        mRobotCollObj->refit();
-      }
+	if (mPlayAnimation)
+	{
+		mSceneMgr->getEntity("theRobot")->getAnimationState("Walk")->addTime(evt.timeSinceLastFrame/5);
+		mRobotCollObj->refit();
+	}
 
 	// This has to be here - debug visualization needs to be updated each frame..
 	// but only after we update objects!
@@ -137,6 +137,19 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 	}
 
 	return OgreOpcodeExample::frameStarted(evt);
+}
+//-------------------------------------------------------------------------------------
+void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* entity)
+{
+	CollisionShape* tempCollShape;
+	CollisionObject* tempCollObject;
+	tempCollShape = CollisionManager::getSingletonPtr()->newShape("shapeName");
+	tempCollShape->setDynamic();
+	tempCollShape->load(entity);
+	tempCollObject = collideContext->newObject();
+	tempCollObject->setCollClass("level");
+	tempCollObject->setShape(tempCollShape);
+	collideContext->addObject(tempCollObject);
 }
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExampleApp::parseDotScene( const String &SceneName)
@@ -253,6 +266,9 @@ void OgreOpcodeExampleApp::parseDotScene( const String &SceneName)
 				// Create entity
 				Entity* NewEntity = mSceneMgr->createEntity(EntityName, EntityMeshFilename);
 				NewNode->attachObject( NewEntity );
+
+				addCollisionShape(EntityName, NewEntity);
+
 			}
 
 			XMLBillboardSet = XMLNode->FirstChildElement( "billboardSet" );
