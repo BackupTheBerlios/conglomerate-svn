@@ -59,9 +59,12 @@ protected:
 	virtual bool frameStarted(const FrameEvent& evt);
 private:
 	void parseDotScene( const String& SceneName);
-	void addCollisionShape( const String& shapeName, Entity* entity);
+	void addCollisionShape( const String& shapeName, Entity* entity, bool makeStatic);
 
 	bool mVisualizeObjects;
+	bool mDoABBVisualization;
+	bool mDoLocalVisualization;
+	bool mDoGlobalVisualization;
 	Overlay* TargetSight;
 	Overlay* hotTargetSight;
 	CollisionContext* collideContext;

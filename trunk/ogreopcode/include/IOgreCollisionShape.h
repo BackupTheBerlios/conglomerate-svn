@@ -61,7 +61,9 @@ namespace OgreOpcode
 		/// toggle debug rendering.
 		virtual void setDebug(bool debug) = 0;
 		/// 
-		virtual void setDynamic(bool iAmDynamic = true) = 0;
+		virtual void setDynamic() = 0;
+		virtual void setStatic() = 0;
+		virtual void showAABB(bool showThis) = 0;
 		/// return current center in world space
 		virtual Vector3 getCenter() const = 0;
 		/// return current center in object space

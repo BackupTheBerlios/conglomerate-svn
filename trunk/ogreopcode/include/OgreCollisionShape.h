@@ -63,11 +63,19 @@ namespace OgreOpcode
 		/// visualize the collide shape
 		virtual void visualize();
 		/// toggle debug rendering.
-		virtual void setDebug(bool debug);
-		/// return entity
-		virtual void setDynamic(bool iAmDynamic = true)
+		virtual void setDebug(bool doVisualize);
+		/// 
+		virtual void setDynamic()
 		{
-			this->isDynamic = iAmDynamic;
+			mShapeIsStatic = false;
+		}
+		virtual void setStatic()
+		{
+			mShapeIsStatic = true;
+		}
+		virtual void showAABB(bool showThis)
+		{
+			mDoVisualizeAABBNodes = showThis;
 		}
 		/// return current center in world space
 		virtual Vector3 getCenter() const;
@@ -144,7 +152,8 @@ namespace OgreOpcode
 		SceneNode* mParentNode;
 		String mName;
 		bool mInitialized;
-		bool isDynamic;
+		bool mShapeIsStatic;
+		bool mDoVisualizeAABBNodes;
 		int refCount;
 		mutable Matrix4 mFullTransform;
 		mutable Matrix4 mLocalTransform;
@@ -172,7 +181,7 @@ namespace OgreOpcode
 
 	inline Matrix4 CollisionShape::getFullTransform(void) const
 	{
-		if(isDynamic)
+		if(!mShapeIsStatic)
 		{
 			mFullTransform = getParentSceneNode()->_getFullTransform();
 		}
@@ -181,7 +190,7 @@ namespace OgreOpcode
 
 	inline Matrix4 CollisionShape::getLocalTransform(void) const
 	{
-		if(isDynamic)
+		if(!mShapeIsStatic)
 		{
 			//TODO
 		}

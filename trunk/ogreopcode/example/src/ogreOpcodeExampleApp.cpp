@@ -9,8 +9,11 @@ OgreOpcodeExampleApp::OgreOpcodeExampleApp(void)
 : OgreOpcodeExample(),
 collideContext(0),
 mRobotCollObj(0),
-mPlayAnimation(true),
-mVisualizeObjects(false)
+mPlayAnimation(false),
+mVisualizeObjects(false),
+mDoABBVisualization(false),
+mDoLocalVisualization(true),
+mDoGlobalVisualization(true)
 {
 }
 
@@ -65,7 +68,6 @@ void OgreOpcodeExampleApp::createScene(void)
 	theRobotNode->scale(1.8f, 1.8f, 1.8f);
 
 	mRobotCollShape = CollisionManager::getSingletonPtr()->newShape("ogrehead1");
-	mRobotCollShape->setDynamic();
 	mRobotCollShape->load(theRobot);
 	mRobotCollObj = collideContext->newObject();
 	mRobotCollObj->setCollClass("ogrerobot");
@@ -92,6 +94,24 @@ bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 		mTimeUntilNextToggle = 0.5;
 	}
 
+	if (mInputDevice->isKeyDown(KC_Z) && mTimeUntilNextToggle <= 0)
+	{
+		mDoABBVisualization = !mDoABBVisualization;
+		mTimeUntilNextToggle = 0.5;
+	}
+
+	if (mInputDevice->isKeyDown(KC_X) && mTimeUntilNextToggle <= 0)
+	{
+		mDoLocalVisualization = !mDoLocalVisualization;
+		mTimeUntilNextToggle = 0.5;
+	}
+
+	if (mInputDevice->isKeyDown(KC_C) && mTimeUntilNextToggle <= 0)
+	{
+		mDoGlobalVisualization = !mDoGlobalVisualization;
+		mTimeUntilNextToggle = 0.5;
+	}
+
 	return OgreOpcodeExample::processUnbufferedKeyInput(evt);
 }
 //-------------------------------------------------------------------------------------
@@ -105,7 +125,7 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 
 	// This has to be here - debug visualization needs to be updated each frame..
 	// but only after we update objects!
-	collideContext->visualize(mVisualizeObjects);
+	collideContext->visualize(mVisualizeObjects, mDoABBVisualization, mDoLocalVisualization, mDoGlobalVisualization);
 
 	CollisionManager::getSingletonPtr()->getDefaultContext()->collide();
 
@@ -139,12 +159,13 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 	return OgreOpcodeExample::frameStarted(evt);
 }
 //-------------------------------------------------------------------------------------
-void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* entity)
+void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* entity, bool makeStatic)
 {
 	CollisionShape* tempCollShape;
 	CollisionObject* tempCollObject;
-	tempCollShape = CollisionManager::getSingletonPtr()->newShape("shapeName");
-	tempCollShape->setDynamic();
+	tempCollShape = CollisionManager::getSingletonPtr()->newShape(shapeName);
+	if(makeStatic)
+		tempCollShape->setStatic();
 	tempCollShape->load(entity);
 	tempCollObject = collideContext->newObject();
 	tempCollObject->setCollClass("level");
@@ -259,15 +280,17 @@ void OgreOpcodeExampleApp::parseDotScene( const String &SceneName)
 			XMLEntity = XMLNode->FirstChildElement("entity");
 			if( XMLEntity )
 			{
-				String EntityName, EntityMeshFilename;
+				String EntityName, EntityMeshFilename, IamStatic;
 				EntityName = XMLEntity->Attribute( "name" );
 				EntityMeshFilename = XMLEntity->Attribute( "meshFile" );
+				IamStatic = XMLEntity->Attribute( "static" );
+				bool makeStatic = StringConverter::parseBool(IamStatic);
 
 				// Create entity
 				Entity* NewEntity = mSceneMgr->createEntity(EntityName, EntityMeshFilename);
 				NewNode->attachObject( NewEntity );
 
-				addCollisionShape(EntityName, NewEntity);
+				addCollisionShape(EntityName, NewEntity, makeStatic);
 
 			}
 

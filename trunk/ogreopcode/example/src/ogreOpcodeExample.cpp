@@ -21,8 +21,7 @@ OgreOpcodeExample::~OgreOpcodeExample(void)
 	{
 		PlatformManager::getSingleton().destroyInputReader( mInputDevice );
 	}
-	if (mRoot)
-		delete mRoot;
+	delete Root::getSingletonPtr();
 }
 
 //-------------------------------------------------------------------------------------
@@ -65,7 +64,7 @@ void OgreOpcodeExample::createCamera(void)
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExample::createFrameListener(void)
 {
-	mDebugOverlay = OverlayManager::getSingleton().getByName("OgreOpcodeExample/DebugOverlay");
+	mDebugOverlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
 	mUseBufferedInputKeys = false;
 	mUseBufferedInputMouse = false;
 	mInputTypeSwitchingOn = mUseBufferedInputKeys || mUseBufferedInputMouse;

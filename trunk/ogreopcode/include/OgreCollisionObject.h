@@ -649,20 +649,23 @@ namespace OgreOpcode
 
 		/// <TODO: insert function description here>
 		/// @param [in]       debug bool     <TODO: insert parameter description here>
-		void setDebug(bool debug)
+		void setDebug(bool doVisualize, bool doAABBs, bool doLocal, bool doGlobal)
 		{
 			destroyDebugObject();
 			destroyGlobalDebugObject();
-			if(debug)
+			if(doVisualize)
 			{
-				createDebugObject();
-				createGlobalDebugObject();
+				if (doLocal)
+					createDebugObject();
+				if (doGlobal)
+					createGlobalDebugObject();
 			}
 
 			// optionally, render the object's shape
 			if (mShape)
 			{
-				mShape->setDebug(debug);
+				mShape->showAABB(doAABBs);
+				mShape->setDebug(doVisualize);
 			}
 		}
 

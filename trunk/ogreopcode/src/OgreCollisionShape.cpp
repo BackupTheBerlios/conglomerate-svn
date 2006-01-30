@@ -193,7 +193,8 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	CollisionShape::CollisionShape(const String& name)
 		: mInitialized(false),
-		isDynamic(false),
+		mShapeIsStatic(false),
+		mDoVisualizeAABBNodes(false),
 		mName(name),
 		mRadius(0.0f),
 		numVertices(0),
@@ -721,15 +722,19 @@ namespace OgreOpcode
 			_debug_obj->addLine(v2[0], v2[1], v2[2], v0[0], v0[1], v0[2]);
 		}
 
-		// render the AABB tree
-		if (opcModel.HasLeafNodes()) {
-			const Opcode::AABBCollisionTree* tree = static_cast<const Opcode::AABBCollisionTree*>(opcModel.GetTree());
-			visualizeAABBCollisionNode(tree->GetNodes());
-		}
-		else {
-			const Opcode::AABBNoLeafTree* tree = static_cast<const Opcode::AABBNoLeafTree*>(opcModel.GetTree());
-			visualizeAABBNoLeafNode(tree->GetNodes());
-
+		if(mDoVisualizeAABBNodes)
+		{
+			// render the AABB tree
+			if (opcModel.HasLeafNodes())
+			{
+				const Opcode::AABBCollisionTree* tree = static_cast<const Opcode::AABBCollisionTree*>(opcModel.GetTree());
+				visualizeAABBCollisionNode(tree->GetNodes());
+			}
+			else
+			{
+				const Opcode::AABBNoLeafTree* tree = static_cast<const Opcode::AABBNoLeafTree*>(opcModel.GetTree());
+				visualizeAABBNoLeafNode(tree->GetNodes());
+			}
 		}
 	}
 
@@ -939,7 +944,14 @@ namespace OgreOpcode
 			mParentNode->attachObject(_debug_obj);
 		}
 
-		if(_debug_obj) _debug_obj->setMode(DebugObject::Mode_Static);
+		if(_debug_obj)
+		{
+			if(mShapeIsStatic)
+				_debug_obj->setMode(DebugObject::Mode_Static);
+			else
+				_debug_obj->setMode(DebugObject::Mode_Enabled);
+		}
+
 	}
 
 	//------------------------------------------------------------------------
@@ -956,10 +968,10 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @param [in]       debug bool     <TODO: insert parameter description here>
-	void CollisionShape::setDebug(bool debug)
+	void CollisionShape::setDebug(bool doVisualize)
 	{
 		destroyDebugObject();
-		if(debug) createDebugObject();
+		if(doVisualize) createDebugObject();
 	}
 
 	//------------------------------------------------------------------------
@@ -1039,9 +1051,9 @@ namespace OgreOpcode
 	bool CollisionShape::refit()
 	{
 		// bail if we don't need to refit
-		if ( !isDynamic )
+		if ( mShapeIsStatic )
 			return true;
-		
+
 		assert(mEntity && mVertexBuf);
 
 #ifdef _DEBUG
