@@ -999,6 +999,7 @@ namespace OgreOpcode
 		}
 
 		mParentNode = mEntity->getParentSceneNode();
+		mFullTransform = mEntity->getParentSceneNode()->_getFullTransform();
 
 		return rebuild();
 	}
