@@ -199,7 +199,7 @@ namespace OgreOpcode
 
 	inline SceneNode* CollisionShape::getParentSceneNode(void) const
 	{
-		return this->mParentNode;
+		return mParentNode;
 	}
 
 	//inline Entity* CollisionShape::getEntity()
@@ -231,7 +231,7 @@ namespace OgreOpcode
 		v1 = Vector3(vp1[0], vp1[1], vp1[2]);
 		v2 = Vector3(vp2[0], vp2[1], vp2[2]);
 		
-		Matrix4 mat = this->getFullTransform();
+		Matrix4 mat = getFullTransform();
 		v0 = mat * v0;
 		v1 = mat * v0;
 		v2 = mat * v0;

@@ -218,6 +218,10 @@ namespace OgreOpcode
 			mEntity->removeSoftwareSkinningRequest(false);
 		}
 		assert(0 == refCount);
+		
+		if(_debug_obj)
+			delete _debug_obj;
+
 		delete[] mVertexBuf;
 		delete[] mFaceBuf;
 	}

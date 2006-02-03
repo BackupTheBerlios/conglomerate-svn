@@ -143,6 +143,15 @@ namespace OgreOpcode
 			xmax_cnode.SetCollideObject(this);
 		};
 
+		virtual ~CollisionObject()
+		{
+			if(_debug_obj)
+				delete _debug_obj;
+			if(_global_debug_obj)
+				delete _global_debug_obj;
+		
+		}
+		
 		/// <TODO: insert function description here>
 		/// @param [in, out]  c CollisionContext *    <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>

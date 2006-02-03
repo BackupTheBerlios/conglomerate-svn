@@ -119,8 +119,8 @@ namespace OgreOpcode
 		attached_list.push_back(collObj);
 
 		// add minx/maxx nodes to x-dimensional sorted list
-		collObj->xmin_cnode.AddToList(this->xdim_list);
-		collObj->xmax_cnode.AddToList(this->xdim_list);
+		collObj->xmin_cnode.AddToList(xdim_list);
+		collObj->xmax_cnode.AddToList(xdim_list);
 	}
 
 	void CollisionContext::removeObject(CollisionObject *collObj)
