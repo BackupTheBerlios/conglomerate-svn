@@ -183,7 +183,7 @@ namespace OgreOpcode
 	{
 		if(!mShapeIsStatic)
 		{
-			mFullTransform = getParentSceneNode()->_getFullTransform();
+			getParentSceneNode()->getWorldTransforms(&mFullTransform);
 		}
 			return mFullTransform;
 	}
@@ -230,6 +230,11 @@ namespace OgreOpcode
 		v0 = Vector3(vp0[0], vp0[1], vp0[2]);
 		v1 = Vector3(vp1[0], vp1[1], vp1[2]);
 		v2 = Vector3(vp2[0], vp2[1], vp2[2]);
+		
+		Matrix4 mat = this->getFullTransform();
+		v0 = mat * v0;
+		v1 = mat * v0;
+		v2 = mat * v0;
 	}
 
 }; // namespace OgreOpcode
