@@ -187,9 +187,9 @@ void OgreOpcodeExample::createResourceListener(void)
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExample::loadResources(void)
 {
-	//mLoadingBar = new LoadingBar();
+	mLoadingBar = new LoadingBar();
 
-	//mLoadingBar->start(mWindow, 1, 1, 0.75);
+	mLoadingBar->start(mWindow, 1, 1, 0.75);
 
 	// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
@@ -206,10 +206,8 @@ void OgreOpcodeExample::loadResources(void)
 	mSceneMgr->clearSpecialCaseRenderQueues();
 	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_EXCLUDE);
 
-	//mLoadingBar->finish();
-	//delete mLoadingBar;
-	// Initialise, parse scripts etc
-	//		ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+	mLoadingBar->finish();
+	delete mLoadingBar;
 }
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExample::go(void)
