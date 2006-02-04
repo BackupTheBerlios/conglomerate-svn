@@ -30,6 +30,7 @@
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
+#include "OgreOpcodeUtils.h"
 
 // Uncomment the next line to build against Dagon .. ;-)
 #define BUILD_AGAINST_DAGON
@@ -257,20 +258,9 @@ namespace OgreOpcode
 
 		// convert Matrix4's into Matrix4x4's
 		IceMaths::Matrix4x4 m0, m1;
-		for(unsigned int i = 0; i < 4; i++)
-		{
-			m0.m[0][i] = ownMatrix[i][0];
-			m0.m[1][i] = ownMatrix[i][1];
-			m0.m[2][i] = ownMatrix[i][2];
-			m0.m[3][i] = ownMatrix[i][3];
-		}
-		for(unsigned int i = 0; i < 4; i++)
-		{
-			m1.m[0][i] = otherMatrix[i][0];
-			m1.m[1][i] = otherMatrix[i][1];
-			m1.m[2][i] = otherMatrix[i][2];
-			m1.m[3][i] = otherMatrix[i][3];
-		}
+
+		OgreOpcodeUtils::ogreToIceMatrix4( ownMatrix, m0);
+		OgreOpcodeUtils::ogreToIceMatrix4( otherMatrix, m1);
 
 		// validate settings: asserts that we can check collision
 		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
@@ -433,22 +423,11 @@ namespace OgreOpcode
 
 		// convert Matrix4 to Opcode Matrix4x4
 		IceMaths::Matrix4x4 opcMatrix;
-		for(unsigned int i = 0; i < 4; i++)
-		{
-			opcMatrix.m[0][i] = ownMatrix[i][0];
-			opcMatrix.m[1][i] = ownMatrix[i][1];
-			opcMatrix.m[2][i] = ownMatrix[i][2];
-			opcMatrix.m[3][i] = ownMatrix[i][3];
-		}
+			OgreOpcodeUtils::ogreToIceMatrix4( ownMatrix, opcMatrix);
 
 		// build Opcode ray from line
 		IceMaths::Ray ray;
-		ray.mOrig.x = line.getOrigin().x;
-		ray.mOrig.y = line.getOrigin().y;
-		ray.mOrig.z = line.getOrigin().z;
-		ray.mDir.x = line.getDirection().x;
-		ray.mDir.y = line.getDirection().y;
-		ray.mDir.z = line.getDirection().z;
+			OgreOpcodeUtils::ogreToIceRay( line, ray );
 
 		// validate settings: asserts that we can check collision
 		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
@@ -540,13 +519,7 @@ namespace OgreOpcode
 
 		// convert Matrix4 to Opcode Matrix4x4
 		IceMaths::Matrix4x4 opcMatrix;
-		for(unsigned int i = 0; i < 4; i++)
-		{
-			opcMatrix.m[0][i] = ownMatrix[i][0];
-			opcMatrix.m[1][i] = ownMatrix[i][1];
-			opcMatrix.m[2][i] = ownMatrix[i][2];
-			opcMatrix.m[3][i] = ownMatrix[i][3];
-		}
+		OgreOpcodeUtils::ogreToIceMatrix4( ownMatrix, opcMatrix);
 
 		// build identity matrix because sphere is already in world space
 		IceMaths::Matrix4x4 identity;
