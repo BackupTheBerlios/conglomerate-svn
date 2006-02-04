@@ -43,6 +43,7 @@ namespace OgreOpcode
 		{
 		public:
 
+			/// Converts from an Ogre's vector into an IceMaths' one
 			static void ogreToIceVector3( const Vector3& ogreVec, IceMaths::Point& opcPoint )
 			{
 				opcPoint.x = ogreVec.x;
@@ -50,6 +51,7 @@ namespace OgreOpcode
 				opcPoint.z = ogreVec.z;
 			}
 
+			/// Converts from an Ogre's matrix4x4 into an IceMaths' one
 			static void ogreToIceMatrix4( const Matrix4& ogreMatrix, IceMaths::Matrix4x4& opcMatrix )
 			{
 				for(unsigned int i = 0; i < 4; i++)
@@ -61,20 +63,23 @@ namespace OgreOpcode
 				}
 			}
 
-			static void ogreToIceRay(  const Ray& line, IceMaths::Ray& opcRay )
+			/// Converts from an Ogre's ray into an IceMaths' one
+			static void ogreToIceRay(  const Ray& from, IceMaths::Ray& opcRay )
 			{
-				ray.mOrig.x = line.getOrigin().x;
-				ray.mOrig.y = line.getOrigin().y;
-				ray.mOrig.z = line.getOrigin().z;
+				opcRay.mOrig.x = from.getOrigin().x;
+				opcRay.mOrig.y = from.getOrigin().y;
+				opcRay.mOrig.z = from.getOrigin().z;
 
-				ray.mDir.x = line.getDirection().x;
-				ray.mDir.y = line.getDirection().y;
-				ray.mDir.z = line.getDirection().z;
+				opcRay.mDir.x = from.getDirection().x;
+				opcRay.mDir.y = from.getDirection().y;
+				opcRay.mDir.z = from.getDirection().z;
+				opcRay.mDir.Normalize();
 			}
 
-			static void ogreToIceSphere(  const Ray& line, IceMaths::Sphere& opcRay )
+			/// Converts from an Ogre's sphere into an IceMaths' one
+			static void ogreToIceSphere(  const sphere& from, IceMaths::Sphere& to )
 			{
-				// TODO
+				to.Set( IceMaths::Point(from.p.x,from.p.y,from.p.z), from.r );
 			}
 
 		};
