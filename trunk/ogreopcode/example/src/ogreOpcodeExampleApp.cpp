@@ -50,7 +50,7 @@ void OgreOpcodeExampleApp::createScene(void)
 	CollisionManager::getSingletonPtr()->endCollClasses();
 
 	CollisionManager::getSingletonPtr()->beginCollTypes();
-	CollisionManager::getSingletonPtr()->addCollType("level", "level", COLLTYPE_EXACT);
+	CollisionManager::getSingletonPtr()->addCollType("level", "level", COLLTYPE_IGNORE);
 	CollisionManager::getSingletonPtr()->addCollType("ogrerobot", "bullet", COLLTYPE_EXACT);
 	CollisionManager::getSingletonPtr()->addCollType("level", "ogrerobot", COLLTYPE_EXACT);
 	CollisionManager::getSingletonPtr()->addCollType("level", "powerup", COLLTYPE_QUICK);
@@ -155,6 +155,8 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 		TargetSight->show();
 		hotTargetSight->hide();
 	}
+	
+	mWindow->setDebugText(mDbgMsg);
 
 	return OgreOpcodeExample::frameStarted(evt);
 }
@@ -168,7 +170,12 @@ void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* en
 		tempCollShape->setStatic();
 	tempCollShape->load(entity);
 	tempCollObject = collideContext->newObject();
-	tempCollObject->setCollClass("level");
+	if(makeStatic)
+	{
+		tempCollObject->setCollClass("level");
+	}
+	else
+		tempCollObject->setCollClass("ogrerobot");
 	tempCollObject->setShape(tempCollShape);
 	collideContext->addObject(tempCollObject);
 }
