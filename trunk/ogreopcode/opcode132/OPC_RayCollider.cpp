@@ -403,18 +403,18 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 		//  3) retrieves the direction in model's local space
 		//  4) considers the max distance in the model's local space
 
-		float delta = (IR(mMaxDist)!= IEEE_MAX_FLOAT) ? mMaxDist : mOrigin.Magnitude();
-		IceMaths::Point pointInFront = mOrigin + mDir*delta;
+		float delta = IR(mMaxDist)!=IEEE_MAX_FLOAT ? mMaxDist : mOrigin.Magnitude();
+		Point pointInFront = mOrigin + mDir*delta;
 		// 2)
-		pointInFront /= localScale;
-		mOrigin		 /= localScale;
+		pointInFront /= mLocalScale;
+		mOrigin		 /= mLocalScale;
 		// 3)
 		mDir	= pointInFront - mOrigin; // innaccuracies here??
-		// 4)  Another option is to use the scale... div by localScale.Magnitude()
+		// 4) ihhh.
 		if(IR(mMaxDist)!=IEEE_MAX_FLOAT)
-			mMaxDist = mDir.Magnitude();
-
-		mDir.Normalize();
+			mDir /= mMaxDist = mDir.Magnitude();
+		else
+			mDir.Normalize();
 	}
 	else
 	{

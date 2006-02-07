@@ -13,8 +13,24 @@
  *	\return		true on overlap. mStabbedFace is filled with relevant info.
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifndef OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
+// this code will work when the ray is transformed to the local space in RayCollider::InitQuery
 inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0, const IceMaths::Point& vert1, const IceMaths::Point& vert2)
 {
+
+#else
+// this code will work when the ray is NOT transformed to the local space in RayCollider::InitQuery,
+// so boxes and triangles have to be scaled before overlap tests.
+
+inline_ BOOL RayCollider::RayTriOverlap(const IceMaths::Point& vert0_, const IceMaths::Point& vert1_, const IceMaths::Point& vert2_)
+{
+        // just apply the model's local scale before overlap tests :P
+	const IceMaths::Point& vert0 = vert0_*mLocalScale;
+	const IceMaths::Point& vert1 = vert1_*mLocalScale;
+	const IceMaths::Point& vert2 = vert2_*mLocalScale;
+#endif
+
 	// Stats
 	mNbRayPrimTests++;
 
