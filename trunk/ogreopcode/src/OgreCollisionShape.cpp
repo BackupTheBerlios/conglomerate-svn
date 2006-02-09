@@ -406,6 +406,7 @@ namespace OgreOpcode
 		Opcode::RayCollider& collider = CollisionManager::getSingletonPtr()->opcRayCollider;
 		collider.SetMaxDist(dist);
 		collider.SetClosestHit(false);
+		collider.SetCulling(true);
 		switch (collType)
 		{
 		case COLLTYPE_QUICK:
@@ -414,7 +415,7 @@ namespace OgreOpcode
 
 		case COLLTYPE_CONTACT:
 		case COLLTYPE_EXACT:
-			collider.SetFirstContact(false);
+			collider.SetFirstContact(true);
 			break;
 
 		default:
@@ -451,17 +452,17 @@ namespace OgreOpcode
 			{
 				// if in closest hit mode, find the contact with the smallest distance
 				int collFaceIndex = 0;
-				if (COLLTYPE_CONTACT)
-				{
-					int i;
-					for (i = 0; i < numFaces; i++)
-					{
-						if (collFaces[i].mDistance < collFaces[collFaceIndex].mDistance)
-						{
-							collFaceIndex = i;
-						}
-					}
-				}
+				//if (COLLTYPE_CONTACT)
+				//{
+				//	int i;
+				//	for (i = 0; i < numFaces; i++)
+				//	{
+				//		if (collFaces[i].mDistance < collFaces[collFaceIndex].mDistance)
+				//		{
+				//			collFaceIndex = i;
+				//		}
+				//	}
+				//}
 				int triangleIndex = collFaces[collFaceIndex].mFaceID;
 				float thedist = collFaces[collFaceIndex].mDistance;
 
@@ -474,7 +475,7 @@ namespace OgreOpcode
 				Matrix3 m33;
 				ownMatrix.extract3x3Matrix(m33);
 
-				collPair.contact    = line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
+				collPair.contact    = tri.midpoint()*m33;//line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
 				collPair.distance = thedist;
 				collPair.co1_normal = m33 * tri.normal();
 				collPair.co2_normal = collPair.co1_normal;
