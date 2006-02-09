@@ -133,10 +133,11 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 
 	// Do ray testing against everything but the level
 	CollisionPair **pick_report;
-	int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(ray, 2000.0f, COLLTYPE_EXACT, COLLTYPE_ALWAYS_EXACT, pick_report);
+	int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(ray, 2000.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
 	const CollisionReporter &rayrept =
 		CollisionManager::getSingletonPtr()->getDefaultContext()->getCheckReport();
 
+			mDbgMsg = "";
 	if (num_picks > 0)
 	{
 		TargetSight->hide();
@@ -144,7 +145,6 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 		mDbgMsg += Ogre::StringConverter::toString(num_picks) + " ";
 		for(int i = 0; i < num_picks; i++)
 		{
-			mDbgMsg = "";
 			CollisionObject* yeah = pick_report[i]->co1;
 			Vector3 contact = pick_report[i]->contact;
 			mDbgMsg = mDbgMsg + yeah->getShape()->getName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
