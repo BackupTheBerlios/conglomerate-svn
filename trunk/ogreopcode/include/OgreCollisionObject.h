@@ -531,7 +531,7 @@ namespace OgreOpcode
 
 				// nope, see if it overlaps in the other 2 dimensions as well...
 				if ((!((other->maxv.y<minv.y) || (other->minv.y>maxv.y))) &&
-					(!((other->maxv.z<minv.z) || (other->minv.z>maxv.z))))
+					(!((other->maxv.y<minv.z) || (other->minv.y>maxv.z))))
 				{
 					// we have an overlap, mister
 
