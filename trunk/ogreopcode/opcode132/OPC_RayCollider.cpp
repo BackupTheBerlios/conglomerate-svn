@@ -122,6 +122,11 @@
 using namespace Opcode;
 using namespace IceMaths;
 
+// When this macro is set, the overlap tests considers an scaling on AABBs/tris.
+// This means that the ray/line is not entirely in the model's local space when collision
+// tests take places.
+#define OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
+
 #include "OPC_RayAABBOverlap.h"
 #include "OPC_RayTriOverlap.h"
 
@@ -380,30 +385,14 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 		IceMaths::Matrix4x4 World;
 		InvertPRMatrix(World, normWorldm);
 		mOrigin = world_ray.mOrig * World;
-			
-
-		// My original code for transforming/normalizing directions (Gilvan)
-		/*mDir /= localScale;
-		mOrigin /= localScale;
-
-		if(IR(mMaxDist)!=IEEE_MAX_FLOAT)
-		{
-			float ds = mDir.Magnitude();
-			mMaxDist *= ds;
-			mDir	 /= ds;
-		}else
-			mDir.Normalize();
-                */
-
-		// NEW CODE - Getting the ray in the model's local space. This avoids the local scale in RayTriOverlap code.
-		//            This means that we
-		//
+// Do we have to transform the ray into the model's local space??
+#ifndef OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
+		// NEW CODE - Getting the ray in the model's local space:
 		//  1) shots a point in front of the origin (applies the magnitude of origin to avoid innacuracies);
 		//  2) divides the two points by the model's scale
 		//  3) retrieves the direction in model's local space
-		//  4) considers the max distance in the model's local space
-
-		float delta = IR(mMaxDist)!=IEEE_MAX_FLOAT ? mMaxDist : mOrigin.Magnitude();
+		//  4) considers the max distance in the model's local space		
+		float delta = IR(mMaxDist)!=IEEE_MAX_FLOAT ? mMaxDist : mOrigin.Magnitude(); 
 		Point pointInFront = mOrigin + mDir*delta;
 		// 2)
 		pointInFront /= mLocalScale;
@@ -415,6 +404,9 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 			mDir /= mMaxDist = mDir.Magnitude();
 		else
 			mDir.Normalize();
+
+		//mDir /= mMaxDist; // equals to mDir.Normalize();
+#endif
 	}
 	else
 	{
