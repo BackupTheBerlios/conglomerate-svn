@@ -238,7 +238,7 @@ namespace OgreOpcode
 			// Warning! Collision Class already exsists.
 			return;
 		}
-		collclass_list.insert(CollClassList::value_type(cl_name,collclass_list.size()+1));
+		collclass_list.insert(CollClassList::value_type(cl_name,collclass_list.size()));
 		num_coll_classes++;
 	}
 
