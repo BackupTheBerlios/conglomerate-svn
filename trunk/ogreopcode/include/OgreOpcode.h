@@ -35,6 +35,7 @@
 #include "OgreCollisionObject.h"
 #include "OgreCollisionTypes.h"
 #include "OgreCollisionShape.h"
+#include "OgrePtrCollisionShape.h"
 #include "OgreCollisionReporter.h"
 
 #endif // __OgreOpcode_h__

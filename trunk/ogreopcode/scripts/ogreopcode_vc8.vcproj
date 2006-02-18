@@ -188,6 +188,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\src\IOgreCollisionShape.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\OgreBoxCollisionShape.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\OgreCollisionContext.cpp"
 				>
 			</File>
@@ -203,6 +211,10 @@
 				RelativePath="..\src\OgreOpcodeDebugObject.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\OgrePtrCollisionShape.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -211,6 +223,10 @@
 			>
 			<File
 				RelativePath="..\include\IOgreCollisionShape.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgreBoxCollisionShape.h"
 				>
 			</File>
 			<File
@@ -263,6 +279,10 @@
 			</File>
 			<File
 				RelativePath="..\include\OgreOrientedBox.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgrePtrCollisionShape.h"
 				>
 			</File>
 		</Filter>

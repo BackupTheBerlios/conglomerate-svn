@@ -26,6 +26,7 @@
 #include "OgreCollisionManager.h"
 #include "OgreCollisionReporter.h"
 
+#include "OgrePtrCollisionShape.h"
 
 template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionManager>::ms_Singleton = 0;
 
@@ -112,7 +113,7 @@ namespace OgreOpcode
 	}
 
 	/// Create a new, possibly shared shape object.
-	CollisionShape *CollisionManager::newShape(const String &id)
+	ICollisionShape *CollisionManager::newShape(const String& id, const ShapeType shpType)
 	{
 		//      assert(id);
 
@@ -124,7 +125,21 @@ namespace OgreOpcode
 			// Warning! Shape already exsists. Return the exsisting one.
 			return i->second;
 		}
-		CollisionShape* cs = new CollisionShape(new_id);
+		if(shpType == SHAPETYPE_SHAPE)
+		{
+			MeshCollisionShape* cs = new MeshCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
+		}
+		if(shpType == SHAPETYPE_PTR)
+		{
+			PtrCollisionShape* cs = new PtrCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
+		}
+
+		// hacky way of returning a default ..
+		MeshCollisionShape* cs = new MeshCollisionShape(new_id);
 		shape_list.insert(ShapeList::value_type(new_id,cs));
 		return cs;
 	}
@@ -144,7 +159,7 @@ namespace OgreOpcode
 		}
 	}
 
-	void CollisionManager::releaseShape(CollisionShape *cs)
+	void CollisionManager::releaseShape(MeshCollisionShape *cs)
 	{
 		assert(cs);
 		ShapeIterator i, iend;

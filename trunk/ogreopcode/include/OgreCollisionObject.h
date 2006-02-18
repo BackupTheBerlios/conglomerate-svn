@@ -113,7 +113,7 @@ namespace OgreOpcode
 	/// Collision system object.
 	/// CollisionObject is an actual collision system object which can
 	/// be positioned and oriented in space. It points to an
-	/// CollisionShape which describes the actual shape of the
+	/// MeshCollisionShape which describes the actual shape of the
 	/// object.
 	/// CollisionObject%s are kept in sorted list (one for each dimension)
 	/// by the CollisionContext they belong to.
@@ -214,9 +214,9 @@ namespace OgreOpcode
 		};
 
 		/// <TODO: insert function description here>
-		/// @param [in, out]  s CollisionShape *    <TODO: insert parameter description here>
+		/// @param [in, out]  s MeshCollisionShape *    <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void setShape(CollisionShape *s)
+		void setShape(MeshCollisionShape *s)
 		{
 			mShape = s;
 			if (s)
@@ -230,8 +230,8 @@ namespace OgreOpcode
 		};
 
 		/// <TODO: insert function description here>
-		/// @return CollisionShape * <TODO: insert return value description here>
-		CollisionShape *getShape(void)
+		/// @return MeshCollisionShape * <TODO: insert return value description here>
+		ICollisionShape *getShape(void)
 		{
 			return mShape;
 		};
@@ -758,7 +758,7 @@ namespace OgreOpcode
 		nNode context_node;         ///< attached to context with this node
 
 		Real mRadius;               ///< radius of the collision object (normally provided by shape)
-		CollisionShape *mShape;       ///< the triangle exact collision shape (optional)
+		ICollisionShape *mShape;       ///< the triangle exact collision shape (optional)
 		CollisionNode xmin_cnode;          ///< the min/max collision node in the X-Dimension
 		CollisionNode xmax_cnode;
 		CollisionClass coll_class;      ///< the application defined collision type

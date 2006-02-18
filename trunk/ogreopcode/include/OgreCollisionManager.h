@@ -49,14 +49,24 @@ namespace OgreOpcode
 		typedef int CollisionClass;
 	};
 
+	/// Shape types
+	enum ShapeType
+	{
+		SHAPETYPE_SHAPE		= 0,    ///< mesh based shape
+		SHAPETYPE_PTR		= 1,    ///< raw ptr based shape
+		SHAPETYPE_BOX		= 2,    ///< box shape
+		SHAPETYPE_SPHERE	= 3,    ///< sphere shape
+		SHAPETYPE_CAPSULE	= 4,    ///< capsule shape
+	};
+
 	/// Collision manager.
 	/// The CollisionManager object serves as factory object of the
 	/// different classes of the collision system, namely
-	/// CollisionContext and CollisionShape. A CollisionContext
+	/// CollisionContext and MeshCollisionShape. A CollisionContext
 	/// serves as factory for CollisionObject%s.
 	class _OgreOpcode_Export CollisionManager : public Singleton<CollisionManager>
 	{
-		//friend class CollisionShape;
+		//friend class MeshCollisionShape;
 	public:
 		///TODO: Put these back into the private section!!
 		Opcode::AABBTreeCollider opcTreeCollider;
@@ -76,9 +86,9 @@ namespace OgreOpcode
 		static CollisionManager& getSingleton(void);
 
 		CollisionContext *newContext(const String&);
-		CollisionShape   *newShape(const String&);
+		ICollisionShape   *newShape(const String&, const ShapeType shpType = SHAPETYPE_SHAPE);
 		void releaseContext(CollisionContext *);
-		void releaseShape(CollisionShape *);
+		void releaseShape(MeshCollisionShape *);
 
 		CollisionContext *getDefaultContext(void);
 		CollisionContext *getContext(const String& name);
@@ -131,7 +141,7 @@ namespace OgreOpcode
 		typedef ContextList::const_iterator ContextIterator;
 		ContextList context_list;
 
-		typedef HashMap<String,CollisionShape*> ShapeList;
+		typedef HashMap<String,ICollisionShape*> ShapeList;
 		// TODO: Do I own these shapes? Or do I pass the responsibility on?
 		ShapeList shape_list;
 		typedef ShapeList::const_iterator ShapeIterator;

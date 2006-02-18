@@ -355,7 +355,7 @@ namespace OgreOpcode
 
 
 				// check collision
-				CollisionShape* shape = (*co)->getShape();
+				ICollisionShape* shape = (*co)->getShape();
 				if (shape)
 				{
 					checkReportHandler.mTotalObjObjTests++;
@@ -451,7 +451,7 @@ namespace OgreOpcode
 				else
 				{
 					// do sphere-shape collision check
-					CollisionShape* shape = (*co)->getShape();
+					ICollisionShape* shape = (*co)->getShape();
 					if (shape)
 					{
 						CollisionPair cp;

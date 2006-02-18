@@ -69,7 +69,7 @@ private:
 	Overlay* hotTargetSight;
 	CollisionContext* collideContext;
 	CollisionObject* mRobotCollObj;
-	CollisionShape* mRobotCollShape;
+	MeshCollisionShape* mRobotCollShape;
 	Ray ray;
 	bool mPlayAnimation;
 	String mDbgMsg;
