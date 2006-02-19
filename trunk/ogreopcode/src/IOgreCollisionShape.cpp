@@ -385,7 +385,7 @@ namespace OgreOpcode
 	/// - COLLTYPE_IGNORE:        illegal (makes no sense)
 	/// - COLLTYPE_QUICK:         occlusion check only
 	/// - COLLTYPE_CONTACT:       return closest contact
-	/// - COLLTYPE_EXACT:         same as closest contact
+	/// - COLLTYPE_EXACT:         return a sorted list of contacts
 	/// @param  collType        see above
 	/// @param  ownMatrix       position/orientation of this shape
 	/// @param  line            line definition in world space
@@ -412,7 +412,7 @@ namespace OgreOpcode
 
 		case COLLTYPE_CONTACT:
 		case COLLTYPE_EXACT:
-			collider.SetFirstContact(true);
+			collider.SetFirstContact(false);
 			break;
 
 		default:
@@ -421,7 +421,13 @@ namespace OgreOpcode
 
 		// convert Matrix4 to Opcode Matrix4x4
 		IceMaths::Matrix4x4 opcMatrix;
+		IceMaths::Matrix4x4 *ptrOpcMatrix = &opcMatrix;
+		// if model is in world space already (local to world matrix, ownMatrix, is identity), then pass 0
+		if (ownMatrix == Matrix4::IDENTITY) {
+			ptrOpcMatrix = 0;
+		} else {
 			OgreOpcodeUtils::ogreToIceMatrix4( ownMatrix, opcMatrix);
+		}
 
 		// build Opcode ray from line
 		IceMaths::Ray ray;
@@ -432,7 +438,7 @@ namespace OgreOpcode
 		assert( collider.ValidateSettings() == NULL );
 
 		// perform collision
-		if( !collider.Collide(ray, opcModel, &opcMatrix) )
+		if( !collider.Collide(ray, opcModel, ptrOpcMatrix) )
 			return false;
 
 		collPair.numBVBVTests = collider.GetNbRayBVTests();
