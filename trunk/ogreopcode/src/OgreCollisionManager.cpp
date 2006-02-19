@@ -27,6 +27,7 @@
 #include "OgreCollisionReporter.h"
 
 #include "OgrePtrCollisionShape.h"
+#include "OgreBoxCollisionShape.h"
 
 template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionManager>::ms_Singleton = 0;
 
@@ -125,7 +126,7 @@ namespace OgreOpcode
 			// Warning! Shape already exsists. Return the exsisting one.
 			return i->second;
 		}
-		if(shpType == SHAPETYPE_SHAPE)
+		if(shpType == SHAPETYPE_MESH)
 		{
 			MeshCollisionShape* cs = new MeshCollisionShape(new_id);
 			shape_list.insert(ShapeList::value_type(new_id,cs));
@@ -134,6 +135,12 @@ namespace OgreOpcode
 		if(shpType == SHAPETYPE_PTR)
 		{
 			PtrCollisionShape* cs = new PtrCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
+		}
+		if(shpType == SHAPETYPE_BOX)
+		{
+			BoxCollisionShape* cs = new BoxCollisionShape(new_id);
 			shape_list.insert(ShapeList::value_type(new_id,cs));
 			return cs;
 		}

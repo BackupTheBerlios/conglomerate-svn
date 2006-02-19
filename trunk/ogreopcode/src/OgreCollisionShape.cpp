@@ -181,7 +181,11 @@ namespace OgreOpcode
 						for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
 						{
 							posElem->baseVertexPointerToElement(vertex, &pReal);
+
 							Vector3 v = Vector3(pReal[0],pReal[1],pReal[2]);
+							
+							//v *= entity->getParentSceneNode()->getScale();
+							
 							v = xform * v;
 							size_t n = current_offset*3 + j*3;
 							vertexBuf[n + 0] = v[0];
@@ -193,7 +197,14 @@ namespace OgreOpcode
 						for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
 						{
 							posElem->baseVertexPointerToElement(vertex, &pReal);
+
+							//Vector3 v = Vector3(pReal[0],pReal[1],pReal[2]);
+							//v *= entity->getParentSceneNode()->getScale();
+
 							size_t n = current_offset*3 + j*3;
+							//vertexBuf[n + 0] = v[0];
+							//vertexBuf[n + 1] = v[1];
+							//vertexBuf[n + 2] = v[2];
 							vertexBuf[n + 0] = pReal[0];
 							vertexBuf[n + 1] = pReal[1];
 							vertexBuf[n + 2] = pReal[2];
