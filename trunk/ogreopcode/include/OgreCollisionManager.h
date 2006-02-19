@@ -52,7 +52,7 @@ namespace OgreOpcode
 	/// Shape types
 	enum ShapeType
 	{
-		SHAPETYPE_SHAPE		= 0,    ///< mesh based shape
+		SHAPETYPE_MESH		= 0,    ///< mesh based shape
 		SHAPETYPE_PTR		= 1,    ///< raw ptr based shape
 		SHAPETYPE_BOX		= 2,    ///< box shape
 		SHAPETYPE_SPHERE	= 3,    ///< sphere shape
@@ -86,7 +86,7 @@ namespace OgreOpcode
 		static CollisionManager& getSingleton(void);
 
 		CollisionContext *newContext(const String&);
-		ICollisionShape   *newShape(const String&, const ShapeType shpType = SHAPETYPE_SHAPE);
+		ICollisionShape   *newShape(const String&, const ShapeType shpType = SHAPETYPE_MESH);
 		void releaseContext(CollisionContext *);
 		void releaseShape(MeshCollisionShape *);
 
