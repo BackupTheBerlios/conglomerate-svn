@@ -362,9 +362,11 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 {
 	// Reset stats & contact status
 	Collider::InitQuery();
+
 	mNbRayBVTests		= 0;
 	mNbRayPrimTests		= 0;
 	mNbIntersections	= 0;
+
 #ifndef OPC_RAYHIT_CALLBACK
 	if(mStabbedFaces)	mStabbedFaces->Reset();
 #endif
@@ -373,10 +375,10 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 	// The (Origin/Dir) form is needed for the ray-triangle test anyway (even for segment tests)
 	if(world)
 	{
-		// Matrix normalization & scaling stripping (notice that mLocalScale scale is not needed anymore here)
-		IceMaths::Point localScale;
+		// Matrix normalization & scaling stripping
+		// (notice that mLocalScale scale is being used here again in order to make code work with scale before intersection tests and line transform)
 		IceMaths::Matrix4x4 normWorldm;
-		NormalizePRSMatrix( normWorldm, localScale, *world );
+		NormalizePRSMatrix( normWorldm, mLocalScale, *world );
 		
 		// Invert model matrix
 		IceMaths::Matrix3x3 InvWorld = normWorldm;
@@ -385,8 +387,9 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 		IceMaths::Matrix4x4 World;
 		InvertPRMatrix(World, normWorldm);
 		mOrigin = world_ray.mOrig * World;
+
 // Do we have to transform the ray into the model's local space??
-#ifndef OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
+#if !defined(OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP)
 		// NEW CODE - Getting the ray in the model's local space:
 		//  1) shots a point in front of the origin (applies the magnitude of origin to avoid innacuracies);
 		//  2) divides the two points by the model's scale

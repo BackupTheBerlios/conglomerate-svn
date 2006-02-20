@@ -14,7 +14,10 @@
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
+#if defined(OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP)
+		#ifdef _MSC_VER
+			#pragma message("Scaling before overlap on ray-aabb")
+		#endif
 inline_ BOOL RayCollider::SegmentAABBOverlap(const Point& center_, const Point& extents_)
 {
 	// Applies model's local scale
