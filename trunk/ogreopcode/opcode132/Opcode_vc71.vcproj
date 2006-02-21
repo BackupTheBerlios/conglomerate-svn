@@ -630,6 +630,9 @@
 			<File
 				RelativePath="OPC_TriTriOverlap.h">
 			</File>
+			<File
+				RelativePath=".\OPC_TriTriOverlapGilvan.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="SweepAndPrune"
@@ -1066,9 +1069,6 @@
 				RelativePath="Ice\IceUtils.h">
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\OPC_TriTriOverlapGilvan.h">
-		</File>
 		<File
 			RelativePath="ReadMe.txt">
 		</File>

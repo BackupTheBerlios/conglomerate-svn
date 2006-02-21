@@ -125,7 +125,7 @@ using namespace IceMaths;
 // When this macro is set, the overlap tests considers an scaling on AABBs/tris.
 // This means that the ray/line is not entirely in the model's local space when collision
 // tests take places.
-#define OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
+// #define OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP
 
 #include "OPC_RayAABBOverlap.h"
 #include "OPC_RayTriOverlap.h"
@@ -390,29 +390,17 @@ BOOL RayCollider::InitQuery(const IceMaths::Ray& world_ray, const IceMaths::Matr
 
 // Do we have to transform the ray into the model's local space??
 #if !defined(OPC_RAYCOLLIDER_SCALE_BEFORE_OVERLAP)
-		// NEW CODE - Getting the ray in the model's local space:
-		//  1) shots a point in front of the origin (applies the magnitude of origin to avoid innacuracies);
-		//  2) divides the two points by the model's scale
-		//  3) retrieves the direction in model's local space
-		//  4) considers the max distance in the model's local space		
-		float delta = IR(mMaxDist)!=IEEE_MAX_FLOAT ? mMaxDist : mOrigin.Magnitude(); 
-		Point pointInFront = mOrigin + mDir*delta;
-		// 2)
-		pointInFront /= mLocalScale;
-		mOrigin		 /= mLocalScale;
-		// 3)
-		mDir	= pointInFront - mOrigin; // innaccuracies here??
-		// 4) ihhh.
-		if(IR(mMaxDist)!=IEEE_MAX_FLOAT)
-			mDir /= mMaxDist = mDir.Magnitude();
-		else
-			mDir.Normalize();
-
-		//mDir /= mMaxDist; // equals to mDir.Normalize();
+		
+                // BRAND NEW code: The intersection tests does not need normalized directions
+                //                 It worked fine in my engine (Gilvan)
+                mDir    /= mLocalScale;
+		mOrigin /= mLocalScale;
 #endif
+
 	}
 	else
 	{
+          	mLocalScale.Set(1.0f,1.0f,1.0f);
 		mDir	= world_ray.mDir;
 		mOrigin	= world_ray.mOrig;
 	}
