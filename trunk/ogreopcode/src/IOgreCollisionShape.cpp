@@ -477,9 +477,17 @@ namespace OgreOpcode
 				Matrix3 m33;
 				ownMatrix.extract3x3Matrix(m33);
 
-				collPair.contact    = line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
+				// Compute the centered normal
+				Vector3 vCenter = (v0+v1+v2)*0.33333333333333333333f;
+				Vector3 vNormal = vCenter + (v2-v1).crossProduct(v0-v1);
+				vNormal.normalise();
+
+				// Compute collision contact from barycentric coordinates
+				Vector3 vContact = (1.0f - collFaces[0].mU - collFaces[0].mV) * v0 + collFaces[0].mU * v1 + collFaces[0].mV * v2;
+
+				collPair.contact = m33 * vContact;//line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
 				collPair.distance = thedist;
-				collPair.co1_normal = m33 * tri.normal();
+				collPair.co1_normal = m33 * vNormal;
 				collPair.co2_normal = collPair.co1_normal;
 
 				return true;
@@ -558,7 +566,11 @@ namespace OgreOpcode
 				// build triangle from from faceIndex
 				Vector3 v0,v1,v2;
 				getTriCoords(collFaces[0], v0, v1, v2);
-				triangle tri(v0, v1, v2);
+
+				// Compute the centered normal
+				Vector3 vCenter = (v0+v1+v2)*0.33333333333333333333f;
+				Vector3 vNormal = vCenter + (v2-v1).crossProduct(v0-v1);
+				vNormal.normalise();
 
 				// get 3x3 matrix to transform normal into global space
 				Matrix3 m33;
@@ -568,7 +580,7 @@ namespace OgreOpcode
 				const float div = 1.0f / 3.0f;
 				Vector3 midpoint = (v0 + v1 + v2) * div;
 				collPair.contact    = ownMatrix * midpoint;
-				collPair.co1_normal = m33 * tri.normal();
+				collPair.co1_normal = m33 * vNormal;
 				collPair.co2_normal = collPair.co1_normal;
 				return true;
 			}

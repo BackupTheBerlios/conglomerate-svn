@@ -63,6 +63,7 @@ void OgreOpcodeExampleApp::createScene(void)
 	collideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
 
 	Entity* theRobot = mSceneMgr->createEntity("theRobot", "robot.mesh");
+	theRobot->setNormaliseNormals(true);
 	SceneNode* theRobotNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theRobotNode");
 	theRobotNode->attachObject(theRobot);
 	theRobotNode->scale(1.8f, 1.8f, 1.8f);
@@ -168,6 +169,7 @@ void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* en
 	tempCollShape = static_cast<MeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape(shapeName));
 	if(makeStatic)
 		tempCollShape->setStatic();
+	entity->setNormaliseNormals(true);
 	tempCollShape->load(entity);
 	tempCollObject = collideContext->newObject();
 	if(makeStatic)
