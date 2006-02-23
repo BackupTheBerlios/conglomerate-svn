@@ -211,10 +211,6 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	ICollisionShape::~ICollisionShape()
 	{
-		//if (mEntity && mEntity->hasSkeleton())
-		//{
-		//	mEntity->removeSoftwareSkinningRequest(false);
-		//}
 		assert(0 == refCount);
 
 		if(_debug_obj)

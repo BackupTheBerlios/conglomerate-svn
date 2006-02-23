@@ -75,6 +75,16 @@ void OgreOpcodeExampleApp::createScene(void)
 	mRobotCollObj->setShape(mRobotCollShape);
 	collideContext->addObject(mRobotCollObj);
 
+	SceneNode* theSphereNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theSphereNode");
+	theSphereNode->setPosition(200.0f, 60.0f, 10.0f);
+
+	mTestCollShape = static_cast<SphereMeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape("ellipsoid", SHAPETYPE_SPHERE));
+	mTestCollShape->load("testShape", theSphereNode, 25.0f);
+	mTestCollObj = collideContext->newObject();
+	mTestCollObj->setCollClass("ogrerobot");
+	mTestCollObj->setShape(mTestCollShape);
+	collideContext->addObject(mTestCollObj);
+	
 	parseDotScene("scene.xml");
 
 	collideContext->reset();

@@ -28,6 +28,7 @@
 
 #include "OgrePtrCollisionShape.h"
 #include "OgreBoxCollisionShape.h"
+#include "OgreSphereMeshCollisionShape.h"
 
 template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionManager>::ms_Singleton = 0;
 
@@ -141,6 +142,12 @@ namespace OgreOpcode
 		if(shpType == SHAPETYPE_BOX)
 		{
 			BoxCollisionShape* cs = new BoxCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
+		}
+		if(shpType == SHAPETYPE_SPHERE)
+		{
+			SphereMeshCollisionShape* cs = new SphereMeshCollisionShape(new_id);
 			shape_list.insert(ShapeList::value_type(new_id,cs));
 			return cs;
 		}

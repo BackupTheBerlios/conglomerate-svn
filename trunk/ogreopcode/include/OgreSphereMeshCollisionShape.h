@@ -25,8 +25,8 @@
 ///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ///
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef __OgreCollisionShape_h__
-# define __OgreCollisionShape_h__
+#ifndef __OgreSphereMeshCollisionShape_h__
+# define __OgreSphereMeshCollisionShape_h__
 
 #include "OgreOpcodeExports.h"
 # include <Ogre.h>
@@ -44,21 +44,21 @@ namespace OgreOpcode
 
 	/// Describes shapes for collision system.
 	/// Holds a triangle list describing a collision shape.
-	/// One MeshCollisionShape object may be shared between several
-	/// CollisionObject%s. 2 MeshCollisionShape objects may also
+	/// One SphereMeshCollisionShape object may be shared between several
+	/// CollisionObject%s. 2 SphereMeshCollisionShape objects may also
 	/// be queried directly whether they intersect.
 	///
-	/// MeshCollisionShape objects are also able to load themselves
+	/// SphereMeshCollisionShape objects are also able to load themselves
 	/// from a mesh file.
-	class _OgreOpcode_Export MeshCollisionShape : public ICollisionShape
+	class _OgreOpcode_Export SphereMeshCollisionShape : public ICollisionShape
 	{
 	public:
-		/// Constructs a MeshCollisionShape
-		MeshCollisionShape(const String& name);
-		virtual ~MeshCollisionShape();
+		/// Constructs a SphereMeshCollisionShape
+		SphereMeshCollisionShape(const String& name);
+		virtual ~SphereMeshCollisionShape();
 
 		/// load collide geometry from mesh, and build a collision tree
-		virtual bool load(Entity* ent);
+		virtual bool load(const String& name, SceneNode* scnNode, const float r, const int nRings = 16, const int nSegments = 16);
 
 		/// Retrieve current vertex data from mesh and refit collision tree.
 		/// This is an O(n) operation in the number of vertices in the mesh.
@@ -75,7 +75,7 @@ namespace OgreOpcode
 		/// Refits the collision tree to the currently cached vertex data.
 		/// This is an O(n) operation in the number of vertices in the mesh.
 		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the MeshCollisionShape's cached data and the actual mesh
+		/// updating both the SphereMeshCollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like 
 		/// deformable body physics.
 		virtual bool _refitToCachedData();
@@ -84,7 +84,7 @@ namespace OgreOpcode
 		/// like topology changing deformations, or a change in the number of tris.
 		/// In most cases _RefitToCachedGeometry() is sufficient, and much faster.
 		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the MeshCollisionShape's cached data and the actual mesh
+		/// updating both the SphereMeshCollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like
 		/// deformable body physics.
 		virtual bool _rebuildFromCachedData();
@@ -98,10 +98,10 @@ namespace OgreOpcode
 		void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData=0, size_t index_count=0);
 
 		/// prevent default construction
-		MeshCollisionShape();
+		SphereMeshCollisionShape();
 
 	};
 
 }; // namespace OgreOpcode
 
-#endif // __OgreCollisionShape_h__
+#endif // __OgreSphereMeshCollisionShape_h__

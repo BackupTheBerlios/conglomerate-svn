@@ -215,6 +215,10 @@
 				RelativePath="..\src\OgrePtrCollisionShape.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\OgreSphereMeshCollisionShape.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -283,6 +287,14 @@
 			</File>
 			<File
 				RelativePath="..\include\OgrePtrCollisionShape.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgreSphereMeshCollisionShape.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgreTriangle.h"
 				>
 			</File>
 		</Filter>

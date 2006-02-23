@@ -216,7 +216,7 @@ namespace OgreOpcode
 		/// <TODO: insert function description here>
 		/// @param [in, out]  s MeshCollisionShape *    <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
-		void setShape(MeshCollisionShape *s)
+		void setShape(ICollisionShape *s)
 		{
 			mShape = s;
 			if (s)
