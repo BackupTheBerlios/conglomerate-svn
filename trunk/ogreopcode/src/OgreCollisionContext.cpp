@@ -53,26 +53,11 @@ namespace OgreOpcode
 		{
 			releaseObject(*(owned_list.begin()));
 		}
-		//CollisionObject *co;
-		//while ((co = (CollisionObject *) owned_list.RemHead()))
-		//{
-		//   assert(co);
-		//   assert(co->getContext() == this);
-		//   if (co->isAttached())
-		//      removeObject(co);
-		//   co->setContext(NULL);
-		//   delete co;
-		//};
 	}
 
 	// Construct a new collide object.
 	CollisionObject *CollisionContext::newObject(void)
 	{
-		//CollisionObject *co = new CollisionObject();
-		//co->setId(unique_id++);
-		//co->setContext(this);
-		//owned_list.AddTail(co);
-		//return co;
 		CollisionObject *co = new CollisionObject();
 		co->setId(unique_id++);
 		co->setContext(this);
@@ -83,14 +68,7 @@ namespace OgreOpcode
 	// Kill an owned collide object.
 	void CollisionContext::releaseObject(CollisionObject *collObj)
 	{
-		//assert(collObj);
-		//assert(collObj->getContext() == this);
-		//if (collObj->isAttached())
-		//   removeObject(collObj);
-		//collObj->setContext(NULL);
-		//collObj->Remove();
-		//delete collObj;
-		if (collObj != NULL)
+		if (collObj != 0)
 		{
 			if(collObj->isAttached())
 				attached_list.remove(collObj);
@@ -98,23 +76,13 @@ namespace OgreOpcode
 			collObj->setAttached(false);
 			collObj->xmin_cnode.Remove();
 			collObj->xmax_cnode.Remove();
-			collObj->setContext(NULL);
+			collObj->setContext(0);
 			delete collObj;
 		}
 	}
 
 	void CollisionContext::addObject(CollisionObject *collObj)
 	{
-		//assert(collObj);
-		//assert(collObj->getContext() == this);
-
-		//// link the object into our context
-		//collObj->setAttached(true);
-		//attached_list.AddTail(&(collObj->context_node));
-
-		//// add minx/maxx nodes to x-dimensional sorted list
-		//collObj->xmin_cnode.AddToList(xdim_list);
-		//collObj->xmax_cnode.AddToList(xdim_list);
 		collObj->setAttached(true);
 		attached_list.push_back(collObj);
 
@@ -125,14 +93,7 @@ namespace OgreOpcode
 
 	void CollisionContext::removeObject(CollisionObject *collObj)
 	{
-		//assert(collObj);
-		//assert(collObj->getContext() == this);
-		//assert(collObj->isAttached());
-		//collObj->setAttached(false);
-		//collObj->context_node.Remove();
-		//collObj->xmin_cnode.Remove();
-		//collObj->xmax_cnode.Remove();
-		if (collObj != NULL)
+		if (collObj != 0)
 		{
 			collObj->setAttached(false);
 			attached_list.remove(collObj);
@@ -150,14 +111,6 @@ namespace OgreOpcode
 		update(dt);
 
 		// first, clear the collision counters in all collide objects
-		//nNode *context_node;
-		//for (context_node = attached_list.GetHead();
-		//   context_node;
-		//   context_node = context_node->GetSucc())
-		//{
-		//   CollisionObject *co = (CollisionObject *) context_node->GetPtr();
-		//   co->clearCollisions();
-		//}
 		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
 		{
 			(*i)->clearCollisions();
@@ -165,13 +118,6 @@ namespace OgreOpcode
 
 		// check the collision status for each object
 		collideReportHandler.beginFrame();
-		//for (context_node = attached_list.GetHead();
-		//   context_node;
-		//   context_node = context_node->GetSucc())
-		//{
-		//   CollisionObject *co = (CollisionObject *) context_node->GetPtr();
-		//   co->collide();
-		//}
 		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
 		{
 			(*i)->collide();
@@ -192,7 +138,7 @@ namespace OgreOpcode
 			return collideReportHandler.getCollisions(collObj,cpPtr);
 		} else
 		{
-			cpPtr = NULL;
+			cpPtr = 0;
 			return 0;
 		}
 	}
@@ -217,8 +163,6 @@ namespace OgreOpcode
 			// for each object in the system...
 			for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
 			{
-				//co->visualizeLocal();
-				//co->visualizeGlobal();
 				(*i)->setDebug(doVisualize, doAABBs, doLocal, doGlobal);
 			}
 		}

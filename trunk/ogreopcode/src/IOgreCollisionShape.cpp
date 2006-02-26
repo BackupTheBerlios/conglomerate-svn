@@ -257,7 +257,7 @@ namespace OgreOpcode
 
 		// validate settings: asserts that we can check collision
 		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
-		assert( collider.ValidateSettings() == NULL );
+		assert( collider.ValidateSettings() == 0 );
 
 		// perform collision test and checks errors
 		if( !collider.Collide(*(opcTreeCache), &m0, &m1) )
@@ -399,7 +399,7 @@ namespace OgreOpcode
 		Opcode::RayCollider& collider = CollisionManager::getSingletonPtr()->opcRayCollider;
 		collider.SetMaxDist(dist);
 		collider.SetClosestHit(false);
-		collider.SetCulling(true);
+		collider.SetCulling(false);
 		switch (collType)
 		{
 		case COLLTYPE_QUICK:
@@ -431,7 +431,7 @@ namespace OgreOpcode
 
 		// validate settings: asserts that we can check collision
 		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
-		assert( collider.ValidateSettings() == NULL );
+		assert( collider.ValidateSettings() == 0 );
 
 		// perform collision
 		if( !collider.Collide(ray, opcModel, ptrOpcMatrix) )
@@ -539,7 +539,7 @@ namespace OgreOpcode
 
 		// validate settings: asserts that we can check collision
 		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
-		assert( collider.ValidateSettings() == NULL );
+		assert( collider.ValidateSettings() == 0 );
 
 		// perform collision
 		if( !collider.Collide(cache, opcSphere, opcModel, &identity, &opcMatrix) )
