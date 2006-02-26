@@ -164,10 +164,10 @@ namespace OgreOpcode
 
 	inline Matrix4 ICollisionShape::getFullTransform(void) const
 	{
-		if(!mShapeIsStatic)
-		{
+		//if(!mShapeIsStatic)
+		//{
 			getParentSceneNode()->getWorldTransforms(&mFullTransform);
-		}
+//		}
 			return mFullTransform;
 	}
 
@@ -175,7 +175,7 @@ namespace OgreOpcode
 	{
 		if(!mShapeIsStatic)
 		{
-			//TODO
+			return mFullTransform.inverse();
 		}
 		return mLocalTransform;
 	}

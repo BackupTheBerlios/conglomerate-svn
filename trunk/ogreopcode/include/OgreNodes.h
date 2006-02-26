@@ -119,7 +119,7 @@ namespace OgreOpcode
 			if (this->pred->pred)
 				return this->pred;
 			else
-				return NULL;
+				return 0;
 		}
 
 		/// @param node in front of which this node should be inserted
@@ -159,8 +159,8 @@ namespace OgreOpcode
 			nNode *pred = this->pred;
 			succ->pred = pred;
 			pred->succ = succ;
-			this->succ = NULL;
-			this->pred = NULL;
+			this->succ = 0;
+			this->pred = 0;
 		}
 
 		/// @param the new user data pointer
@@ -272,7 +272,7 @@ namespace OgreOpcode
 			}
 			else
 			{
-				return NULL;
+				return 0;
 			}
 		}
 

@@ -123,14 +123,14 @@ namespace OgreOpcode
 
 	public:
 		CollisionObject()
-			: mContext(NULL),
+			: mContext(0),
 			mRadius(0.0f),
 			old_center_offset(0,0,0),
 			new_center_offset(0,0,0),
-			mShape(NULL),
+			mShape(0),
 			coll_class(0),
 			m_tdelta(-1.0),
-			client_data(NULL),
+			client_data(0),
 			is_attached(false),
 			num_colls(0),
 			_debug_node(0),
@@ -157,7 +157,7 @@ namespace OgreOpcode
 		/// @return void <TODO: insert return value description here>
 		void setContext(CollisionContext *c)
 		{
-			// c may be NULL!!!
+			// c may be 0!!!
 			mContext = c;
 		};
 
@@ -348,7 +348,7 @@ namespace OgreOpcode
 			// Extract position vectors from matrix
 
 			// Get center in world space.
-			Vector3 ctr = getShape()->getCenter() * 1.18f;
+			Vector3 ctr = getShape()->getCenter();
 			Vector3 lMin,lMax;
 			getShape()->getMinMax(lMin,lMax);
 			lMax-=lMin;
@@ -374,12 +374,12 @@ namespace OgreOpcode
 			Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
 			p1 += new_center_offset;
 			getShape()->getMinMax(minv,maxv);
-			//         minv = Vector3(n_min(p0.x,p1.x)-mRadius,
-			//                        n_min(p0.y,p1.y)-mRadius,
-			//                        n_min(p0.z,p1.z)-mRadius);
-			//         maxv = Vector3(n_max(p0.x,p1.x)+mRadius,
-			//                        n_max(p0.y,p1.y)+mRadius,
-			//                        n_max(p0.z,p1.z)+mRadius);
+	         //minv = Vector3(n_min(p0.x,p1.x)-mRadius,
+	         //               n_min(p0.y,p1.y)-mRadius,
+	         //               n_min(p0.z,p1.z)-mRadius);
+	         //maxv = Vector3(n_max(p0.x,p1.x)+mRadius,
+	         //               n_max(p0.y,p1.y)+mRadius,
+	         //               n_max(p0.z,p1.z)+mRadius);
 
 			// update the x-dimension node, nCNode::SetVal() automatically
 			// makes sure that the nodes keep their correct orders
@@ -531,7 +531,7 @@ namespace OgreOpcode
 
 				// nope, see if it overlaps in the other 2 dimensions as well...
 				if ((!((other->maxv.y<minv.y) || (other->minv.y>maxv.y))) &&
-					(!((other->maxv.y<minv.z) || (other->minv.y>maxv.z))))
+					(!((other->maxv.z<minv.z) || (other->minv.z>maxv.z))))
 				{
 					// we have an overlap, mister
 
