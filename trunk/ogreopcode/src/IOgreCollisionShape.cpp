@@ -490,7 +490,7 @@ namespace OgreOpcode
 			}
 			else
 			{
-				//n_printf("nOpcodeShape::rayCheck(): Contact but no faces!\n");
+				//n_printf("nOpcodeShape::rayCheck(): contact but no faces!\n");
 				return false;
 			}
 		}
@@ -582,7 +582,7 @@ namespace OgreOpcode
 			}
 			else
 			{
-				//n_printf("nOpcodeShape::sphereCheck(): Contact but no faces!\n");
+				//n_printf("nOpcodeShape::sphereCheck(): contact but no faces!\n");
 				return false;
 			}
 		}

@@ -127,6 +127,8 @@ namespace OgreOpcode
 			mRadius(0.0f),
 			old_center_offset(0,0,0),
 			new_center_offset(0,0,0),
+			new_pos(0,0,0),
+			old_pos(0,0,0),
 			mShape(0),
 			coll_class(0),
 			m_tdelta(-1.0),
@@ -341,6 +343,7 @@ namespace OgreOpcode
 			assert(is_attached);
 
 			old_matrix = new_matrix;
+			old_pos = new_pos;
 			old_center_offset = new_center_offset;
 			new_matrix = m;
 
@@ -349,15 +352,17 @@ namespace OgreOpcode
 
 			// Get center in world space.
 			Vector3 ctr = getShape()->getCenter();
+			new_pos = ctr;
 			Vector3 lMin,lMax;
 			getShape()->getMinMax(lMin,lMax);
 			lMax-=lMin;
 			mRadius = lMax.length()*0.5;
 			// We need center's world offset from object's world origin
 			// (And object's world origin is just translation part of m)
-			new_center_offset = Vector3(ctr.x-new_matrix[0][3],
-				ctr.y-new_matrix[1][3],
-				ctr.z-new_matrix[2][3]);
+			//new_center_offset = Vector3(ctr.x-new_matrix[0][3],
+			//	ctr.y-new_matrix[1][3],
+			//	ctr.z-new_matrix[2][3]);
+			new_center_offset = ctr - new_pos;
 
 			// if old_matrix etc are not yet valid,
 			// initialize with the current values, to prevent "startup popping"
@@ -365,6 +370,7 @@ namespace OgreOpcode
 			if (oldValsInvalid)
 			{
 				old_matrix = new_matrix;
+				old_pos = new_pos;
 				old_center_offset = new_center_offset;
 			}
 			m_tdelta = t;
@@ -389,16 +395,20 @@ namespace OgreOpcode
 		};
 
 		/// Check whether 2 moving collide objects have contact.
-		bool Contact(CollisionObject *other,     // the other object
+		bool contact(CollisionObject *other,     // the other object
 			CollisionType ct,
 			CollisionPair& cr)
 		{
 			// This object moved from p0 to p0+v0, the other from p1 to p1+v1.
-			Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
-			Vector3 p1(other->old_matrix[0][3], other->old_matrix[1][3], other->old_matrix[2][3]);
-			Vector3 v0(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
+			//Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
+			//Vector3 p1(other->old_matrix[0][3], other->old_matrix[1][3], other->old_matrix[2][3]);
+			//Vector3 v0(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
+			Vector3 p0 = old_pos;
+			Vector3 p1 = other->old_pos;
+			Vector3 v0 = new_pos;
 			v0 -= p0;
-			Vector3 v1(Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]) - p1);
+			//Vector3 v1(Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]) - p1);
+			Vector3 v1(other->new_pos - p1);
 
 			bool has_contact = false;
 			switch (ct)
@@ -546,7 +556,7 @@ namespace OgreOpcode
 						// FIXME: probably do velocity-based finer
 						// grained control here ?!?!?!
 						CollisionPair cr;
-						bool ret = Contact(other,ct,cr);
+						bool ret = contact(other,ct,cr);
 						crh->mTotalBVBVTests += cr.numBVBVTests;
 						crh->mTotalBVPrimTests += cr.numBVPrimTests;
 						crh->mTotalPrimPrimTests += cr.numPrimPrimTests;
@@ -766,8 +776,10 @@ namespace OgreOpcode
 		Vector3 minv;               ///< the min/max coordinates in each dimension
 		Vector3 maxv;
 
-		Matrix4 old_matrix;        ///< the previous position/orientation of the object
-		Matrix4 new_matrix;        ///< the new position/orientation of the object
+		Matrix4 old_matrix;			///< the previous orientation of the object
+		Vector3 old_pos;			///< the previous position of the object
+		Matrix4 new_matrix;			///< the new orientation of the object
+		Vector3 new_pos;			///< the new position of the object
 		Real    m_tdelta;          ///< the 'time' between old and new transform
 		Vector3 old_center_offset; ///< the world offset of the shape center
 		Vector3 new_center_offset; ///< the world offset of the shape center

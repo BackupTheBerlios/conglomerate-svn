@@ -210,8 +210,10 @@ namespace OgreOpcode
 				checkReportHandler.mTotalObjObjTests++;
 
 				// Trying to extract position information from provided matrices.
-				Vector3 p1 = Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]);
-				Vector3 v1 = Vector3(Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]) - p1);
+				//Vector3 p1 = Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]);
+				//Vector3 v1 = Vector3(Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]) - p1);
+				Vector3 p1 = (*other)->new_pos;
+				Vector3 v1 = (*other)->new_pos - p1;
 
 				// do the contact check between 2 moving spheres
 				sphere s0(p0,radius);
@@ -382,7 +384,8 @@ namespace OgreOpcode
 				{
 					// do sphere-sphere collision check
 					const Matrix4 coTrans = (*co)->getTransform();
-					s0.set(coTrans[0][3], coTrans[1][3], coTrans[2][3], (*co)->getRadius());
+					//s0.set(coTrans[0][3], coTrans[1][3], coTrans[2][3], (*co)->getRadius());
+					s0.set((*co)->new_pos, (*co)->getRadius());
 					checkReportHandler.mTotalBVBVTests++;
 					if (ball.intersects(s0))
 					{

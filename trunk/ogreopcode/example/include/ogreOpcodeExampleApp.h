@@ -65,16 +65,20 @@ private:
 	bool mDoABBVisualization;
 	bool mDoLocalVisualization;
 	bool mDoGlobalVisualization;
-	Overlay* TargetSight;
-	Overlay* hotTargetSight;
-	CollisionContext* collideContext;
+	Overlay* mTargetSight;
+	Overlay* mHotTargetSight;
+	Overlay* mInfoOverlay;
+	OverlayElement* mRayObjectText;
+	OverlayElement* mRayDistanceText;
+	CollisionContext* mCollideContext;
 	CollisionObject* mRobotCollObj;
 	CollisionObject* mTestCollObj;
 	MeshCollisionShape* mRobotCollShape;
 	SphereMeshCollisionShape* mTestCollShape;
-	Ray ray;
+	Ray mRay;
 	bool mPlayAnimation;
-	String mDbgMsg;
+	String mDbgMsg1;
+	String mDbgMsg2;
 };
 
 #endif // #ifndef __ogreOpcodeExampleApp_h_

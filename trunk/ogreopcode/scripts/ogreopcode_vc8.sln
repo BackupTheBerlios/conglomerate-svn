@@ -12,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogreOpcodeExample", "..\exa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Opcode", "..\opcode132\Opcode_vc8.vcproj", "{6B19233C-49A3-467D-BFA0-2B5CE77745D9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogreOpcodeDotsceneExample", "..\DotsceneOctreeExample\scripts\ogreOpcodeDotsceneExample_vc80.vcproj", "{95363BEA-404F-4BDF-911B-AFDE8751473F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,6 +32,10 @@ Global
 		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Debug|Win32.Build.0 = Debug|Win32
 		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Release|Win32.ActiveCfg = Release|Win32
 		{6B19233C-49A3-467D-BFA0-2B5CE77745D9}.Release|Win32.Build.0 = Release|Win32
+		{95363BEA-404F-4BDF-911B-AFDE8751473F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{95363BEA-404F-4BDF-911B-AFDE8751473F}.Debug|Win32.Build.0 = Debug|Win32
+		{95363BEA-404F-4BDF-911B-AFDE8751473F}.Release|Win32.ActiveCfg = Release|Win32
+		{95363BEA-404F-4BDF-911B-AFDE8751473F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ using namespace nikkiloader;
 //-------------------------------------------------------------------------------------
 OgreOpcodeExampleApp::OgreOpcodeExampleApp(void)
 : OgreOpcodeExample(),
-collideContext(0),
+mCollideContext(0),
 mRobotCollObj(0),
 mPlayAnimation(false),
 mVisualizeObjects(false),
@@ -32,10 +32,20 @@ void OgreOpcodeExampleApp::createScene(void)
 	// Create a skydome
 	mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
-	TargetSight = (Overlay*)OverlayManager::getSingleton().getByName("gunTarget");
-	TargetSight->show();
-	hotTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("hotGunTarget");
-	hotTargetSight->hide();
+	mTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("gunTarget");
+	mTargetSight->show();
+	mHotTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("hotGunTarget");
+	mHotTargetSight->hide();
+
+
+	mInfoOverlay = (Overlay*)OverlayManager::getSingleton().getByName("OgreOpcode/InfoOverlay");
+	mInfoOverlay->show();
+
+	mRayObjectText = OverlayManager::getSingleton().getOverlayElement("OgreOpcodeExample/Demo/RayIsHitting");
+	mRayObjectText->setCaption("None");
+
+	mRayDistanceText = OverlayManager::getSingleton().getOverlayElement("OgreOpcodeExample/Demo/RayDistance");
+	mRayDistanceText->setCaption("None");
 
 	// Move the debug overlay up a bit so we can get 2 lines in.
 	OverlayElement* dbgTxt = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
@@ -60,34 +70,35 @@ void OgreOpcodeExampleApp::createScene(void)
 	CollisionManager::getSingletonPtr()->addCollType("bullet", "bullet", COLLTYPE_IGNORE);
 	CollisionManager::getSingletonPtr()->endCollTypes();
 
-	collideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
-
-	Entity* theRobot = mSceneMgr->createEntity("theRobot", "robot.mesh");
-	theRobot->setNormaliseNormals(true);
-	SceneNode* theRobotNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theRobotNode");
-	theRobotNode->attachObject(theRobot);
-	theRobotNode->scale(1.8f, 1.8f, 1.8f);
-
-	mRobotCollShape = static_cast<MeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape("ogrehead1"));
-	mRobotCollShape->load(theRobot);
-	mRobotCollObj = collideContext->newObject();
-	mRobotCollObj->setCollClass("ogrerobot");
-	mRobotCollObj->setShape(mRobotCollShape);
-	collideContext->addObject(mRobotCollObj);
+	mCollideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
 
 	SceneNode* theSphereNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theSphereNode");
 	theSphereNode->setPosition(200.0f, 60.0f, 10.0f);
 
 	mTestCollShape = static_cast<SphereMeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape("ellipsoid", SHAPETYPE_SPHERE));
 	mTestCollShape->load("testShape", theSphereNode, 25.0f);
-	mTestCollObj = collideContext->newObject();
+	mTestCollObj = mCollideContext->newObject();
 	mTestCollObj->setCollClass("ogrerobot");
 	mTestCollObj->setShape(mTestCollShape);
-	collideContext->addObject(mTestCollObj);
-	
+	mCollideContext->addObject(mTestCollObj);
+
 	parseDotScene("scene.xml");
 
-	collideContext->reset();
+	Entity* theRobot = mSceneMgr->createEntity("theRobot", "robot.mesh");
+	SceneNode* theRobotNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theRobotNode");
+	theRobotNode->attachObject(theRobot);
+	theRobotNode->setPosition(0.0f, 0.0f, -240.0f);
+	//theRobotNode->scale(2.0f, 2.0f, 2.0f);
+	theRobot->setNormaliseNormals(true);
+
+	mRobotCollShape = static_cast<MeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape("ogrehead1"));
+	mRobotCollShape->load(theRobot);
+	mRobotCollObj = mCollideContext->newObject();
+	mRobotCollObj->setCollClass("ogrerobot");
+	mRobotCollObj->setShape(mRobotCollShape);
+	mCollideContext->addObject(mRobotCollObj);
+
+	mCollideContext->reset();
 }
 //-------------------------------------------------------------------------------------
 bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
@@ -136,38 +147,40 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 
 	// This has to be here - debug visualization needs to be updated each frame..
 	// but only after we update objects!
-	collideContext->visualize(mVisualizeObjects, mDoABBVisualization, mDoLocalVisualization, mDoGlobalVisualization);
+	mCollideContext->visualize(mVisualizeObjects, mDoABBVisualization, mDoLocalVisualization, mDoGlobalVisualization);
 
-	CollisionManager::getSingletonPtr()->getDefaultContext()->collide();
+	CollisionManager::getSingletonPtr()->getDefaultContext()->collide(evt.timeSinceLastFrame);
 
-	ray = mCamera->getCameraToViewportRay(0.5, 0.5);
+	mRay = mCamera->getCameraToViewportRay(0.5, 0.5);
 
-	// Do ray testing against everything but the level
+	// Do mRay testing against everything but the level
 	CollisionPair **pick_report;
-	int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(ray, 2000.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
-	const CollisionReporter &rayrept =
-		CollisionManager::getSingletonPtr()->getDefaultContext()->getCheckReport();
+	int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(mRay, 2000.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
 
-			mDbgMsg = "";
+	mDbgMsg1 = "";
+	mDbgMsg2 = "";
 	if (num_picks > 0)
 	{
-		TargetSight->hide();
-		hotTargetSight->show();
-		mDbgMsg += Ogre::StringConverter::toString(num_picks) + " ";
-		for(int i = 0; i < num_picks; i++)
-		{
-			CollisionObject* yeah = pick_report[i]->co1;
-			Vector3 contact = pick_report[i]->contact;
-			mDbgMsg = mDbgMsg + yeah->getShape()->getName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
-		}
+		mTargetSight->hide();
+		mHotTargetSight->show();
+		mDbgMsg1 += Ogre::StringConverter::toString(num_picks) + " ";
+		
+		//for(int i = 0; i < num_picks; i++)
+		//{
+			CollisionObject* yeah = pick_report[0]->co1;
+			Vector3 contact = pick_report[0]->contact;
+			mDbgMsg1 = mDbgMsg1 + yeah->getShape()->getName();
+			mDbgMsg2 = mDbgMsg2 + " Distance: " + StringConverter::toString(pick_report[0]->distance);
+		//}
 	}
 	else
 	{
-		TargetSight->show();
-		hotTargetSight->hide();
+		mTargetSight->show();
+		mHotTargetSight->hide();
 	}
-	
-	mWindow->setDebugText(mDbgMsg);
+
+	mRayObjectText->setCaption(mDbgMsg1);
+	mRayDistanceText->setCaption(mDbgMsg2);
 
 	return OgreOpcodeExample::frameStarted(evt);
 }
@@ -181,7 +194,7 @@ void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* en
 		tempCollShape->setStatic();
 	entity->setNormaliseNormals(true);
 	tempCollShape->load(entity);
-	tempCollObject = collideContext->newObject();
+	tempCollObject = mCollideContext->newObject();
 	if(makeStatic)
 	{
 		tempCollObject->setCollClass("level");
@@ -189,7 +202,7 @@ void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* en
 	else
 		tempCollObject->setCollClass("ogrerobot");
 	tempCollObject->setShape(tempCollShape);
-	collideContext->addObject(tempCollObject);
+	mCollideContext->addObject(tempCollObject);
 }
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExampleApp::parseDotScene( const String &SceneName)
