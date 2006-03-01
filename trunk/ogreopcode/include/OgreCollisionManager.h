@@ -64,6 +64,11 @@ namespace OgreOpcode
 	/// different classes of the collision system, namely
 	/// CollisionContext and MeshCollisionShape. A CollisionContext
 	/// serves as factory for CollisionObject%s.
+	class BoxCollisionShape;
+	class SphereMeshCollisionShape;
+	class PtrCollisionShape;
+	
+	
 	class _OgreOpcode_Export CollisionManager : public Singleton<CollisionManager>
 	{
 		//friend class MeshCollisionShape;
@@ -86,9 +91,14 @@ namespace OgreOpcode
 		static CollisionManager& getSingleton(void);
 
 		CollisionContext *newContext(const String&);
-		ICollisionShape   *newShape(const String&, const ShapeType shpType = SHAPETYPE_MESH);
+
+		MeshCollisionShape* createMeshCollisionShape(const String&);
+		BoxCollisionShape* createBoxCollisionShape(const String&);
+		SphereMeshCollisionShape* createSphereMeshCollisionShape(const String&);
+		PtrCollisionShape* createPtrCollisionShape(const String&);
+
 		void releaseContext(CollisionContext *);
-		void releaseShape(MeshCollisionShape *);
+		void releaseShape(ICollisionShape *);
 
 		CollisionContext *getDefaultContext(void);
 		CollisionContext *getContext(const String& name);
@@ -136,6 +146,8 @@ namespace OgreOpcode
 			return colltype_table[key];
 		};
 	protected:
+		ICollisionShape   *newShape(const String&, const ShapeType shpType = SHAPETYPE_MESH);
+
 		int unique_id;
 		typedef std::map<String,CollisionContext*> ContextList;
 		typedef ContextList::const_iterator ContextIterator;
