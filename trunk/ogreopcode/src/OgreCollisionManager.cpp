@@ -158,6 +158,26 @@ namespace OgreOpcode
 		return cs;
 	}
 
+	MeshCollisionShape* CollisionManager::createMeshCollisionShape(const String& name)
+	{
+		return static_cast<MeshCollisionShape*>(newShape(name, SHAPETYPE_MESH));
+	}
+
+	BoxCollisionShape* CollisionManager::createBoxCollisionShape(const String& name)
+	{
+		return static_cast<BoxCollisionShape*>(newShape(name, SHAPETYPE_BOX));
+	}
+
+	SphereMeshCollisionShape* CollisionManager::createSphereMeshCollisionShape(const String& name)
+	{
+		return static_cast<SphereMeshCollisionShape*>(newShape(name, SHAPETYPE_SPHERE));
+	}
+
+	PtrCollisionShape* CollisionManager::createPtrCollisionShape(const String& name)
+	{
+		return static_cast<PtrCollisionShape*>(newShape(name, SHAPETYPE_PTR));
+	}
+	
 	void CollisionManager::releaseContext(CollisionContext *cc)
 	{
 		assert(cc);
@@ -173,7 +193,7 @@ namespace OgreOpcode
 		}
 	}
 
-	void CollisionManager::releaseShape(MeshCollisionShape *cs)
+	void CollisionManager::releaseShape(ICollisionShape *cs)
 	{
 		assert(cs);
 		ShapeIterator i, iend;

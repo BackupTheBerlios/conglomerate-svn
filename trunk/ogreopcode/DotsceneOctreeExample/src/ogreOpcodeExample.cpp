@@ -46,7 +46,7 @@ bool OgreOpcodeExample::configure(void)
 void OgreOpcodeExample::chooseSceneManager(void)
 {
 	// Get the SceneManager, in this case a generic one
-	mSceneMgr = mRoot->getSceneManager(ST_GENERIC);
+	mSceneMgr = mRoot->createSceneManager(ST_GENERIC);
 }
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExample::createCamera(void)

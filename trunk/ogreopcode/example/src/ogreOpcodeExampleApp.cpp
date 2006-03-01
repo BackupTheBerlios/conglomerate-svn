@@ -75,7 +75,7 @@ void OgreOpcodeExampleApp::createScene(void)
 	SceneNode* theSphereNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theSphereNode");
 	theSphereNode->setPosition(200.0f, 60.0f, 10.0f);
 
-	mTestCollShape = static_cast<SphereMeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape("ellipsoid", SHAPETYPE_SPHERE));
+	mTestCollShape = CollisionManager::getSingletonPtr()->createSphereMeshCollisionShape("ellipsoid");
 	mTestCollShape->load("testShape", theSphereNode, 25.0f);
 	mTestCollObj = mCollideContext->newObject();
 	mTestCollObj->setCollClass("ogrerobot");
@@ -91,7 +91,7 @@ void OgreOpcodeExampleApp::createScene(void)
 	//theRobotNode->scale(2.0f, 2.0f, 2.0f);
 	theRobot->setNormaliseNormals(true);
 
-	mRobotCollShape = static_cast<MeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape("ogrehead1"));
+	mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");
 	mRobotCollShape->load(theRobot);
 	mRobotCollObj = mCollideContext->newObject();
 	mRobotCollObj->setCollClass("ogrerobot");
@@ -189,7 +189,7 @@ void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* en
 {
 	MeshCollisionShape* tempCollShape;
 	CollisionObject* tempCollObject;
-	tempCollShape = static_cast<MeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape(shapeName));
+	tempCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape(shapeName);
 	if(makeStatic)
 		tempCollShape->setStatic();
 	entity->setNormaliseNormals(true);

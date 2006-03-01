@@ -385,7 +385,7 @@ namespace OgreOpcode
 					// do sphere-sphere collision check
 					const Matrix4 coTrans = (*co)->getTransform();
 					//s0.set(coTrans[0][3], coTrans[1][3], coTrans[2][3], (*co)->getRadius());
-					s0.set((*co)->new_pos, (*co)->getRadius());
+					s0.set((*co)->getShape()->getCenter(), (*co)->getRadius());
 					checkReportHandler.mTotalBVBVTests++;
 					if (ball.intersects(s0))
 					{

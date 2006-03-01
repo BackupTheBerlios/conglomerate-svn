@@ -63,7 +63,7 @@ void OgreOpcodeDotsceneExample::createScene(void)
 	theRobotNode->attachObject(theRobot);
 	theRobotNode->scale(1.8f, 1.8f, 1.8f);
 
-	mRobotCollShape = static_cast<MeshCollisionShape*>(CollisionManager::getSingletonPtr()->newShape("ogrehead1"));
+	mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");
 	mRobotCollShape->load(theRobot);
 	mRobotCollObj = collideContext->newObject();
 	mRobotCollObj->setCollClass("ogrerobot");
