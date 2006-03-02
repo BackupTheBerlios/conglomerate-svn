@@ -90,15 +90,20 @@ namespace OgreOpcode
 
 		static CollisionManager& getSingleton(void);
 
-		CollisionContext *newContext(const String&);
+		CollisionContext *createContext(const String&);
+		void destroyContext(CollisionContext *);
 
 		MeshCollisionShape* createMeshCollisionShape(const String&);
 		BoxCollisionShape* createBoxCollisionShape(const String&);
 		SphereMeshCollisionShape* createSphereMeshCollisionShape(const String&);
 		PtrCollisionShape* createPtrCollisionShape(const String&);
 
-		void releaseContext(CollisionContext *);
-		void releaseShape(ICollisionShape *);
+		void destroyShape(ICollisionShape *);
+
+		void attachContext(CollisionContext *);
+		void attachShape(ICollisionShape *);
+		void detachContext(CollisionContext *);
+		void detachShape(ICollisionShape *);
 
 		CollisionContext *getDefaultContext(void);
 		CollisionContext *getContext(const String& name);
@@ -146,7 +151,7 @@ namespace OgreOpcode
 			return colltype_table[key];
 		};
 	protected:
-		ICollisionShape   *newShape(const String&, const ShapeType shpType = SHAPETYPE_MESH);
+		ICollisionShape *createShape(const String&, const ShapeType shpType = SHAPETYPE_MESH);
 
 		int unique_id;
 		typedef std::map<String,CollisionContext*> ContextList;

@@ -88,20 +88,22 @@ namespace OgreOpcode
 		ContextList::iterator ctxIter;
 		for (ctxIter = context_list.begin(); ctxIter != context_list.end(); ++ctxIter)
 		{
-			delete ctxIter->second;
+			if(ctxIter->second)
+				delete ctxIter->second;
 		}
 		context_list.clear();
 		ShapeList::iterator shpIter;
 		for (shpIter = shape_list.begin(); shpIter != shape_list.end(); ++shpIter)
 		{
-			delete shpIter->second;
+			if(shpIter->second)
+				delete shpIter->second;
 		}
 		shape_list.clear();
 
 		Opcode::CloseOpcode();
 	}
 
-	CollisionContext *CollisionManager::newContext(const String& contextName)
+	CollisionContext *CollisionManager::createContext(const String& contextName)
 	{
 		ContextIterator i = context_list.find(contextName);
 		if (i != context_list.end())
@@ -109,13 +111,13 @@ namespace OgreOpcode
 			// Warning! Context already exsists. Return the exsisting one.
 			return i->second;
 		}
-		CollisionContext *cc = new CollisionContext();
+		CollisionContext *cc = new CollisionContext(contextName);
 		context_list.insert(ContextList::value_type(contextName,cc));
 		return cc;
 	}
 
 	/// Create a new, possibly shared shape object.
-	ICollisionShape *CollisionManager::newShape(const String& id, const ShapeType shpType)
+	ICollisionShape *CollisionManager::createShape(const String& id, const ShapeType shpType)
 	{
 		//      assert(id);
 
@@ -124,8 +126,15 @@ namespace OgreOpcode
 		ShapeIterator i = shape_list.find(new_id);
 		if (i != shape_list.end())
 		{
-			// Warning! Shape already exsists. Return the exsisting one.
-			return i->second;
+			// Warning! Shape already exsists. Return the exsisting one, if the pointer is valid
+			// otherwise: delete the new_id shape from the shape list.
+			if(i->second)
+			{
+				return i->second;
+			} else
+			{
+				shape_list.erase(i->first);
+			}
 		}
 		if(shpType == SHAPETYPE_MESH)
 		{
@@ -160,25 +169,41 @@ namespace OgreOpcode
 
 	MeshCollisionShape* CollisionManager::createMeshCollisionShape(const String& name)
 	{
-		return static_cast<MeshCollisionShape*>(newShape(name, SHAPETYPE_MESH));
+		return static_cast<MeshCollisionShape*>(createShape(name, SHAPETYPE_MESH));
 	}
 
 	BoxCollisionShape* CollisionManager::createBoxCollisionShape(const String& name)
 	{
-		return static_cast<BoxCollisionShape*>(newShape(name, SHAPETYPE_BOX));
+		return static_cast<BoxCollisionShape*>(createShape(name, SHAPETYPE_BOX));
 	}
 
 	SphereMeshCollisionShape* CollisionManager::createSphereMeshCollisionShape(const String& name)
 	{
-		return static_cast<SphereMeshCollisionShape*>(newShape(name, SHAPETYPE_SPHERE));
+		return static_cast<SphereMeshCollisionShape*>(createShape(name, SHAPETYPE_SPHERE));
 	}
 
 	PtrCollisionShape* CollisionManager::createPtrCollisionShape(const String& name)
 	{
-		return static_cast<PtrCollisionShape*>(newShape(name, SHAPETYPE_PTR));
+		return static_cast<PtrCollisionShape*>(createShape(name, SHAPETYPE_PTR));
 	}
 	
-	void CollisionManager::releaseContext(CollisionContext *cc)
+	void CollisionManager::attachContext(CollisionContext *cc)
+	{
+		String contextName = cc->getName();
+		ContextIterator i = context_list.find(contextName);
+		if (i != context_list.end())
+		{
+			// Warning! Context already exsists.
+			// If the pointer is 0 : Return without touching anything.
+			if(i->second)
+				return;
+			// Just remove the context from the list
+			context_list.erase(i->first);
+		}
+		context_list.insert(ContextList::value_type(contextName,cc));
+	}
+
+	void CollisionManager::detachContext(CollisionContext *cc)
 	{
 		assert(cc);
 		ContextIterator i, iend;
@@ -193,7 +218,45 @@ namespace OgreOpcode
 		}
 	}
 
-	void CollisionManager::releaseShape(ICollisionShape *cs)
+	void CollisionManager::destroyContext(CollisionContext *cc)
+	{
+		assert(cc);
+		ContextIterator i, iend;
+		iend = context_list.end();
+		for (i = context_list.begin(); i != iend; ++i)
+		{
+			if (i->second == cc)
+			{
+				context_list.erase(i->first);
+				delete cc;
+				break;
+			}
+		}
+	}
+
+	void CollisionManager::attachShape(ICollisionShape *cs)
+	{
+		String new_id = getResourceID(cs->getName());
+
+		ShapeIterator i = shape_list.find(new_id);
+		if (i != shape_list.end())
+		{
+			// Warning! Shape already exsists.
+			// Return doing nothing, if the pointer is valid
+			// otherwise: delete the new_id shape from the shape list.
+			if(i->second)
+			{
+				return;
+			} else
+			{
+				shape_list.erase(i->first);
+			}
+		}
+
+		shape_list.insert(ShapeList::value_type(new_id,cs));
+	}
+
+	void CollisionManager::detachShape(ICollisionShape *cs)
 	{
 		assert(cs);
 		ShapeIterator i, iend;
@@ -203,6 +266,22 @@ namespace OgreOpcode
 			if (i->second == cs)
 			{
 				shape_list.erase(i->first);
+				break;
+			}
+		}
+	}
+
+	void CollisionManager::destroyShape(ICollisionShape *cs)
+	{
+		assert(cs);
+		ShapeIterator i, iend;
+		iend = shape_list.end();
+		for (i = shape_list.begin(); i != iend; ++i)
+		{
+			if (i->second == cs)
+			{
+				shape_list.erase(i->first);
+				delete cs;
 				break;
 			}
 		}
@@ -231,7 +310,7 @@ namespace OgreOpcode
 	{
 		if (!default_context)
 		{
-			default_context = newContext("default");
+			default_context = createContext("default");
 		}
 		return default_context;
 	}

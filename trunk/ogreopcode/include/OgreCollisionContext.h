@@ -53,13 +53,13 @@ namespace OgreOpcode
 	{
 	public:
 		/// constructor
-		CollisionContext();
+		CollisionContext(const String& name);
 		/// destructor
 		virtual ~CollisionContext();
 		/// create a collide object
 		virtual CollisionObject *newObject(void);
-		/// release a collide object
-		virtual void releaseObject(CollisionObject *collObj);
+		/// kills a collide object
+		virtual void destroyObject(CollisionObject *collObj);
 		/// add collide object to context
 		virtual void addObject(CollisionObject *collObj);
 		/// remove collide object from context
@@ -84,6 +84,8 @@ namespace OgreOpcode
 		void reset();
 		void update(Real dt=1.0);
 
+		virtual const String& getName() { return mName; };
+
 	private:
 		friend class CollisionObject;
 
@@ -98,13 +100,8 @@ namespace OgreOpcode
 		std::list<CollisionObject*> attached_list;    ///< the list of objects currently attached to the context
 		typedef std::list<CollisionObject*>::const_iterator attached_list_iterator;
 		int unique_id;
+		String mName;
 	};
-
-	inline CollisionContext::CollisionContext() :
-	unique_id(0)
-	{
-		// empty
-	}
 
 }
 

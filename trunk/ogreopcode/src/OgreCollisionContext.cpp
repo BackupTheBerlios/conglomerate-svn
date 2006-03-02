@@ -51,8 +51,10 @@ namespace OgreOpcode
 		// remove collision objects
 		while (!owned_list.empty())
 		{
-			releaseObject(*(owned_list.begin()));
+			destroyObject(*(owned_list.begin()));
 		}
+		// remove from collision manager
+		//CollisionManager::getSingletonPtr()->detachContext(this);
 	}
 
 	// Construct a new collide object.
@@ -65,8 +67,15 @@ namespace OgreOpcode
 		return co;
 	}
 
+	CollisionContext::CollisionContext(const String& name) :
+	unique_id(0),
+	mName(name)
+	{
+		// empty
+	}
+
 	// Kill an owned collide object.
-	void CollisionContext::releaseObject(CollisionObject *collObj)
+	void CollisionContext::destroyObject(CollisionObject *collObj)
 	{
 		if (collObj != 0)
 		{

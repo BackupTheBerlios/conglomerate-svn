@@ -44,6 +44,19 @@ namespace OgreOpcode
 	class _OgreOpcode_Export CollisionPair
 	{
 	public:
+		CollisionPair()
+			: co1(0),
+			co2(0),
+			tstamp(0.0f),
+			contact(Ogre::Vector3::ZERO),
+			distance(0.0f),
+			co1_normal(Ogre::Vector3::ZERO),
+			co2_normal(Ogre::Vector3::ZERO),
+			numBVBVTests(0),
+			numBVPrimTests(0),
+			numPrimPrimTests(0)
+		{};
+		
 		CollisionObject *co1; ///< the first object involved in the collision
 		CollisionObject *co2; ///< the second object involved in the collision
 		Real tstamp; ///< the timestamp at which the collision occured
