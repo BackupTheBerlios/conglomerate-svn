@@ -88,7 +88,7 @@ void OgreOpcodeExampleApp::createScene(void)
 	SceneNode* theRobotNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theRobotNode");
 	theRobotNode->attachObject(theRobot);
 	theRobotNode->setPosition(0.0f, 0.0f, -240.0f);
-	//theRobotNode->scale(2.0f, 2.0f, 2.0f);
+	theRobotNode->scale(2.0f, 2.0f, 2.0f);
 	theRobot->setNormaliseNormals(true);
 
 	mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");

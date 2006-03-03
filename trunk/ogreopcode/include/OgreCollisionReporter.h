@@ -240,15 +240,17 @@ namespace OgreOpcode
 				return 0;
 			}
 
-			Vector3 distVec;
+			//Vector3 distVec;
 			CollisionPair* minPtr = &coll_pairs.begin()->second;
-			float minDist = Vector3(minPtr->contact - v).squaredLength();
+			//float minDist = Vector3(minPtr->contact - v).squaredLength();
+			float minDist = minPtr->distance;
 			CollPairMap::iterator icp=coll_pairs.begin(), iend=coll_pairs.end();
 			for (; icp!=iend; ++icp)
 			{
 				CollisionPair* curPtr = &icp->second;
-				distVec = curPtr->contact - v;
-				Real dist = distVec.squaredLength();
+				//distVec = curPtr->contact - v;
+				//Real dist = distVec.squaredLength();
+				Real dist = curPtr->distance;
 				if (dist < minDist)
 				{
 					minDist = dist;

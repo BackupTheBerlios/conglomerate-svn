@@ -138,9 +138,10 @@ namespace OgreOpcode
 			_debug_node(0),
 			_debug_obj(0),
 			_global_debug_node(0),
-			_global_debug_obj(0)
+			_global_debug_obj(0),
+			old_matrix(Matrix4::IDENTITY),
+			new_matrix(Matrix4::IDENTITY)
 		{
-			//			context_node.SetPtr(this);
 			xmin_cnode.SetCollideObject(this);
 			xmax_cnode.SetCollideObject(this);
 		};

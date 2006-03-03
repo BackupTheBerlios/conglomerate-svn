@@ -68,7 +68,7 @@ namespace OgreOpcode
 	/// @return bool <TODO: insert return value description here>
 	bool PtrCollisionShape::rebuild()
 	{
-		opcMeshAccess.SetInterfaceType(Opcode::MESH_TRIANGLE);
+		//opcMeshAccess.SetInterfaceType(Opcode::MESH_TRIANGLE);
 		opcMeshAccess.SetNbTriangles(numFaces);
 		opcMeshAccess.SetNbVertices(numVertices);
 		opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
