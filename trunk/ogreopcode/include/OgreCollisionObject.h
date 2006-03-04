@@ -122,8 +122,9 @@ namespace OgreOpcode
 		friend class CollisionContext;
 
 	public:
-		CollisionObject()
+		CollisionObject(const String& name)
 			: mContext(0),
+			mName(name),
 			mRadius(0.0f),
 			old_center_offset(0,0,0),
 			new_center_offset(0,0,0),
@@ -177,6 +178,7 @@ namespace OgreOpcode
 		void setId(int i)
 		{
 			id = i;
+			mName = mName + StringConverter::toString(id);
 		};
 
 		/// <TODO: insert function description here>
@@ -186,6 +188,11 @@ namespace OgreOpcode
 			return id;
 		};
 
+		String getName() const
+		{
+			return mName;
+		};
+		
 		/// <TODO: insert function description here>
 		/// @param [in]       b bool     <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
@@ -773,6 +780,7 @@ namespace OgreOpcode
 		};
 	protected:
 		int id;                     ///< a unique 32 bit id for this object
+		String mName;
 		CollisionContext *mContext;    ///< the collide context this object is currently attached to
 		nNode context_node;         ///< attached to context with this node
 

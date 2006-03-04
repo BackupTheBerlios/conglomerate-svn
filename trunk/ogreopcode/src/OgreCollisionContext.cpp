@@ -56,9 +56,9 @@ namespace OgreOpcode
 	}
 
 	// Construct a new collide object.
-	CollisionObject *CollisionContext::newObject(void)
+	CollisionObject *CollisionContext::newObject(const String& name)
 	{
-		CollisionObject *co = new CollisionObject();
+		CollisionObject *co = new CollisionObject(name);
 		co->setId(unique_id++);
 		co->setContext(this);
 		owned_list.push_back(co);

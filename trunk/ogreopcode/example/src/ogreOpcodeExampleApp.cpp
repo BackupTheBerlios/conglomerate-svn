@@ -82,7 +82,7 @@ void OgreOpcodeExampleApp::createScene(void)
 
 	mTestCollShape = CollisionManager::getSingletonPtr()->createSphereMeshCollisionShape("ellipsoid");
 	mTestCollShape->load("testShape", theSphereNode, 25.0f);
-	mTestCollObj = mCollideContext->newObject();
+	mTestCollObj = mCollideContext->newObject("ellipsoid");
 	mTestCollObj->setCollClass("ogrerobot");
 	mTestCollObj->setShape(mTestCollShape);
 	mCollideContext->addObject(mTestCollObj);
@@ -130,12 +130,12 @@ bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 {
-      static Real transAmount = -0.5f;
+      static Real transAmount = -0.8f;
       static Real transTraveled = 0.0f;
       if(transTraveled >= 480.0f)
-         transAmount = -0.5f;
+         transAmount = -0.8f;
       if(transTraveled <= -480.0f)
-         transAmount = 0.5f;
+         transAmount = 0.8f;
       transTraveled += transAmount;
 
 	  mRobotEntity->translate(0.0f, transAmount, 0.0f);
@@ -183,12 +183,12 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 		mHotTargetSight->hide();
 	}
 
-      // Check all collision objects for collision
-	int mCollObj1Picks = mRobotEntity->getCollisionObject()->getCollisions(pick_report);
-	if(mCollObj1Picks > 0)
+	// Check Robot for collisions
+	if(mRobotEntity->hasCollisions())
 	{
-         transAmount = 0.5f;
-		 mWindow->setDebugText("bollijlkjoe");
+		int mCollObj1Picks = mRobotEntity->getCollisions(pick_report);
+		transAmount = 0.8f;
+		mWindow->setDebugText("Robot collided: " + StringConverter::toString(mCollObj1Picks) + " times against " + pick_report[0]->co1->getName() );
 	}
 
 	mRayObjectText->setCaption(mDbgMsg1);
@@ -206,7 +206,7 @@ void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* en
 		tempCollShape->setStatic();
 	entity->setNormaliseNormals(true);
 	tempCollShape->load(entity);
-	tempCollObject = mCollideContext->newObject();
+	tempCollObject = mCollideContext->newObject("dotsceneObject");
 	if(makeStatic)
 	{
 		tempCollObject->setCollClass("level");

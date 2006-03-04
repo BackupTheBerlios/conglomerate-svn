@@ -113,7 +113,7 @@ public:
 
 		mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");
 		mRobotCollShape->load(mEntity);
-		mCollObj = mCollideContext->newObject();
+		mCollObj = mCollideContext->newObject("ogrerobot");
 		mCollObj->setCollClass("ogrerobot");
 		mCollObj->setShape(mRobotCollShape);
 		mCollideContext->addObject(mCollObj);

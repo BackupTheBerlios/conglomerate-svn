@@ -57,7 +57,7 @@ namespace OgreOpcode
 		/// destructor
 		virtual ~CollisionContext();
 		/// create a collide object
-		virtual CollisionObject *newObject(void);
+		virtual CollisionObject *newObject(const String& name);
 		/// kills a collide object
 		virtual void destroyObject(CollisionObject *collObj);
 		/// add collide object to context
