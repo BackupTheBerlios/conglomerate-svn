@@ -171,7 +171,7 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 		
 		for(int i = 0; i < num_picks; i++)
 		{
-			CollisionObject* yeah = pick_report[0]->co1;
+			CollisionObject* yeah = pick_report[0]->co_this;
 			Vector3 contact = pick_report[0]->contact;
 			mDbgMsg1 = mDbgMsg1 + yeah->getShape()->getName();
 			mDbgMsg2 = mDbgMsg2 + " Distance: " + StringConverter::toString(pick_report[0]->distance);
@@ -188,9 +188,12 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 	{
 		int mCollObj1Picks = mRobotEntity->getCollisions(pick_report);
 		transAmount = 0.8f;
-		mWindow->setDebugText("Robot collided: " + StringConverter::toString(mCollObj1Picks) + " times against " + pick_report[0]->co1->getName() );
+		mWindow->setDebugText("Robot collided: " + StringConverter::toString(mCollObj1Picks) + " times against " + pick_report[0]->co_this->getName() );
 	}
 
+	mDbgMsg2 = mDbgMsg2 + " \nCollisionContext attached objects: " + StringConverter::toString(mCollideContext->getAttachedObjectCount());
+	mDbgMsg2 = mDbgMsg2 + " \nCollisionContext owned objects: " + StringConverter::toString(mCollideContext->getOwnedObjectCount());
+	mDbgMsg2 = mDbgMsg2 + " \nCollisionManager shapes: " + StringConverter::toString(CollisionManager::getSingletonPtr()->getShapeCount());
 	mRayObjectText->setCaption(mDbgMsg1);
 	mRayDistanceText->setCaption(mDbgMsg2);
 

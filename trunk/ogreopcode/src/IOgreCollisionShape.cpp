@@ -351,8 +351,8 @@ namespace OgreOpcode
 
 				// fill the contact point into the collision report
 				collPair.contact    += contact;
-				collPair.co1_normal += t[0].normal();
-				collPair.co2_normal += t[1].normal();
+				collPair.co_this_normal += t[0].normal();
+				collPair.co_other_normal += t[1].normal();
 			}
 
 			// average collide results
@@ -360,10 +360,10 @@ namespace OgreOpcode
 			{
 				float div = 1.0f / float(numPairs);
 				collPair.contact    *= div;
-				collPair.co1_normal *= div;
-				collPair.co2_normal *= div;
-				collPair.co1_normal.normalise();
-				collPair.co2_normal.normalise();
+				collPair.co_this_normal *= div;
+				collPair.co_other_normal *= div;
+				collPair.co_this_normal.normalise();
+				collPair.co_other_normal.normalise();
 				return true;
 			}
 			else
@@ -483,8 +483,8 @@ namespace OgreOpcode
 
 				collPair.contact = m33 * vContact;//line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
 				collPair.distance = thedist;
-				collPair.co1_normal = m33 * vNormal;
-				collPair.co2_normal = collPair.co1_normal;
+				collPair.co_this_normal = m33 * vNormal;
+				collPair.co_other_normal = collPair.co_this_normal;
 
 				return true;
 			}
@@ -576,8 +576,8 @@ namespace OgreOpcode
 				const float div = 1.0f / 3.0f;
 				Vector3 midpoint = (v0 + v1 + v2) * div;
 				collPair.contact    = ownMatrix * midpoint;
-				collPair.co1_normal = m33 * vNormal;
-				collPair.co2_normal = collPair.co1_normal;
+				collPair.co_this_normal = m33 * vNormal;
+				collPair.co_other_normal = collPair.co_this_normal;
 				return true;
 			}
 			else

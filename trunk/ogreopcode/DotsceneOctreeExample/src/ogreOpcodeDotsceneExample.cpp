@@ -65,7 +65,7 @@ void OgreOpcodeDotsceneExample::createScene(void)
 
 	mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");
 	mRobotCollShape->load(theRobot);
-	mRobotCollObj = collideContext->newObject();
+	mRobotCollObj = collideContext->newObject("ogrerobot");
 	mRobotCollObj->setCollClass("ogrerobot");
 	mRobotCollObj->setShape(mRobotCollShape);
 	collideContext->addObject(mRobotCollObj);
@@ -139,7 +139,7 @@ bool OgreOpcodeDotsceneExample::frameStarted(const FrameEvent& evt)
 		mDbgMsg += Ogre::StringConverter::toString(num_picks) + " ";
 		for(int i = 0; i < num_picks; i++)
 		{
-			CollisionObject* yeah = pick_report[i]->co1;
+			CollisionObject* yeah = pick_report[i]->co_this;
 			Vector3 contact = pick_report[i]->contact;
 			mDbgMsg = mDbgMsg + yeah->getShape()->getName() + " Distance: " + StringConverter::toString(pick_report[i]->distance);
 		}

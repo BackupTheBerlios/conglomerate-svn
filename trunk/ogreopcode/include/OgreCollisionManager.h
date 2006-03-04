@@ -109,6 +109,11 @@ namespace OgreOpcode
 		CollisionContext *getContext(const String& name);
 		SceneManager *getSceneManager(void);
 
+		const int getShapeCount()
+		{
+			return static_cast< int >( shape_list.size() );
+		}
+
 		// define collision classes and collision check relationships
 		void beginCollClasses(void);
 		void addCollClass(const String &);

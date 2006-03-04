@@ -248,12 +248,12 @@ namespace OgreOpcode
 
 						// fill out a collide report and add to report handler
 						CollisionPair cr;
-						cr.co1     = (*other);
-						cr.co2     = (*other);
+						cr.co_this     = (*other);
+						cr.co_other     = (*other);
 						cr.tstamp  = 0.0;
 						cr.contact = (d*radius) + c0;
-						cr.co1_normal = d;
-						cr.co2_normal = -d;
+						cr.co_this_normal = d;
+						cr.co_other_normal = -d;
 						checkReportHandler.addCollision(cr,own_id,(*other)->id);
 					}
 				}
@@ -317,8 +317,8 @@ namespace OgreOpcode
 					checkReportHandler.mTotalBVBVTests += cp.numBVPrimTests;
 					if (ret)
 					{
-						cp.co1 = (*co);
-						cp.co2 = (*co);
+						cp.co_this = (*co);
+						cp.co_other = (*co);
 						checkReportHandler.addCollision(cp, ownId, (*co)->id);
 						if (COLLTYPE_QUICK == collType)
 						{
@@ -396,8 +396,8 @@ namespace OgreOpcode
 					if (ball.intersects(s0))
 					{
 						CollisionPair cp;
-						cp.co1 = (*co);
-						cp.co2 = (*co);
+						cp.co_this = (*co);
+						cp.co_other = (*co);
 						checkReportHandler.addCollision(cp, ownId, (*co)->id);
 					}
 				}
@@ -413,8 +413,8 @@ namespace OgreOpcode
 						checkReportHandler.mTotalBVPrimTests += cp.numBVPrimTests;
 						if (ret)
 						{
-							cp.co1 = (*co);
-							cp.co2 = (*co);
+							cp.co_this = (*co);
+							cp.co_other = (*co);
 							checkReportHandler.addCollision(cp, ownId, (*co)->id);
 						}
 					}

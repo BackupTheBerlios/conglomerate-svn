@@ -45,25 +45,25 @@ namespace OgreOpcode
 	{
 	public:
 		CollisionPair()
-			: co1(0),
-			co2(0),
+			: co_this(0),
+			co_other(0),
 			tstamp(0.0f),
 			contact(Ogre::Vector3::ZERO),
 			distance(0.0f),
-			co1_normal(Ogre::Vector3::ZERO),
-			co2_normal(Ogre::Vector3::ZERO),
+			co_this_normal(Ogre::Vector3::ZERO),
+			co_other_normal(Ogre::Vector3::ZERO),
 			numBVBVTests(0),
 			numBVPrimTests(0),
 			numPrimPrimTests(0)
 		{};
 		
-		CollisionObject *co1; ///< the first object involved in the collision
-		CollisionObject *co2; ///< the second object involved in the collision
+		CollisionObject *co_this; ///< the first object involved in the collision
+		CollisionObject *co_other; ///< the second object involved in the collision
 		Real tstamp; ///< the timestamp at which the collision occured
 		Vector3 contact; ///< the point of contact
 		Real distance; ///< distance to point of contact (for ray checks)
-		Vector3 co1_normal; ///< co1's collision plane normal
-		Vector3 co2_normal; ///< co2's collision plane normal
+		Vector3 co_this_normal; ///< co_this's collision plane normal
+		Vector3 co_other_normal; ///< co_other's collision plane normal
 		unsigned int numBVBVTests;
 		unsigned int numBVPrimTests;
 		unsigned int numPrimPrimTests;
@@ -198,7 +198,7 @@ namespace OgreOpcode
 			for (; icp!=iend; ++icp)
 			{
 				CollisionPair &cp = icp->second;
-				if ((cp.co1 == co) || (cp.co2 == co)) 
+				if ((cp.co_this == co) || (cp.co_other == co)) 
 				{
 					report_array[num_reports++] = &cp;
 				}
@@ -225,7 +225,7 @@ namespace OgreOpcode
 			for (; icp!=iend; ++icp)
 			{
 				CollisionPair &cp = icp->second;
-				if ((cp.co1 == co) || (cp.co2 == co)) 
+				if ((cp.co_this == co) || (cp.co_other == co)) 
 				{
 					num_reports++;
 				}

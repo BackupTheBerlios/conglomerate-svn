@@ -450,8 +450,8 @@ namespace OgreOpcode
 							cr.contact = (d*mRadius) + c0;
 
 							// compute the collide normals
-							cr.co1_normal = d;
-							cr.co2_normal = -d;
+							cr.co_this_normal = d;
+							cr.co_other_normal = -d;
 
 							// compute the timestamp where the collision happended
 							cr.tstamp = m_tdelta*u0;
@@ -570,8 +570,8 @@ namespace OgreOpcode
 						crh->mTotalPrimPrimTests += cr.numPrimPrimTests;
 						if (ret)
 						{
-							cr.co1 = this;
-							cr.co2 = other;
+							cr.co_this = this;
+							cr.co_other = other;
 							crh->addCollision(cr,id,other->id);
 							num_colls++;
 							other->num_colls++;
@@ -751,11 +751,11 @@ namespace OgreOpcode
 					_global_debug_obj->addLine(cnt.x,cnt.y-0.5f,cnt.z, cnt.x,cnt.y+0.5f,cnt.z);
 					_global_debug_obj->addLine(cnt.x,cnt.y,cnt.z-0.5f, cnt.x,cnt.y,cnt.z+0.5f);
 
-					Vector3& n = cr->co1_normal;
+					Vector3& n = cr->co_this_normal;
 
 					_global_debug_obj->addLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
 
-					n = cr->co2_normal;
+					n = cr->co_other_normal;
 					_global_debug_obj->addLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
 				}
 			}

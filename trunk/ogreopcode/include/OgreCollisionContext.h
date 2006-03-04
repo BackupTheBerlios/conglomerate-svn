@@ -86,6 +86,26 @@ namespace OgreOpcode
 
 		virtual const String& getName() { return mName; };
 
+		virtual const std::list<CollisionObject*> getAttachedObjects()
+		{
+			return attached_list;
+		};
+
+		virtual const std::list<CollisionObject*> getOwnedObjects()
+		{
+			return owned_list;
+		};
+
+		virtual const int getAttachedObjectCount()
+		{
+			return static_cast< int >( attached_list.size() );
+		}
+
+		virtual const int getOwnedObjectCount()
+		{
+			return static_cast< int >( owned_list.size() );
+		}
+
 	private:
 		friend class CollisionObject;
 
