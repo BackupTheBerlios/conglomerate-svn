@@ -1,0 +1,12 @@
+[!if !EMPTY_PROJECT]
+docs/readme.txt
+src/root.cpp
+res/resource.h
+res/root.rc
+include/root.h
+CopyOnly | res/root.ico
+[!if FRAMEWORK_OWN]
+include\BaseApplication.h
+include\BaseFramelistener.h
+[!endif]
+[!endif]
