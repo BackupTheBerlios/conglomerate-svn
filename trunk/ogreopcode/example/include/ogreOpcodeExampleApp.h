@@ -47,6 +47,91 @@ inline Quaternion makeRandomRotation()
 
 using namespace Ogre;
 
+class GameEntity
+{
+  protected:
+	SceneManager* mSceneMgr;
+	SceneNode* mSceneNode;
+	CollisionContext* mCollideContext;
+	CollisionObject* mCollObj;
+    Entity* mEntity;
+
+  public:
+    GameEntity(SceneManager* sm) 
+      : mSceneMgr(sm),
+	    mSceneNode(0), 
+        mEntity(0) { }
+
+    virtual ~GameEntity() { }
+
+    virtual bool initialise(void) = 0;
+
+    void setPosition(const Vector3& v)
+    {
+      mSceneNode->setPosition(v);
+    } 
+    
+    void setPosition(Real x, Real y, Real z)
+    {
+      mSceneNode->setPosition(Vector3(x, y, z));
+    }
+    
+	CollisionObject* getCollisionObject(void)
+    {
+      return mCollObj;
+    }
+	
+	bool hasCollisions()
+	{
+		return mCollObj->hasCollisions();
+	}
+
+	int getCollisions(CollisionPair **&crp)
+	{
+		return mCollObj->getCollisions(crp);
+	};
+};
+
+class RobotEntity : public GameEntity
+{
+protected:
+	MeshCollisionShape* mRobotCollShape;
+public:
+    RobotEntity(SceneManager* sm)
+      : GameEntity(sm) { }
+    ~RobotEntity() { }
+
+    bool initialise(void)
+    {
+		mCollideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
+		mEntity = mSceneMgr->createEntity("theRobot", "robot.mesh");
+		mSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theRobotNode");
+		mSceneNode->attachObject(mEntity);
+		mSceneNode->setPosition(0.0f, 400.0f, -240.0f);
+		mSceneNode->scale(2.0f, 2.0f, 2.0f);
+		mEntity->setNormaliseNormals(true);
+
+		mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");
+		mRobotCollShape->load(mEntity);
+		mCollObj = mCollideContext->newObject();
+		mCollObj->setCollClass("ogrerobot");
+		mCollObj->setShape(mRobotCollShape);
+		mCollideContext->addObject(mCollObj);
+
+	  return true;
+    }
+
+    void translate(const Vector3& v)
+    {
+      mSceneNode->translate(v);
+    }
+
+    void translate(Real x, Real y, Real z)
+    {
+      mSceneNode->translate(x, y, z);
+    }
+};
+
 class OgreOpcodeExampleApp : public OgreOpcodeExample
 {
 public:
@@ -79,6 +164,7 @@ private:
 	bool mPlayAnimation;
 	String mDbgMsg1;
 	String mDbgMsg2;
+	RobotEntity* mRobotEntity;
 };
 
 #endif // #ifndef __ogreOpcodeExampleApp_h_

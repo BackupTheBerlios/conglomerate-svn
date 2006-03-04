@@ -207,6 +207,32 @@ namespace OgreOpcode
 			return num_reports;
 		}
 
+		/// report collisions for a specific object.
+		/// returns number of collisions only
+		int getCollisions(CollisionObject *co)
+		{
+			// fill report array with all collisions which this
+			// object is involved in.
+			assert(co);
+			int num_reports = 0;
+			int num = coll_pairs.size();
+
+			if (num > max_reports_per_object)
+			{
+				num = max_reports_per_object;
+			}
+			CollPairMap::iterator icp=coll_pairs.begin(), iend=coll_pairs.end();
+			for (; icp!=iend; ++icp)
+			{
+				CollisionPair &cp = icp->second;
+				if ((cp.co1 == co) || (cp.co2 == co)) 
+				{
+					num_reports++;
+				}
+			}
+			return num_reports;
+		}
+
 		/// get all recorded collisions.
 		int getAllCollisions(CollisionPair **& cr_ptr) 
 		{

@@ -376,10 +376,10 @@ namespace OgreOpcode
 			}
 			m_tdelta = t;
 
-			Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
-			p0 += old_center_offset;
-			Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
-			p1 += new_center_offset;
+			//Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
+			//p0 += old_center_offset;
+			//Vector3 p1(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
+			//p1 += new_center_offset;
 			getShape()->getMinMax(minv,maxv);
 	         //minv = Vector3(n_min(p0.x,p1.x)-mRadius,
 	         //               n_min(p0.y,p1.y)-mRadius,
@@ -401,15 +401,15 @@ namespace OgreOpcode
 			CollisionPair& cr)
 		{
 			// This object moved from p0 to p0+v0, the other from p1 to p1+v1.
-			//Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
-			//Vector3 p1(other->old_matrix[0][3], other->old_matrix[1][3], other->old_matrix[2][3]);
-			//Vector3 v0(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
-			Vector3 p0 = old_pos;
-			Vector3 p1 = other->old_pos;
-			Vector3 v0 = new_pos;
+			Vector3 p0(old_matrix[0][3], old_matrix[1][3], old_matrix[2][3]);
+			Vector3 p1(other->old_matrix[0][3], other->old_matrix[1][3], other->old_matrix[2][3]);
+			Vector3 v0(new_matrix[0][3], new_matrix[1][3], new_matrix[2][3]);
+			//Vector3 p0 = old_pos;
+			//Vector3 p1 = other->old_pos;
+			//Vector3 v0 = new_pos;
 			v0 -= p0;
-			//Vector3 v1(Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]) - p1);
-			Vector3 v1(other->new_pos - p1);
+			Vector3 v1(Vector3(other->new_matrix[0][3], other->new_matrix[1][3], other->new_matrix[2][3]) - p1);
+			//Vector3 v1(other->new_pos - p1);
 
 			bool has_contact = false;
 			switch (ct)
@@ -582,6 +582,14 @@ namespace OgreOpcode
 			assert(is_attached);
 			return mContext->collideReportHandler.getCollisions(this,crp);
 			return 0;
+		};
+
+		bool hasCollisions()
+		{
+			assert(mContext);
+			assert(is_attached);
+			if ( mContext->collideReportHandler.getCollisions(this) > 0) return true;
+			return false;
 		};
 
 		void createDebugObject()

@@ -13,7 +13,8 @@ mPlayAnimation(false),
 mVisualizeObjects(false),
 mDoABBVisualization(false),
 mDoLocalVisualization(true),
-mDoGlobalVisualization(true)
+mDoGlobalVisualization(true),
+mRobotEntity(0)
 {
 }
 
@@ -21,6 +22,7 @@ mDoGlobalVisualization(true)
 OgreOpcodeExampleApp::~OgreOpcodeExampleApp(void)
 {
 	delete CollisionManager::getSingletonPtr();
+	delete mRobotEntity;
 }
 
 //-------------------------------------------------------------------------------------
@@ -72,6 +74,9 @@ void OgreOpcodeExampleApp::createScene(void)
 
 	mCollideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
 
+	mRobotEntity = new RobotEntity(mSceneMgr);
+	mRobotEntity->initialise();
+	
 	SceneNode* theSphereNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theSphereNode");
 	theSphereNode->setPosition(200.0f, 60.0f, 10.0f);
 
@@ -83,20 +88,6 @@ void OgreOpcodeExampleApp::createScene(void)
 	mCollideContext->addObject(mTestCollObj);
 
 	parseDotScene("scene.xml");
-
-	Entity* theRobot = mSceneMgr->createEntity("theRobot", "robot.mesh");
-	SceneNode* theRobotNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theRobotNode");
-	theRobotNode->attachObject(theRobot);
-	theRobotNode->setPosition(0.0f, 0.0f, -240.0f);
-	theRobotNode->scale(2.0f, 2.0f, 2.0f);
-	theRobot->setNormaliseNormals(true);
-
-	mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");
-	mRobotCollShape->load(theRobot);
-	mRobotCollObj = mCollideContext->newObject();
-	mRobotCollObj->setCollClass("ogrerobot");
-	mRobotCollObj->setShape(mRobotCollShape);
-	mCollideContext->addObject(mRobotCollObj);
 
 	mCollideContext->reset();
 }
@@ -139,10 +130,20 @@ bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 {
+      static Real transAmount = -0.5f;
+      static Real transTraveled = 0.0f;
+      if(transTraveled >= 480.0f)
+         transAmount = -0.5f;
+      if(transTraveled <= -480.0f)
+         transAmount = 0.5f;
+      transTraveled += transAmount;
+
+	  mRobotEntity->translate(0.0f, transAmount, 0.0f);
+	
 	if (mPlayAnimation)
 	{
 		mSceneMgr->getEntity("theRobot")->getAnimationState("Walk")->addTime(evt.timeSinceLastFrame/5);
-		mRobotCollObj->refit();
+		mRobotEntity->getCollisionObject()->refit();
 	}
 
 	// This has to be here - debug visualization needs to be updated each frame..
@@ -153,7 +154,10 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 
 	mRay = mCamera->getCameraToViewportRay(0.5, 0.5);
 
-	// Do mRay testing against everything but the level
+      // remove level from context - we don't care when ray testing against entities..
+      //CollisionManager::getSingletonPtr()->getDefaultContext()->removeObject(mCollObj1);
+
+      // Do ray testing against everything but the level
 	CollisionPair **pick_report;
 	int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(mRay, 2000.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
 
@@ -165,18 +169,26 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 		mHotTargetSight->show();
 		mDbgMsg1 += Ogre::StringConverter::toString(num_picks) + " ";
 		
-		//for(int i = 0; i < num_picks; i++)
-		//{
+		for(int i = 0; i < num_picks; i++)
+		{
 			CollisionObject* yeah = pick_report[0]->co1;
 			Vector3 contact = pick_report[0]->contact;
 			mDbgMsg1 = mDbgMsg1 + yeah->getShape()->getName();
 			mDbgMsg2 = mDbgMsg2 + " Distance: " + StringConverter::toString(pick_report[0]->distance);
-		//}
+		}
 	}
 	else
 	{
 		mTargetSight->show();
 		mHotTargetSight->hide();
+	}
+
+      // Check all collision objects for collision
+	int mCollObj1Picks = mRobotEntity->getCollisionObject()->getCollisions(pick_report);
+	if(mCollObj1Picks > 0)
+	{
+         transAmount = 0.5f;
+		 mWindow->setDebugText("bollijlkjoe");
 	}
 
 	mRayObjectText->setCaption(mDbgMsg1);

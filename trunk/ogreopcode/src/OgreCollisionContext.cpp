@@ -216,10 +216,10 @@ namespace OgreOpcode
 				checkReportHandler.mTotalObjObjTests++;
 
 				// Trying to extract position information from provided matrices.
-				//Vector3 p1 = Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]);
-				//Vector3 v1 = Vector3(Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]) - p1);
-				Vector3 p1 = (*other)->new_pos;
-				Vector3 v1 = (*other)->new_pos - p1;
+				Vector3 p1 = Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]);
+				Vector3 v1 = Vector3(Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]) - p1);
+				//Vector3 p1 = (*other)->new_pos;
+				//Vector3 v1 = (*other)->new_pos - p1;
 
 				// do the contact check between 2 moving spheres
 				sphere s0(p0,radius);
