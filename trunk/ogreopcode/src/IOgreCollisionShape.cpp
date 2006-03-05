@@ -211,7 +211,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	ICollisionShape::~ICollisionShape()
 	{
-		assert(0 == refCount);
+		//assert(0 == refCount);
 
 		if(_debug_obj)
 			delete _debug_obj;
