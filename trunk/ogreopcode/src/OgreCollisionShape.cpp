@@ -32,9 +32,6 @@
 #include "OgreOpcodeMath.h"
 #include "OgreOpcodeUtils.h"
 
-// Uncomment the next line to build against Dagon .. ;-)
-#define BUILD_AGAINST_DAGON
-
 namespace OgreOpcode
 {
 	//------------------------------------------------------------------------
@@ -48,7 +45,7 @@ namespace OgreOpcode
 	{
 		if (mEntity && mEntity->hasSkeleton())
 		{
-			mEntity->removeSoftwareSkinningRequest(false);
+			mEntity->removeSoftwareAnimationRequest(false);
 		}
 	}
 
@@ -63,11 +60,9 @@ namespace OgreOpcode
 	void MeshCollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
 	{
 		Mesh * mesh = entity->getMesh().getPointer();
-#ifdef BUILD_AGAINST_DAGON
+
 		bool hwSkinning = entity->isHardwareAnimationEnabled();
-#else
-		bool hwSkinning = entity->isHardwareSkinningEnabled();
-#endif
+
 		bool added_shared = false;
 		index_count  = 0;
 		vertex_count = 0;
@@ -143,11 +138,7 @@ namespace OgreOpcode
 				//----------------------------------------------------------------
 				const VertexData * vertex_data;
 				if(useSoftwareBlendingVertices)
-#ifdef BUILD_AGAINST_DAGON
 					vertex_data = useSharedVertices ? entity->_getSkelAnimVertexData() : entity->getSubEntity(i)->_getSkelAnimVertexData();
-#else
-					vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->getBlendedVertexData();
-#endif
 				else
 					vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
 
@@ -265,7 +256,7 @@ namespace OgreOpcode
 		mEntity = ent;
 
 		if (mEntity->hasSkeleton()) {
-			mEntity->addSoftwareSkinningRequest(false);
+			mEntity->addSoftwareAnimationRequest(false);
 		}
 
 		mParentNode = mEntity->getParentSceneNode();
