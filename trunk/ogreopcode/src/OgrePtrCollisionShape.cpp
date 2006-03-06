@@ -43,6 +43,8 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	PtrCollisionShape::~PtrCollisionShape()
 	{
+		// No, we are not deleting mVertexBuf nor mFaceBuf here!
+		// They are owned by the DotSceneOctree SceneManager.
 	}
 
 

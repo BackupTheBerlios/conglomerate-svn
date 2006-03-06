@@ -43,6 +43,8 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	BoxCollisionShape::~BoxCollisionShape()
 	{
+		delete[] mVertexBuf;
+		delete[] mFaceBuf;
 	}
 
 	//------------------------------------------------------------------------

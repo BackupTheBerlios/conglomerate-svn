@@ -47,6 +47,8 @@ namespace OgreOpcode
 		{
 			mEntity->removeSoftwareAnimationRequest(false);
 		}
+		delete[] mVertexBuf;
+		delete[] mFaceBuf;
 	}
 
 	//------------------------------------------------------------------------

@@ -216,8 +216,6 @@ namespace OgreOpcode
 		if(_debug_obj)
 			delete _debug_obj;
 
-		delete[] mVertexBuf;
-		delete[] mFaceBuf;
 	}
 
 	//------------------------------------------------------------------------
