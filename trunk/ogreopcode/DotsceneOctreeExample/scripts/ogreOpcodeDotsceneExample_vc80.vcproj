@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\opcode132;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include"
+				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include;..\..\opcode132;..\..\..\plugins\DotSceneManager\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -63,9 +63,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib CEGUIBase_d.lib OgreGUIRenderer_d.lib OgreOpcode.lib"
+				AdditionalDependencies="OgreMain_d.lib CEGUIBase_d.lib OgreGUIRenderer_d.lib OgreOpcode.lib Plugin_DotSceneManager.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;;&quot;..\..\..\plugins\DotSceneManager\bin\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ogreOpcodeDotsceneExample.pdb"
 				SubSystem="2"
@@ -128,7 +128,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include;..\..\opcode132"
+				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include;..\..\opcode132;..\..\..\plugins\DotSceneManager\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -151,9 +151,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib CEGUIBase.lib OgreGUIRenderer.lib OgreOpcode.lib"
+				AdditionalDependencies="OgreMain.lib CEGUIBase.lib OgreGUIRenderer.lib OgreOpcode.lib Plugin_DotSceneManager.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;;&quot;..\..\..\plugins\DotSceneManager\bin\$(ConfigurationName)&quot;"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -207,6 +207,22 @@
 				RelativePath="..\src\ogreOpcodeExample.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\tools\XMLConverter\src\tinystr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\tools\XMLConverter\src\tinyxml.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\tools\XMLConverter\src\tinyxmlerror.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\tools\XMLConverter\src\tinyxmlparser.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -226,6 +242,14 @@
 			</File>
 			<File
 				RelativePath=".\res\resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\tools\XMLConverter\include\tinystr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\tools\XMLConverter\include\tinyxml.h"
 				>
 			</File>
 		</Filter>

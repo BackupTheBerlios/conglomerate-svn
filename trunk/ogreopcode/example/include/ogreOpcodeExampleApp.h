@@ -101,7 +101,23 @@ public:
       : GameEntity(sm) { }
     ~RobotEntity() { }
 
-    bool initialise(void)
+	bool reinit(void)
+	{
+		static int count = 0;
+
+		mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1" + StringConverter::toString(count));
+		mRobotCollShape->load(mEntity);
+		mCollObj = mCollideContext->newObject("ogrerobot" + StringConverter::toString(count));
+		mCollObj->setCollClass("ogrerobot");
+		mCollObj->setShape(mRobotCollShape);
+		mCollideContext->addObject(mCollObj);
+		
+		count++;
+
+		return true;
+	}
+
+	bool initialise(void)
     {
 		mCollideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
 		mEntity = mSceneMgr->createEntity("theRobot", "ninja.mesh");
@@ -111,14 +127,7 @@ public:
 		mSceneNode->scale(0.6f, 0.6f, 0.6f);
 		mEntity->setNormaliseNormals(true);
 
-		mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1");
-		mRobotCollShape->load(mEntity);
-		mCollObj = mCollideContext->newObject("ogrerobot");
-		mCollObj->setCollClass("ogrerobot");
-		mCollObj->setShape(mRobotCollShape);
-		mCollideContext->addObject(mCollObj);
-
-	  return true;
+	  return reinit();
     }
 
     void translate(const Vector3& v)
@@ -130,6 +139,11 @@ public:
     {
       mSceneNode->translate(x, y, z);
     }
+
+	MeshCollisionShape* getCollisionShape(void)
+	{
+		return mRobotCollShape;
+	}
 };
 
 class OgreOpcodeExampleApp : public OgreOpcodeExample

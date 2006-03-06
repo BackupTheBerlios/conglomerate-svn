@@ -21,6 +21,8 @@ Description: A place for me to try out stuff with OGRE.
 #ifndef __ogreOpcodeDotsceneExample_h__
 #define __ogreOpcodeDotsceneExample_h__
 
+#include "DotSceneManager.h"
+
 // Include OgreOpcode headers.
 #include "OgreOpcode.h"
 
@@ -40,7 +42,20 @@ protected:
 	virtual void createScene(void);
 	virtual bool processUnbufferedKeyInput(const FrameEvent& evt);
 	virtual bool frameStarted(const FrameEvent& evt);
+
+	virtual void chooseSceneManager(void)
+	{
+		mSceneMgr = mRoot->createSceneManager("DotSceneOctreeManager");
+		mDotSceneMgr = static_cast <DotSceneOctreeManager *> ( mSceneMgr );
+	}
+
 private:
+	Light* LoadLight( TiXmlElement *XMLLight );
+	void parseDotScene( const String &SceneName, const String& groupName );
+
+	// The library is statically linked to give access to extra functions in the DotSceneMgr
+	DotSceneOctreeManager *mDotSceneMgr;
+
 	bool mVisualizeObjects;
 	bool mDoABBVisualization;
 	bool mDoLocalVisualization;
@@ -50,8 +65,10 @@ private:
 	CollisionContext* collideContext;
 	CollisionObject* mRobotCollObj;
 	MeshCollisionShape* mRobotCollShape;
+	PtrCollisionShape* mDotSceneShape;
 	Ray ray;
 	bool mPlayAnimation;
+	bool mShowOctree;
 	String mDbgMsg;
 };
 

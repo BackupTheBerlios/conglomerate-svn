@@ -54,11 +54,11 @@ namespace OgreOpcode
 	{
 		assert(!mVertexBuf && !mFaceBuf);
 		numVertices = numVertex;
-		numFaces = numIndices;
+		numFaces = numIndices/3;
 		mVertexBuf = vertices;
 		mFaceBuf = indices;
 
-		mParentNode = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode();
+		mParentNode = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode("ptrcollnode" + this->getName());
 
 		return rebuild();
 	}

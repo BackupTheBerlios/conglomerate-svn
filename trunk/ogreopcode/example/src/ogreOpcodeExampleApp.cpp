@@ -125,6 +125,15 @@ bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 		mTimeUntilNextToggle = 0.5;
 	}
 
+	if (mInputDevice->isKeyDown(KC_1) && mTimeUntilNextToggle <= 0)
+	{
+		mCollideContext->destroyObject(mRobotEntity->getCollisionObject());
+		CollisionManager::getSingletonPtr()->destroyShape(mRobotEntity->getCollisionShape());
+		mRobotEntity->reinit();
+		mRobotEntity->getCollisionShape()->refit();
+		mTimeUntilNextToggle = 0.5;
+	}
+
 	return OgreOpcodeExample::processUnbufferedKeyInput(evt);
 }
 //-------------------------------------------------------------------------------------

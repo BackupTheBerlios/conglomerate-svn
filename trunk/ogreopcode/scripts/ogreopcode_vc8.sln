@@ -13,6 +13,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Opcode", "..\opcode132\Opcode_vc8.vcproj", "{6B19233C-49A3-467D-BFA0-2B5CE77745D9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogreOpcodeDotsceneExample", "..\DotsceneOctreeExample\scripts\ogreOpcodeDotsceneExample_vc80.vcproj", "{95363BEA-404F-4BDF-911B-AFDE8751473F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{38E0EE4E-1D0C-4335-9968-412D376AB431} = {38E0EE4E-1D0C-4335-9968-412D376AB431}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
