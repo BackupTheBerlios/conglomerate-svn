@@ -205,7 +205,7 @@ function AddSpecificConfig(proj, strProjectName, bEmptyProject)
 		var PostBuildTool = config.Tools("VCPostBuildEventTool");
 		PostBuildTool.Description = "Copying exe to samples bin directory ...";
 
-		PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + strCommonDir + "\\Bin\\$(ConfigurationName)";
+		PostBuildTool.CommandLine = 'copy "$(OutDir)\\$(TargetFileName)" "' + strCommonDir + '\\Bin\\$(ConfigurationName)"';
 	}
     
     
@@ -285,7 +285,7 @@ function AddSpecificConfig(proj, strProjectName, bEmptyProject)
 		var PostBuildTool = config.Tools("VCPostBuildEventTool");
 		PostBuildTool.Description = "Copying exe to samples bin directory ...";
 
-		PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + strCommonDir + "\\Bin\\$(ConfigurationName)";
+		PostBuildTool.CommandLine = 'copy "$(OutDir)\\$(TargetFileName)" "' + strCommonDir + '\\Bin\\$(ConfigurationName)"';
 	}
 
 }
