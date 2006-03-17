@@ -397,7 +397,7 @@ namespace OgreOpcode
 		Opcode::RayCollider& collider = CollisionManager::getSingletonPtr()->opcRayCollider;
 		collider.SetMaxDist(dist);
 		collider.SetClosestHit(false);
-		collider.SetCulling(false);
+		collider.SetCulling(true);
 		switch (collType)
 		{
 		case COLLTYPE_QUICK:
