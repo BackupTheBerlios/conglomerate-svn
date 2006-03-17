@@ -120,11 +120,11 @@ public:
 	bool initialise(void)
     {
 		mCollideContext = CollisionManager::getSingletonPtr()->getDefaultContext();
-		mEntity = mSceneMgr->createEntity("theRobot", "ninja.mesh");
+		mEntity = mSceneMgr->createEntity("theRobot", "robot.mesh");
 		mSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("theRobotNode");
 		mSceneNode->attachObject(mEntity);
 		mSceneNode->setPosition(0.0f, 400.0f, -240.0f);
-		mSceneNode->scale(0.6f, 0.6f, 0.6f);
+		mSceneNode->scale(2.0f, 2.0f, 2.0f);
 		mEntity->setNormaliseNormals(true);
 
 	  return reinit();
