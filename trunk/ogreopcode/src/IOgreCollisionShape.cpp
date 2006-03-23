@@ -467,9 +467,7 @@ namespace OgreOpcode
 				Vector3 v0,v1,v2;
 				getTriCoords(triangleIndex, v0, v1, v2);
 
-				// get 3x3 matrix to transform normal into global space
-				Matrix3 m33;
-				ownMatrix.extract3x3Matrix(m33);
+				const Matrix4 &myMatrix = getFullTransform();
 
 				// Compute the centered normal
 				Vector3 vCenter = (v0+v1+v2)*0.33333333333333333333f;
@@ -479,10 +477,10 @@ namespace OgreOpcode
 				// Compute collision contact from barycentric coordinates
 				Vector3 vContact = (1.0f - collFaces[0].mU - collFaces[0].mV) * v0 + collFaces[0].mU * v1 + collFaces[0].mV * v2;
 
-				collPair.contact = m33 * vContact;//line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
+				collPair.contact = myMatrix * vContact;//line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
 				collPair.distance = thedist;
-				collPair.co_this_normal = m33 * vNormal;
-				collPair.co_other_normal = collPair.co_this_normal;
+				collPair.co_this_normal = myMatrix * vNormal;
+				collPair.co_other_normal = -collPair.co_this_normal;
 
 				return true;
 			}
@@ -501,7 +499,7 @@ namespace OgreOpcode
 	/// - COLLTYPE_IGNORE:        illegal (makes no sense)
 	/// - COLLTYPE_QUICK:         first contact check only
 	/// - COLLTYPE_CONTACT:       return closest contact
-	/// - COLLTYPE_EXACT:         same as closest contact
+	/// - COLLTYPE_EXACT:         return a sorted list of contacts
 	/// Currently, sphere checks always work in first constact mode (COLLTYPE_QUICK).
 	/// @param  collType        see above
 	/// @param  ownMatrix       position/orientation of this shape
