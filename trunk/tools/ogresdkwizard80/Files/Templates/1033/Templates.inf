@@ -7,6 +7,9 @@ include/root.h
 CopyOnly | res/root.ico
 [!if FRAMEWORK_OWN]
 include\BaseApplication.h
-include\BaseFramelistener.h
+src\BaseApplication.cpp
+[!if LOADINGBAR]
+include\LoadingBar.h
+[!endif]
 [!endif]
 [!endif]

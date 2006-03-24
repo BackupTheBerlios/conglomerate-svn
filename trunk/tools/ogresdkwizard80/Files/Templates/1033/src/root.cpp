@@ -54,11 +54,37 @@ extern "C" {
 
 [!else]
 
-[!if PRE_COMPILED_HEADER]
-#include "StdAfx.h"
+#include "[!output PROJECT_NAME].h"
+
+
+[!if FRAMEWORK_OWN]
+//-------------------------------------------------------------------------------------
+[!output PROJECT_NAME]App::[!output PROJECT_NAME]App(void)
+{
+}
+//-------------------------------------------------------------------------------------
+[!output PROJECT_NAME]App::~[!output PROJECT_NAME]App(void)
+{
+}
+
+//-------------------------------------------------------------------------------------
+void [!output PROJECT_NAME]App::createScene(void)
+{
+	Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
+
+	SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	headNode->attachObject(ogreHead);
+
+	// Set ambient light
+	mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+
+	// Create a light
+	Light* l = mSceneMgr->createLight("MainLight");
+	l->setPosition(20,80,50);
+}
+
 [!endif]
 
-#include "[!output PROJECT_NAME].h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN

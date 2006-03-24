@@ -37,6 +37,21 @@ Description: A place for me to try out stuff with OGRE.
 #include "ExampleApplication.h"
 [!endif]
 
+
+[!if FRAMEWORK_OWN]
+
+class [!output PROJECT_NAME]App : public BaseApplication
+{
+public:
+	[!output PROJECT_NAME]App(void);
+	virtual ~[!output PROJECT_NAME]App(void);
+
+protected:
+	virtual void createScene(void);
+};
+
+[!else]
+
 [!if CEGUI_YES]
 CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
 {
@@ -57,18 +72,10 @@ CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
 [!endif]
 
 
-[!if FRAMEWORK_OWN]
-[!if CEGUI_YES]
-class [!output PROJECT_NAME]FrameListener : public BaseFrameListener, public MouseMotionListener, public MouseListener
-[!else]
-class [!output PROJECT_NAME]FrameListener : public BaseFrameListener
-[!endif]
-[!else]
 [!if CEGUI_YES]
 class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener, public MouseMotionListener, public MouseListener
 [!else]
 class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener
-[!endif]
 [!endif]
 {
 private:
@@ -78,19 +85,6 @@ private:
    bool mShutdownRequested;
 [!endif]
 public:
-[!if FRAMEWORK_OWN]
-[!if CEGUI_YES]
-	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
-		: BaseFrameListener(win, cam, false, true),
-      mGUIRenderer(renderer),
-      mShutdownRequested(false),
-      mSceneMgr(sceneMgr)
-[!else]
-      [!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
-         : BaseFrameListener(win, cam),
-         mSceneMgr(sceneMgr)
-[!endif]
-[!else]
 [!if CEGUI_YES]
 	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
 		: ExampleFrameListener(win, cam, false, true),
@@ -101,7 +95,6 @@ public:
       [!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
          : ExampleFrameListener(win, cam),
          mSceneMgr(sceneMgr)
-[!endif]
 [!endif]
 	{
 [!if CEGUI_YES]
@@ -201,12 +194,8 @@ public:
 
 
 
-[!if FRAMEWORK_OWN]
-class [!output PROJECT_NAME]App : public BaseApplication
-	[!else]
-	class [!output PROJECT_NAME]App : public ExampleApplication
-[!endif]
-	{
+class [!output PROJECT_NAME]App : public ExampleApplication
+{
 [!if CEGUI_YES]
    private:
       CEGUI::OgreCEGUIRenderer* mGUIRenderer;
@@ -331,6 +320,7 @@ protected:
    }
 [!endif]
 };
+[!endif]
 [!endif]
 
 #endif // #ifndef __[!output PROJECT_NAME]_h_
