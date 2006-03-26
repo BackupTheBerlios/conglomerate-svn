@@ -53,6 +53,11 @@ protected:
 [!else]
 
 [!if CEGUI_YES]
+#include <CEGUI.h>
+#include <CEGUISystem.h>
+#include <CEGUISchemeManager.h>
+#include <OgreCEGUIRenderer.h>
+
 CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
 {
    switch (buttonID)
@@ -265,24 +270,24 @@ protected:
 	virtual void createScene(void)
 	{
 [!if CEGUI_YES]
-      // setup GUI system
-      mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow,
-         Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
+		// setup GUI system
+		mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow,
+	 Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mSceneMgr);
 
-      mGUISystem = new CEGUI::System(mGUIRenderer);
+		mGUISystem = new CEGUI::System(mGUIRenderer);
 
-      CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
+		CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
 
 
-      // load scheme and set up defaults
-      CEGUI::SchemeManager::getSingleton().loadScheme(
-         (CEGUI::utf8*)"TaharezLook.scheme");
-      mGUISystem->setDefaultMouseCursor(
-         (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-      mGUISystem->setDefaultFont((CEGUI::utf8*)"Tahoma-12");
-      CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
-      CEGUI::MouseCursor::getSingleton().show( );
-      setupEventHandlers();
+		// load scheme and set up defaults
+		CEGUI::SchemeManager::getSingleton().loadScheme(
+		 (CEGUI::utf8*)"TaharezLookSkin.scheme");
+		mGUISystem->setDefaultMouseCursor(
+		 (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+		mGUISystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-12");
+		CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
+		CEGUI::MouseCursor::getSingleton().show( );
+		setupEventHandlers();
 [!endif]
 
       Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");

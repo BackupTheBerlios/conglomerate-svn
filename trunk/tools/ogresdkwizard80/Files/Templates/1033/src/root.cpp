@@ -73,7 +73,7 @@ void [!output PROJECT_NAME]App::createScene(void)
 [!if CEGUI_YES]
 	// setup GUI system
 	mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow,
-	 Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
+	 Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mSceneMgr);
 
 	mGUISystem = new CEGUI::System(mGUIRenderer);
 
@@ -82,10 +82,10 @@ void [!output PROJECT_NAME]App::createScene(void)
 
 	// load scheme and set up defaults
 	CEGUI::SchemeManager::getSingleton().loadScheme(
-	 (CEGUI::utf8*)"TaharezLook.scheme");
+	 (CEGUI::utf8*)"TaharezLookSkin.scheme");
 	mGUISystem->setDefaultMouseCursor(
 	 (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-	mGUISystem->setDefaultFont((CEGUI::utf8*)"Tahoma-12");
+	mGUISystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-12");
 	CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
 	CEGUI::MouseCursor::getSingleton().show( );
 	setupEventHandlers();

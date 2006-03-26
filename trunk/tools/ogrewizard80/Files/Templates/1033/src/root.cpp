@@ -54,11 +54,57 @@ extern "C" {
 
 [!else]
 
-[!if PRE_COMPILED_HEADER]
-#include "StdAfx.h"
+#include "[!output PROJECT_NAME].h"
+
+
+[!if FRAMEWORK_OWN]
+//-------------------------------------------------------------------------------------
+[!output PROJECT_NAME]App::[!output PROJECT_NAME]App(void)
+{
+}
+//-------------------------------------------------------------------------------------
+[!output PROJECT_NAME]App::~[!output PROJECT_NAME]App(void)
+{
+}
+
+//-------------------------------------------------------------------------------------
+void [!output PROJECT_NAME]App::createScene(void)
+{
+[!if CEGUI_YES]
+	// setup GUI system
+	mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow,
+	 Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mSceneMgr);
+
+	mGUISystem = new CEGUI::System(mGUIRenderer);
+
+	CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
+
+
+	// load scheme and set up defaults
+	CEGUI::SchemeManager::getSingleton().loadScheme(
+	 (CEGUI::utf8*)"TaharezLookSkin.scheme");
+	mGUISystem->setDefaultMouseCursor(
+	 (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+	mGUISystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-12");
+	CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
+	CEGUI::MouseCursor::getSingleton().show( );
+	setupEventHandlers();
+[!endif]
+	Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
+
+	SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	headNode->attachObject(ogreHead);
+
+	// Set ambient light
+	mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+
+	// Create a light
+	Light* l = mSceneMgr->createLight("MainLight");
+	l->setPosition(20,80,50);
+}
+
 [!endif]
 
-#include "[!output PROJECT_NAME].h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN

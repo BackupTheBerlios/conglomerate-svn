@@ -39,7 +39,11 @@ using namespace Ogre;
 class LoadingBar;
 [!endif]
 
+[!if CEGUI_YES]
+class BaseApplication : public Ogre::Singleton<BaseApplication>,  public FrameListener, public KeyListener, public MouseMotionListener, public MouseListener
+[!else]
 class BaseApplication : public Ogre::Singleton<BaseApplication>,  public FrameListener, public KeyListener
+[!endif]
 {
 public:
 	BaseApplication(void);

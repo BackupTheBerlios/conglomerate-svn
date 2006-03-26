@@ -26,7 +26,7 @@ function Cookie(document, name, hours, path, domain, secure)
 {
     // All the predefined properties of this object begin with '$'
     // to distinguish them from other properties which are the values to
-    // be stored in the cookie.	
+    // be stored in the cookie.
     this.$document = document;
     this.$name = name;
     if (hours)
@@ -42,19 +42,19 @@ function _Cookie_store()
     // First, loop through the properties of the Cookie object and
     // put together the value of the cookie. Since cookies use the
     // equals sign and semicolons as separators, we'll use colons
-    // and ampersands for the individual state variables we store 
+    // and ampersands for the individual state variables we store
     // within a single cookie value. Note that we escape the value
     // of each state variable, in case it contains punctuation or other
     // illegal characters.
     var cookieval = "";
     for(var prop in this) {
         // Ignore properties with names that begin with '$' and also methods.
-        if ((prop.charAt(0) == '$') || ((typeof this[prop]) == 'function')) 
+        if ((prop.charAt(0) == '$') || ((typeof this[prop]) == 'function'))
             continue;
         if (cookieval != "") cookieval += '&';
         cookieval += prop + ':' + escape(this[prop]);
     }
-    // Now that we have the value of the cookie, put together the 
+    // Now that we have the value of the cookie, put together the
     // complete cookie string, which includes the name, and the various
     // attributes specified when the Cookie object was created.
     var cookie = this.$name + '=' + cookieval;
@@ -81,7 +81,7 @@ function _Cookie_load()
     if (end == -1) end = allcookies.length;
     var cookieval = allcookies.substring(start, end);
     // Now that we've extracted the value of the named cookie, we've
-    // got to break that value down into individual state variable 
+    // got to break that value down into individual state variable
     // names and values. The name/value pairs are separated from each
     // other with ampersands, and the individual names and values are
     // separated from each other with colons. We use the split method
@@ -131,6 +131,7 @@ var cookieData;
 	if (cookieData.empty_project == null) { cookieData.empty_project="false"; cookieData.store();}
 	if (cookieData.framework_yes == null) { cookieData.framework_yes="true"; cookieData.store();}
 	if (cookieData.framework_own == null) { cookieData.framework_own="false"; cookieData.store();}
+	if (cookieData.loadingbar_yes == null) { cookieData.loadingbar_yes="false"; cookieData.store();}
 	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="false"; cookieData.store();}
 	if (cookieData.location_samples == null) { cookieData.location_samples="true"; cookieData.store();}
 	if (cookieData.location_other == null) { cookieData.location_other="false"; cookieData.store();}
@@ -148,6 +149,7 @@ var cookieData;
 		document.write("<SYMBOL NAME='FRAMEWORK_YES' TYPE='checkbox' VALUE='" + cookieData.framework_yes + "'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='FRAMEWORK_OWN' TYPE='checkbox' VALUE='" + cookieData.framework_own + "'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='CEGUI_YES' TYPE='checkbox' VALUE='" + cookieData.cegui_yes + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='LOADINGBAR_YES' TYPE='checkbox' VALUE='" + cookieData.loadingbar_yes + "'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='STATEMANAGER_YES' TYPE='checkbox' VALUE='false'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='LOCATION_SAMPLES' TYPE='checkbox' VALUE='" + cookieData.location_samples + "'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='LOCATION_OTHER' TYPE='checkbox' VALUE='" + cookieData.location_other + "'></SYMBOL>\n");
@@ -340,6 +342,9 @@ var cookieData;
 					    <LI CLASS="LIST">
 						    <SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK" TITLE=""><LABEL FOR="APPFRAMEWORK"></LABEL>
 						    </SPAN>
+					    <LI CLASS="LIST">
+						    <SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_LOADINGBAR" TITLE=""><LABEL FOR="APPFRAMEWORK_LOADINGBAR">
+							    </LABEL></SPAN>
 					    <LI CLASS="LIST">
 						    <SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_CEGUI" TITLE=""><LABEL FOR="APPFRAMEWORK_CEGUI">
 							    </LABEL></SPAN>
@@ -565,8 +570,15 @@ function InitControls()
 		APPPCH.parentNode.style.display = 'none';
 	}
 
+	APPFRAMEWORK_LOADINGBAR.parentNode.style.display = 'none';
 	APPFRAMEWORK_CEGUI.parentNode.style.display = 'none';
 	APPFRAMEWORK_STATEMANAGER.parentNode.style.display = 'none';
+	if (window.external.FindSymbol("LOADINGBAR_YES") && !window.external.IsSymbolDisabled("LOADINGBAR_YES"))
+	{
+		var L_LOADINGBARYES_TEXT = "Initial LoadingBar.";
+		APPFRAMEWORK_LOADINGBAR.innerText = L_LOADINGBARYES_TEXT;
+		APPFRAMEWORK_LOADINGBAR.parentNode.style.display = 'block';
+	}
 	if (window.external.FindSymbol("CEGUI_YES") && !window.external.IsSymbolDisabled("CEGUI_YES"))
 	{
 		var L_CEGUIYES_TEXT = "CEGUI support.";
