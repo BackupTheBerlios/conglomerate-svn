@@ -8,8 +8,8 @@ CopyOnly | res/root.ico
 [!if FRAMEWORK_OWN]
 include\BaseApplication.h
 src\BaseApplication.cpp
-[!if LOADINGBAR]
-include\LoadingBar.h
 [!endif]
+[!if LOADINGBAR_YES]
+include\LoadingBar.h
 [!endif]
 [!endif]

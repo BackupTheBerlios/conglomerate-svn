@@ -29,7 +29,15 @@ Description: A place for me to try out stuff with OGRE.
 
 using namespace Ogre;
 
+[!if CEGUI_YES]
+#include <CEGUI.h>
+#include <CEGUISystem.h>
+#include <CEGUISchemeManager.h>
+#include <OgreCEGUIRenderer.h>
+[!endif]
+[!if LOADINGBAR_YES]
 class LoadingBar;
+[!endif]
 
 class BaseApplication : public Ogre::Singleton<BaseApplication>,  public FrameListener, public KeyListener
 {
@@ -64,12 +72,31 @@ protected:
 	void keyClicked(KeyEvent* e);
 	void keyPressed(KeyEvent* e);
 	void keyReleased(KeyEvent* e);
+[!if CEGUI_YES]
+	void requestShutdown(void);
+	void mouseMoved (MouseEvent* e);
+	void mouseDragged (MouseEvent* e);
+	void mousePressed (MouseEvent* e);
+	void mouseReleased (MouseEvent* e);
+	void mouseClicked(MouseEvent* e);
+	void mouseEntered(MouseEvent* e);
+	void mouseExited(MouseEvent* e);
+	void setupEventHandlers(void);
+	bool handleQuit(const CEGUI::EventArgs& e);
+[!endif]
 
 	Root *mRoot;
 	Camera* mCamera;
 	SceneManager* mSceneMgr;
 	RenderWindow* mWindow;
+[!if LOADINGBAR_YES]
 	LoadingBar* mLoadingBar;
+[!endif]
+[!if CEGUI_YES]
+	CEGUI::System* mGUISystem;
+	CEGUI::Renderer* mGUIRenderer;
+	bool mShutdownRequested;
+[!endif]
 	int mSceneDetailIndex ;
 	Real mMoveSpeed;
 	Degree mRotateSpeed;

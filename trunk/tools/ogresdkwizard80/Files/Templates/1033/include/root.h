@@ -24,13 +24,6 @@ Description: A place for me to try out stuff with OGRE.
 [!if MIN_APP]
 [!else]
 
-[!if CEGUI_YES]
-#include <CEGUI.h>
-#include <CEGUISystem.h>
-#include <CEGUISchemeManager.h>
-#include <OgreCEGUIRenderer.h>
-[!endif]
-
 [!if FRAMEWORK_OWN]
 #include "BaseApplication.h"
 [!else]
@@ -39,6 +32,13 @@ Description: A place for me to try out stuff with OGRE.
 
 
 [!if FRAMEWORK_OWN]
+
+[!if CEGUI_YES]
+#include <CEGUI.h>
+#include <CEGUISystem.h>
+#include <CEGUISchemeManager.h>
+#include <OgreCEGUIRenderer.h>
+[!endif]
 
 class [!output PROJECT_NAME]App : public BaseApplication
 {

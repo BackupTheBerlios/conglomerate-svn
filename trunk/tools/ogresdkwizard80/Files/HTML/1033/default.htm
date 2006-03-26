@@ -131,6 +131,7 @@ var cookieData;
 	if (cookieData.empty_project == null) { cookieData.empty_project="false"; cookieData.store();}
 	if (cookieData.framework_yes == null) { cookieData.framework_yes="true"; cookieData.store();}
 	if (cookieData.framework_own == null) { cookieData.framework_own="false"; cookieData.store();}
+	if (cookieData.loadingbar_yes == null) { cookieData.loadingbar_yes="false"; cookieData.store();}
 	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="false"; cookieData.store();}
 	if (cookieData.postbuild_copy == null) { cookieData.postbuild_copy="true"; cookieData.store();}
 	if (cookieData.skip_config == null) { cookieData.skip_config="false"; cookieData.store();}
@@ -143,6 +144,7 @@ var cookieData;
 		document.write("<SYMBOL NAME='FRAMEWORK_YES' TYPE='checkbox' VALUE='" + cookieData.framework_yes + "'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='FRAMEWORK_OWN' TYPE='checkbox' VALUE='" + cookieData.framework_own + "'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='CEGUI_YES' TYPE='checkbox' VALUE='" + cookieData.cegui_yes + "'></SYMBOL>\n");
+		document.write("<SYMBOL NAME='LOADINGBAR_YES' TYPE='checkbox' VALUE='" + cookieData.loadingbar_yes + "'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='STATEMANAGER_YES' TYPE='checkbox' VALUE='false'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='PRE_COMPILED_HEADER' TYPE='checkbox' VALUE='false'></SYMBOL>\n");
 		document.write("<SYMBOL NAME='POSTBUILD_COPY' TYPE='checkbox' VALUE='" + cookieData.postbuild_copy + "'></SYMBOL>\n");
@@ -327,6 +329,9 @@ var cookieData;
 					    <LI CLASS="LIST">
 						    <SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK" TITLE=""><LABEL FOR="APPFRAMEWORK"></LABEL>
 						    </SPAN>
+					    <LI CLASS="LIST">
+						    <SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_LOADINGBAR" TITLE=""><LABEL FOR="APPFRAMEWORK_LOADINGBAR">
+							    </LABEL></SPAN>
 					    <LI CLASS="LIST">
 						    <SPAN CLASS="SideBtnHidden" ID="APPFRAMEWORK_CEGUI" TITLE=""><LABEL FOR="APPFRAMEWORK_CEGUI">
 							    </LABEL></SPAN>
@@ -527,8 +532,15 @@ function InitControls()
 		APPPCH.parentNode.style.display = 'none';
 	}
 
+	APPFRAMEWORK_LOADINGBAR.parentNode.style.display = 'none';
 	APPFRAMEWORK_CEGUI.parentNode.style.display = 'none';
 	APPFRAMEWORK_STATEMANAGER.parentNode.style.display = 'none';
+	if (window.external.FindSymbol("LOADINGBAR_YES") && !window.external.IsSymbolDisabled("LOADINGBAR_YES"))
+	{
+		var L_LOADINGBARYES_TEXT = "Initial LoadingBar.";
+		APPFRAMEWORK_LOADINGBAR.innerText = L_LOADINGBARYES_TEXT;
+		APPFRAMEWORK_LOADINGBAR.parentNode.style.display = 'block';
+	}
 	if (window.external.FindSymbol("CEGUI_YES") && !window.external.IsSymbolDisabled("CEGUI_YES"))
 	{
 		var L_CEGUIYES_TEXT = "CEGUI support.";

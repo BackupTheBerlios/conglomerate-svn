@@ -1,13 +1,41 @@
 #include "BaseApplication.h"
 
+[!if LOADINGBAR_YES]
 #include "LoadingBar.h"
+[!endif]
 
 template<> BaseApplication* Ogre::Singleton<BaseApplication>::ms_Singleton = 0;
 
+[!if CEGUI_YES]
+CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
+{
+   switch (buttonID)
+   {
+   case MouseEvent::BUTTON0_MASK:
+      return CEGUI::LeftButton;
+   case MouseEvent::BUTTON1_MASK:
+      return CEGUI::RightButton;
+   case MouseEvent::BUTTON2_MASK:
+      return CEGUI::MiddleButton;
+   case MouseEvent::BUTTON3_MASK:
+      return CEGUI::X1Button;
+   default:
+      return CEGUI::LeftButton;
+   }
+}
+[!endif]
+
 //-------------------------------------------------------------------------------------
 BaseApplication::BaseApplication(void)
+[!if CEGUI_YES]
+	: mRoot(0),
+	mGUIRenderer(0),
+	mGUISystem(0),
+	mShutdownRequested(false)
+[!else]
+	: mRoot(0)
+[!endif]
 {
-	mRoot = 0;
 }
 
 //-------------------------------------------------------------------------------------
@@ -21,6 +49,18 @@ BaseApplication::~BaseApplication(void)
 	{
 		PlatformManager::getSingleton().destroyInputReader( mInputDevice );
 	}
+[!if CEGUI_YES]
+	if(mGUISystem)
+	{
+		delete mGUISystem;
+		mGUISystem = 0;
+	}
+	if(mGUIRenderer)
+	{
+		delete mGUIRenderer;
+		mGUIRenderer = 0;
+	}
+[!endif]
 	delete mRoot;
 }
 
@@ -30,7 +70,11 @@ bool BaseApplication::configure(void)
 	// Show the configuration dialog and initialise the system
 	// You can skip this and use root.restoreConfig() to load configuration
 	// settings if you were sure there are valid ones saved in ogre.cfg
+	[!if SKIP_CONFIG]
 	if(mRoot->restoreConfig() || mRoot->showConfigDialog())
+	[!else]
+	if(mRoot->showConfigDialog())
+	[!endif]
 	{
 		// If returned true, user clicked OK so initialise
 		// Here we choose to let the system create a default rendering window by passing 'true'
@@ -46,7 +90,7 @@ bool BaseApplication::configure(void)
 void BaseApplication::chooseSceneManager(void)
 {
 	// Get the SceneManager, in this case a generic one
-	mSceneMgr = mRoot->createSceneManager(ST_GENERIC, "OgreOpcodeSMInstance");
+	mSceneMgr = mRoot->createSceneManager(ST_GENERIC);
 }
 //-------------------------------------------------------------------------------------
 void BaseApplication::createCamera(void)
@@ -55,7 +99,7 @@ void BaseApplication::createCamera(void)
 	mCamera = mSceneMgr->createCamera("PlayerCam");
 
 	// Position it at 500 in Z direction
-	mCamera->setPosition(Vector3(0,0,500));
+	mCamera->setPosition(Vector3(0,0,80));
 	// Look back along -Z
 	mCamera->lookAt(Vector3(0,0,-300));
 	mCamera->setNearClipDistance(5);
@@ -66,7 +110,11 @@ void BaseApplication::createFrameListener(void)
 {
 	mDebugOverlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
 	mUseBufferedInputKeys = false;
+[!if CEGUI_YES]
+	mUseBufferedInputMouse = true;
+[!else]
 	mUseBufferedInputMouse = false;
+[!endif]
 	mInputTypeSwitchingOn = mUseBufferedInputKeys || mUseBufferedInputMouse;
 	mRotateSpeed = 36;
 	mMoveSpeed = 100;
@@ -147,6 +195,7 @@ void BaseApplication::createResourceListener(void)
 //-------------------------------------------------------------------------------------
 void BaseApplication::loadResources(void)
 {
+[!if LOADINGBAR_YES]
 	mLoadingBar = new LoadingBar();
 
 	mLoadingBar->start(mWindow, 1, 1, 0.75);
@@ -168,6 +217,9 @@ void BaseApplication::loadResources(void)
 
 	mLoadingBar->finish();
 	delete mLoadingBar;
+[!else]
+	ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+[!endif]
 }
 //-------------------------------------------------------------------------------------
 void BaseApplication::go(void)
@@ -439,6 +491,12 @@ void BaseApplication::showDebugOverlay(bool show)
 	}
 }
 //-------------------------------------------------------------------------------------
+[!if CEGUI_YES]
+void BaseApplication::requestShutdown(void)
+{
+	mShutdownRequested = true;
+}
+[!endif]
 //-------------------------------------------------------------------------------------
 bool BaseApplication::frameStarted(const FrameEvent& evt)
 {
@@ -450,6 +508,17 @@ bool BaseApplication::frameStarted(const FrameEvent& evt)
 		mInputDevice->capture();
 	}
 
+
+[!if CEGUI_YES]
+      if(mUseBufferedInputMouse)
+      {
+         CEGUI::MouseCursor::getSingleton().show( );
+      }
+      else
+      {
+         CEGUI::MouseCursor::getSingleton().hide( );
+      }
+[!endif]
 
 	if ( !mUseBufferedInputMouse || !mUseBufferedInputKeys)
 	{
@@ -515,6 +584,10 @@ bool BaseApplication::frameStarted(const FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool BaseApplication::frameEnded(const FrameEvent& evt)
 {
+[!if CEGUI_YES]
+	if (mShutdownRequested)
+		return false;
+[!endif]
 	updateStats();
 	return true;
 }
@@ -546,9 +619,64 @@ void BaseApplication::keyClicked(KeyEvent* e)
 
 }
 //-------------------------------------------------------------------------------------
-void BaseApplication::keyPressed(KeyEvent* e) {}
+void BaseApplication::keyPressed(KeyEvent* e)
+{
+[!if CEGUI_YES]
+	if(e->getKey() == KC_ESCAPE)
+	{
+		mShutdownRequested = true;
+		e->consume();
+		return;
+	}
+	CEGUI::System::getSingleton().injectKeyDown(e->getKey());
+	CEGUI::System::getSingleton().injectChar(e->getKeyChar());
+	e->consume();
+[!endif]
+}
 //-------------------------------------------------------------------------------------
 void BaseApplication::keyReleased(KeyEvent* e) {}
+[!if CEGUI_YES]
 //-------------------------------------------------------------------------------------
+void BaseApplication::mouseMoved (MouseEvent *e)
+{
+	CEGUI::System::getSingleton().injectMouseMove(
+	e->getRelX() * mGUIRenderer->getWidth(),
+	e->getRelY() * mGUIRenderer->getHeight());
+	e->consume();
+}
 //-------------------------------------------------------------------------------------
+void BaseApplication::mouseDragged (MouseEvent* e)
+{
+	mouseMoved(e);
+}
 //-------------------------------------------------------------------------------------
+void BaseApplication::mousePressed (MouseEvent* e)
+{
+	CEGUI::System::getSingleton().injectMouseButtonDown(
+	convertOgreButtonToCegui(e->getButtonID()));
+	e->consume();
+}
+//-------------------------------------------------------------------------------------
+void BaseApplication::mouseReleased (MouseEvent* e)
+{
+	CEGUI::System::getSingleton().injectMouseButtonUp(
+	convertOgreButtonToCegui(e->getButtonID()));
+	e->consume();
+}
+//-------------------------------------------------------------------------------------
+void BaseApplication::mouseClicked(MouseEvent* e) {}
+//-------------------------------------------------------------------------------------
+void BaseApplication::mouseEntered(MouseEvent* e) {}
+//-------------------------------------------------------------------------------------
+void BaseApplication::mouseExited(MouseEvent* e) {}
+//-------------------------------------------------------------------------------------
+void BaseApplication::setupEventHandlers(void)
+{
+}
+//-------------------------------------------------------------------------------------
+bool BaseApplication::handleQuit(const CEGUI::EventArgs& e)
+{
+	requestShutdown();
+	return true;
+}
+[!endif]

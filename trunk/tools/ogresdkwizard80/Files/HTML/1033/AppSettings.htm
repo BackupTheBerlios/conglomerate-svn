@@ -246,6 +246,13 @@
 
 	  				 <P CLASS="Spacer">&nbsp;</P>
 
+	  				 <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="E" ID="LOADINGBAR_YES" TITLE="">
+	  	 			 <DIV CLASS="itemTextCheckboxB" TITLE="">
+		  			  <LABEL FOR="LOADINGBAR_YES" ID="LOADINGBAR_YES_LABEL">Initial LoadingBar.</LABEL>
+	  	 			 </DIV>
+
+	  				 <BR>
+
 	  				 <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="E" ID="CEGUI_YES" TITLE="">
 	  	 			 <DIV CLASS="itemTextCheckboxB" TITLE="">
 		  			  <LABEL FOR="CEGUI_YES" ID="CEGUI_YES_LABEL">CEGUI Support.</LABEL>
@@ -476,6 +483,7 @@ function InitDocument(document)
 	if (cookieData.empty_project == null) { cookieData.empty_project="false"; cookieData.store();}
 	if (cookieData.framework_yes == null) { cookieData.framework_yes="true"; cookieData.store();}
 	if (cookieData.framework_own == null) { cookieData.framework_own="false"; cookieData.store();}
+	if (cookieData.loadingbar_yes == null) { cookieData.loadingbar_yes="false"; cookieData.store();}
 	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="false"; cookieData.store();}
 	if (cookieData.postbuild_copy == null) { cookieData.postbuild_copy="true"; cookieData.store();}
 	if (cookieData.skip_config == null) { cookieData.skip_config="false"; cookieData.store();}
@@ -485,6 +493,7 @@ function InitDocument(document)
 	EMPTY_PROJECT.checked = cookieData.empty_project;
 	FRAMEWORK_YES.checked = cookieData.framework_yes;
 	FRAMEWORK_OWN.checked = cookieData.framework_own;
+	LOADINGBAR_YES.checked = cookieData.loadingbar_yes;
 	CEGUI_YES.checked = cookieData.cegui_yes;
 	POSTBUILD_COPY.checked = cookieData.postbuild_copy;
 	SKIP_CONFIG.checked = cookieData.skip_config;
@@ -507,6 +516,7 @@ function OnFinish(document)
 	cookieData.empty_project=EMPTY_PROJECT.checked;
 	cookieData.framework_yes=FRAMEWORK_YES.checked;
 	cookieData.framework_own=FRAMEWORK_OWN.checked;
+	cookieData.loadingbar_yes=LOADINGBAR_YES.checked;
 	cookieData.cegui_yes=CEGUI_YES.checked;
 	cookieData.postbuild_copy=POSTBUILD_COPY.checked;
 	cookieData.skip_config=SKIP_CONFIG.checked;
@@ -523,20 +533,33 @@ function InitControls()
 	{
 		STATEMANAGER_YES.disabled = true;
 		STATEMANAGER_YES_LABEL.disabled = true;
+		LOADINGBAR_YES.disabled = true;
+		LOADINGBAR_YES_LABEL.disabled = true;
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = true;
 		FRAMEWORK_YES_LABEL.disabled = true;
 		FRAMEWORK_OWN.disabled = true;
 		FRAMEWORK_OWN_LABEL.disabled = true;
-		SKIP_CONFIG.disabled = false;
-		skip_config_title.disabled = false;
+		SKIP_CONFIG.disabled = true;
+		skip_config_title.disabled = true;
 	}
 
 	if(STANDARD_APP.checked)
 	{
 		STATEMANAGER_YES.disabled = true;
 		STATEMANAGER_YES_LABEL.disabled = true;
+
+		if(FRAMEWORK_OWN.checked)
+		{
+			LOADINGBAR_YES.disabled = false;
+			LOADINGBAR_YES_LABEL.disabled = false;
+		}
+		if(FRAMEWORK_YES.checked)
+		{
+			LOADINGBAR_YES.disabled = true;
+			LOADINGBAR_YES_LABEL.disabled = true;
+		}
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = false;
@@ -551,6 +574,8 @@ function InitControls()
 	{
 		STATEMANAGER_YES.disabled = true;
 		STATEMANAGER_YES_LABEL.disabled = true;
+		LOADINGBAR_YES.disabled = true;
+		LOADINGBAR_YES_LABEL.disabled = true;
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = true;
