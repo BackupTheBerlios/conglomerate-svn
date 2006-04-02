@@ -24,20 +24,35 @@ Description: A place for me to try out stuff with OGRE.
 [!if MIN_APP]
 [!else]
 
-[!if CEGUI_YES]
-#include <CEGUI.h>
-#include <CEGUISystem.h>
-#include <CEGUISchemeManager.h>
-#include <OgreCEGUIRenderer.h>
-[!endif]
-
 [!if FRAMEWORK_OWN]
 #include "BaseApplication.h"
 [!else]
 #include "ExampleApplication.h"
 [!endif]
 
+
+[!if FRAMEWORK_OWN]
+
+class [!output PROJECT_NAME]App : public BaseApplication
+{
+public:
+	[!output PROJECT_NAME]App(void);
+	virtual ~[!output PROJECT_NAME]App(void);
+
+protected:
+	virtual void createScene(void);
+};
+
+[!else]
+
 [!if CEGUI_YES]
+#include <OgreNoMemoryMacros.h>
+#include <CEGUI.h>
+#include <CEGUISystem.h>
+#include <CEGUISchemeManager.h>
+#include <OgreCEGUIRenderer.h>
+#include <OgreMemoryMacros.h>
+
 CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
 {
    switch (buttonID)
@@ -57,18 +72,10 @@ CEGUI::MouseButton convertOgreButtonToCegui(int buttonID)
 [!endif]
 
 
-[!if FRAMEWORK_OWN]
-[!if CEGUI_YES]
-class [!output PROJECT_NAME]FrameListener : public BaseFrameListener, public MouseMotionListener, public MouseListener
-[!else]
-class [!output PROJECT_NAME]FrameListener : public BaseFrameListener
-[!endif]
-[!else]
 [!if CEGUI_YES]
 class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener, public MouseMotionListener, public MouseListener
 [!else]
 class [!output PROJECT_NAME]FrameListener : public ExampleFrameListener
-[!endif]
 [!endif]
 {
 private:
@@ -78,19 +85,6 @@ private:
    bool mShutdownRequested;
 [!endif]
 public:
-[!if FRAMEWORK_OWN]
-[!if CEGUI_YES]
-	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
-		: BaseFrameListener(win, cam, false, true),
-      mGUIRenderer(renderer),
-      mShutdownRequested(false),
-      mSceneMgr(sceneMgr)
-[!else]
-      [!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
-         : BaseFrameListener(win, cam),
-         mSceneMgr(sceneMgr)
-[!endif]
-[!else]
 [!if CEGUI_YES]
 	[!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
 		: ExampleFrameListener(win, cam, false, true),
@@ -101,7 +95,6 @@ public:
       [!output PROJECT_NAME]FrameListener(SceneManager *sceneMgr, RenderWindow* win, Camera* cam)
          : ExampleFrameListener(win, cam),
          mSceneMgr(sceneMgr)
-[!endif]
 [!endif]
 	{
 [!if CEGUI_YES]
@@ -155,13 +148,13 @@ public:
    void mouseMoved (MouseEvent *e)
    {
       CEGUI::System::getSingleton().injectMouseMove(
-         e->getRelX() * mGUIRenderer->getWidth(), 
+         e->getRelX() * mGUIRenderer->getWidth(),
          e->getRelY() * mGUIRenderer->getHeight());
       e->consume();
    }
 
-   void mouseDragged (MouseEvent *e) 
-   { 
+   void mouseDragged (MouseEvent *e)
+   {
       mouseMoved(e);
    }
 
@@ -201,12 +194,8 @@ public:
 
 
 
-[!if FRAMEWORK_OWN]
-class [!output PROJECT_NAME]App : public BaseApplication
-	[!else]
-	class [!output PROJECT_NAME]App : public ExampleApplication
-[!endif]
-	{
+class [!output PROJECT_NAME]App : public ExampleApplication
+{
 [!if CEGUI_YES]
    private:
       CEGUI::OgreCEGUIRenderer* mGUIRenderer;
@@ -276,24 +265,24 @@ protected:
 	virtual void createScene(void)
 	{
 [!if CEGUI_YES]
-      // setup GUI system
-      mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow, 
-         Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
+		// setup GUI system
+		mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow,
+	 Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mSceneMgr);
 
-      mGUISystem = new CEGUI::System(mGUIRenderer);
+		mGUISystem = new CEGUI::System(mGUIRenderer);
 
-      CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
+		CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
 
 
-      // load scheme and set up defaults
-      CEGUI::SchemeManager::getSingleton().loadScheme(
-         (CEGUI::utf8*)"TaharezLook.scheme");
-      mGUISystem->setDefaultMouseCursor(
-         (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-      mGUISystem->setDefaultFont((CEGUI::utf8*)"Tahoma-12");
-      CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
-      CEGUI::MouseCursor::getSingleton().show( );
-      setupEventHandlers();
+		// load scheme and set up defaults
+		CEGUI::SchemeManager::getSingleton().loadScheme(
+		 (CEGUI::utf8*)"TaharezLookSkin.scheme");
+		mGUISystem->setDefaultMouseCursor(
+		 (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+		mGUISystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-12");
+		CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
+		CEGUI::MouseCursor::getSingleton().show( );
+		setupEventHandlers();
 [!endif]
 
       Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
@@ -331,6 +320,7 @@ protected:
    }
 [!endif]
 };
+[!endif]
 [!endif]
 
 #endif // #ifndef __[!output PROJECT_NAME]_h_

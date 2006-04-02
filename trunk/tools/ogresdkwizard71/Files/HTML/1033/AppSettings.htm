@@ -1,6 +1,6 @@
 <HTML DIR="ltr">
     <HEAD>
-        <TITLE>OGRE SDK 1.0.5 Application Wizard</TITLE>
+        <TITLE>OGRE SDK 1.2.x Application Wizard</TITLE>
         <META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
         <STYLE TYPE="text/css">@import url();
@@ -215,8 +215,8 @@
                                                             </DIV>
                                                             <BR>
                                                             <INPUT TYPE="radio" CLASS="Radio" onPropertyChange="InitControls();" ACCESSKEY="l" NAME="appoptions"
-                                                                ID="FRAMEWORK_OWN" TITLE="Using a local copy of the example framework (BaseApplication.h and BaseFramelistener.h) You should costumize these to suit your own needs.">
-                                                            <DIV CLASS="itemTextRadioB" ID="FRAMEWORK_OWN_DIV" TITLE="Using a local copy of the example framework (BaseApplication.h and BaseFramelistener.h) You should costumize these to suit your own needs.">
+                                                                ID="FRAMEWORK_OWN" TITLE="Using an improved version of the example framework (BaseApplication) You should costumize these to suit your own needs.">
+                                                            <DIV CLASS="itemTextRadioB" ID="FRAMEWORK_OWN_DIV" TITLE="Using an improved version of the example framework (BaseApplication) You should costumize these to suit your own needs.">
                                                                 <LABEL FOR="FRAMEWORK_OWN" ID="FRAMEWORK_OWN_LABEL">Own Framework</LABEL>
                                                             </DIV>
                                                             <BR>
@@ -229,6 +229,12 @@
                                                             <br>
                                                         </SPAN><SPAN CLASS="itemTextTop" ID="ADD_SUPPORT_SPAN" TITLE="">Additional Options: </SPAN>
                                                         <P CLASS="Spacer">&nbsp;</P>
+                                                        <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="L" ID="LOADINGBAR_YES" NAME="support" TITLE="Check this box to add initial Loadingbar"
+                                                            onPropertyChange="InitControls();">
+                                                        <DIV CLASS="itemTextCheckboxB" TITLE="Check this box to add initial Loadingbar" ID="support_loadingbar_title">
+                                                            <LABEL FOR="LOADINGBAR_YES" ID="LOADINGBAR_YES_LABEL"><U>L</U>oadingbar Support</LABEL>
+                                                        </DIV>
+                                                        <br>
                                                         <INPUT TYPE="checkbox" CLASS="CheckBoxA" ACCESSKEY="F" ID="CEGUI_YES" NAME="support" TITLE="Check this box to add support for CEGUI"
                                                             onPropertyChange="InitControls();">
                                                         <DIV CLASS="itemTextCheckboxB" TITLE="Check this box to add support for CEGUI" ID="support_cegui_title">
@@ -350,7 +356,7 @@ function Cookie(document, name, hours, path, domain, secure)
 {
     // All the predefined properties of this object begin with '$'
     // to distinguish them from other properties which are the values to
-    // be stored in the cookie.	
+    // be stored in the cookie.
     this.$document = document;
     this.$name = name;
     if (hours)
@@ -366,19 +372,19 @@ function _Cookie_store()
     // First, loop through the properties of the Cookie object and
     // put together the value of the cookie. Since cookies use the
     // equals sign and semicolons as separators, we'll use colons
-    // and ampersands for the individual state variables we store 
+    // and ampersands for the individual state variables we store
     // within a single cookie value. Note that we escape the value
     // of each state variable, in case it contains punctuation or other
     // illegal characters.
     var cookieval = "";
     for(var prop in this) {
         // Ignore properties with names that begin with '$' and also methods.
-        if ((prop.charAt(0) == '$') || ((typeof this[prop]) == 'function')) 
+        if ((prop.charAt(0) == '$') || ((typeof this[prop]) == 'function'))
             continue;
         if (cookieval != "") cookieval += '&';
         cookieval += prop + ':' + escape(this[prop]);
     }
-    // Now that we have the value of the cookie, put together the 
+    // Now that we have the value of the cookie, put together the
     // complete cookie string, which includes the name, and the various
     // attributes specified when the Cookie object was created.
     var cookie = this.$name + '=' + cookieval;
@@ -405,7 +411,7 @@ function _Cookie_load()
     if (end == -1) end = allcookies.length;
     var cookieval = allcookies.substring(start, end);
     // Now that we've extracted the value of the named cookie, we've
-    // got to break that value down into individual state variable 
+    // got to break that value down into individual state variable
     // names and values. The name/value pairs are separated from each
     // other with ampersands, and the individual names and values are
     // separated from each other with colons. We use the split method
@@ -453,22 +459,24 @@ function InitDocument(document)
 	if (!cookieData.load() || !cookieData.name) {
 		cookieData.name = "sdklast_settings";
 	}
-	
+
 	// store a default value for first session
 	if (cookieData.min_app == null) { cookieData.min_app="false"; cookieData.store();}
 	if (cookieData.standard_app == null) { cookieData.standard_app="true"; cookieData.store();}
 	if (cookieData.empty_project == null) { cookieData.empty_project="false"; cookieData.store();}
 	if (cookieData.framework_yes == null) { cookieData.framework_yes="true"; cookieData.store();}
 	if (cookieData.framework_own == null) { cookieData.framework_own="false"; cookieData.store();}
+	if (cookieData.loadingbar_yes == null) { cookieData.loadingbar_yes="false"; cookieData.store();}
 	if (cookieData.cegui_yes == null) { cookieData.cegui_yes="false"; cookieData.store();}
 	if (cookieData.postbuild_copy == null) { cookieData.postbuild_copy="true"; cookieData.store();}
 	if (cookieData.skip_config == null) { cookieData.skip_config="false"; cookieData.store();}
-	
+
 	MIN_APP.checked = cookieData.min_app;
 	STANDARD_APP.checked = cookieData.standard_app;
 	EMPTY_PROJECT.checked = cookieData.empty_project;
 	FRAMEWORK_YES.checked = cookieData.framework_yes;
 	FRAMEWORK_OWN.checked = cookieData.framework_own;
+	LOADINGBAR_YES.checked = cookieData.loadingbar_yes;
 	CEGUI_YES.checked = cookieData.cegui_yes;
 	POSTBUILD_COPY.checked = cookieData.postbuild_copy;
 	SKIP_CONFIG.checked = cookieData.skip_config;
@@ -520,6 +528,7 @@ function OnFinish(document)
 	cookieData.empty_project=EMPTY_PROJECT.checked;
 	cookieData.framework_yes=FRAMEWORK_YES.checked;
 	cookieData.framework_own=FRAMEWORK_OWN.checked;
+	cookieData.loadingbar_yes = LOADINGBAR_YES.checked;
 	cookieData.cegui_yes=CEGUI_YES.checked;
 	cookieData.postbuild_copy=POSTBUILD_COPY.checked;
 	cookieData.skip_config=SKIP_CONFIG.checked;
@@ -546,6 +555,8 @@ function InitControls()
 	{
 		STATEMANAGER_YES.disabled = true;
 		STATEMANAGER_YES_LABEL.disabled = true;
+		LOADINGBAR_YES.disabled = true;
+		LOADINGBAR_YES_LABEL.disabled = true;
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = true;
@@ -560,6 +571,17 @@ function InitControls()
 	{
 		STATEMANAGER_YES.disabled = true;
 		STATEMANAGER_YES_LABEL.disabled = true;
+
+		if(FRAMEWORK_OWN.checked)
+		{
+			LOADINGBAR_YES.disabled = false;
+			LOADINGBAR_YES_LABEL.disabled = false;
+		} else
+		{
+			LOADINGBAR_YES.disabled = true;
+			LOADINGBAR_YES_LABEL.disabled = true;
+		}
+
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = false;
@@ -574,6 +596,8 @@ function InitControls()
 	{
 		STATEMANAGER_YES.disabled = true;
 		STATEMANAGER_YES_LABEL.disabled = true;
+		LOADINGBAR_YES.disabled = true;
+		LOADINGBAR_YES_LABEL.disabled = true;
 		CEGUI_YES.disabled = false;
 		CEGUI_YES_LABEL.disabled = false;
 		FRAMEWORK_YES.disabled = true;

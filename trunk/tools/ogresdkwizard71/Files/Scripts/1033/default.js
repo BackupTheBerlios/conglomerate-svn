@@ -185,7 +185,7 @@ function AddConfig(proj, strProjectName)
 			var PostBuildTool = config.Tools("VCPostBuildEventTool");
 			PostBuildTool.Description = "Copying exe to samples bin directory ...";
 
-			PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + strOgreMainDir + "\\Bin\\$(ConfigurationName)";
+			PostBuildTool.CommandLine = 'copy "$(OutDir)\\$(TargetFileName)" "' + strOgreMainDir + '\\Bin\\$(ConfigurationName)"';
 		}
 
 //RELEASE//////////////////////////////////////////////////////
@@ -255,7 +255,7 @@ function AddConfig(proj, strProjectName)
 			var PostBuildTool = config.Tools("VCPostBuildEventTool");
 			PostBuildTool.Description = "Copying exe to samples bin directory ...";
 
-			PostBuildTool.CommandLine = "copy $(OutDir)\\$(TargetFileName) " + strOgreMainDir + "\\Bin\\$(ConfigurationName)";
+			PostBuildTool.CommandLine = 'copy "$(OutDir)\\$(TargetFileName)" "' + strOgreMainDir + '\\Bin\\$(ConfigurationName)"';
 		}
 	}
 	catch(e)
@@ -352,8 +352,11 @@ function GetTargetName(strName, strProjectName)
 		// TODO: set the name of the rendered file based on the template filename
 		var strTarget = strName;
 
-		if (strName == '..\\include\\main.h')
+		if (strName == '..\\include\\root.h')
 			strTarget = '..\\include\\' + strProjectName + '.h'
+
+		if (strName == '..\\src\\root.cpp')
+			strTarget = '..\\src\\' + strProjectName + '.cpp'
 
 		if (strName == 'res\\base_sample.rc')
 			strTarget = 'res\\' + strProjectName + '.rc'

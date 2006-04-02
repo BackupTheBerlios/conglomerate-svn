@@ -2,9 +2,9 @@
     About the "[!output PROJECT_NAME]" Project
 ========================================================================
 
-The OGRE Application Wizard has created this OGRE-compliant "[!output PROJECT_NAME]" project for you.
+The OGRE Application Wizard has created this OGRE "[!output PROJECT_NAME]" project for you.
 It serves as a starting point, whether you want to do some quick OGRE-testing,
-or just want to create an OGRE-compliant project real fast.
+or just want to create an OGRE compliant project real fast.
 
 Enjoy! ;-))
 

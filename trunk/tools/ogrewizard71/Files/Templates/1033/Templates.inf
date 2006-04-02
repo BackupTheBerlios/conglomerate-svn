@@ -1,14 +1,15 @@
+[!if !EMPTY_PROJECT]
 res\ogre.ico
 res\resource.h
 res\base_sample.rc
 ..\docs\readme.txt
-..\src\main.cpp
-..\include\main.h
+..\src\root.cpp
+..\include\root.h
 [!if FRAMEWORK_OWN]
 ..\include\BaseApplication.h
-..\include\BaseFramelistener.h
+..\src\BaseApplication.cpp
 [!endif]
-[!if PRE_COMPILED_HEADER]
-StdAfx.h
-StdAfx.cpp
+[!if LOADINGBAR_YES]
+..\include\LoadingBar.h
+[!endif]
 [!endif]
