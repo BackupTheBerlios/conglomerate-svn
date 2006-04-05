@@ -33,13 +33,16 @@ namespace OgreOpcode
 	namespace Details
     {
 		/// Represents a Triangle defined by three points (vertices).
-		/// This class is strongly based on OPCODE's triangle class, but is
-		/// designed to work with Ogre's vectors and (will) haves more utility methods.
+		/// This class is <em>strongly</em> based on OPCODE's triangle class, but is
+		/// designed to work with Ogre's vectors and haves more utility methods.
+		/// There are methods for computing distances and for intersection detection.
+		/// Most code is inlined. INL files implementing the inlided methods can be added later,
+		/// allowing for easier reading of this class.
 		class _OgreOpcode_Export Triangle
 		{
 		public:
 
-			/** Fast, but unsafe default constructor
+			/** Fast, but <em>unsafe</em> default constructor
              */
 			Triangle() { }
 
@@ -123,7 +126,10 @@ namespace OgreOpcode
 			/** Gets the plane where this triangle lies on.
 			 * @param plane Output parameter
 			 */
-			// void plane( vecmath::Plane& plane ) const;
+			Plane plane() const
+			{
+				return Plane(vertices[0],vertices[1],vertices[2]);
+			};
 			
 			/** Gets the point with given baricentric uv coordinates
 			 */
@@ -159,237 +165,7 @@ namespace OgreOpcode
 			/** Computes the <em>squared</em> distance from this triangle to a given point
 			 *  @remarks Follows code from Magic-Software at http://www.magic-software.com
 			 */
-			Real squaredDistance( const Vector3& point ) const
-			{
-				// edge pre-computing
-				Vector3 e0 = vertices[1] - vertices[0];
-				Vector3 e1 = vertices[2] - vertices[1];
-
-				Vector3 kDiff = e0 - point;
-				Real fA00 = e0.squaredLength();
-				Real fA01 = e0.dotProduct(e1);
-				Real fA11 = e1.squaredLength();
-				Real fB0 = kDiff.dotProduct(e0);
-				Real fB1 = kDiff.dotProduct(e1);
-				Real fC = kDiff.squaredLength();
-				Real fDet = Math::Abs(fA00*fA11-fA01*fA01);
-				Real fS = fA01*fB1-fA11*fB0;
-				Real fT = fA01*fB0-fA00*fB1;
-				Real fSqrDist;
-
-				if ( fS + fT <= fDet )
-				{
-					if ( fS < (Real)0.0 )
-					{
-						if ( fT < (Real)0.0 )  // region 4
-						{
-							if ( fB0 < (Real)0.0 )
-							{
-								fT = (Real)0.0;
-								if ( -fB0 >= fA00 )
-								{
-									fS = (Real)1.0;
-									fSqrDist = fA00+((Real)2.0)*fB0+fC;
-								}
-								else
-								{
-									fS = -fB0/fA00;
-									fSqrDist = fB0*fS+fC;
-								}
-							}
-							else
-							{
-								fS = (Real)0.0;
-								if ( fB1 >= (Real)0.0 )
-								{
-									fT = (Real)0.0;
-									fSqrDist = fC;
-								}
-								else if ( -fB1 >= fA11 )
-								{
-									fT = (Real)1.0;
-									fSqrDist = fA11+((Real)2.0)*fB1+fC;
-								}
-								else
-								{
-									fT = -fB1/fA11;
-									fSqrDist = fB1*fT+fC;
-								}
-							}
-						}
-						else  // region 3
-						{
-							fS = (Real)0.0;
-							if ( fB1 >= (Real)0.0 )
-							{
-								fT = (Real)0.0;
-								fSqrDist = fC;
-							}
-							else if ( -fB1 >= fA11 )
-							{
-								fT = (Real)1.0;
-								fSqrDist = fA11+((Real)2.0)*fB1+fC;
-							}
-							else
-							{
-								fT = -fB1/fA11;
-								fSqrDist = fB1*fT+fC;
-							}
-						}
-					}
-					else if ( fT < (Real)0.0 )  // region 5
-					{
-						fT = (Real)0.0;
-						if ( fB0 >= (Real)0.0 )
-						{
-							fS = (Real)0.0;
-							fSqrDist = fC;
-						}
-						else if ( -fB0 >= fA00 )
-						{
-							fS = (Real)1.0;
-							fSqrDist = fA00+((Real)2.0)*fB0+fC;
-						}
-						else
-						{
-							fS = -fB0/fA00;
-							fSqrDist = fB0*fS+fC;
-						}
-					}
-					else  // region 0
-					{
-						// minimum at interior point
-						Real fInvDet = ((Real)1.0)/fDet;
-						fS *= fInvDet;
-						fT *= fInvDet;
-						fSqrDist = fS*(fA00*fS+fA01*fT+((Real)2.0)*fB0) +
-							fT*(fA01*fS+fA11*fT+((Real)2.0)*fB1)+fC;
-					}
-				}
-				else
-				{
-					Real fTmp0, fTmp1, fNumer, fDenom;
-
-					if ( fS < (Real)0.0 )  // region 2
-					{
-						fTmp0 = fA01 + fB0;
-						fTmp1 = fA11 + fB1;
-						if ( fTmp1 > fTmp0 )
-						{
-							fNumer = fTmp1 - fTmp0;
-							fDenom = fA00-2.0f*fA01+fA11;
-							if ( fNumer >= fDenom )
-							{
-								fS = (Real)1.0;
-								fT = (Real)0.0;
-								fSqrDist = fA00+((Real)2.0)*fB0+fC;
-							}
-							else
-							{
-								fS = fNumer/fDenom;
-								fT = (Real)1.0 - fS;
-								fSqrDist = fS*(fA00*fS+fA01*fT+2.0f*fB0) +
-									fT*(fA01*fS+fA11*fT+((Real)2.0)*fB1)+fC;
-							}
-						}
-						else
-						{
-							fS = (Real)0.0;
-							if ( fTmp1 <= (Real)0.0 )
-							{
-								fT = (Real)1.0;
-								fSqrDist = fA11+((Real)2.0)*fB1+fC;
-							}
-							else if ( fB1 >= (Real)0.0 )
-							{
-								fT = (Real)0.0;
-								fSqrDist = fC;
-							}
-							else
-							{
-								fT = -fB1/fA11;
-								fSqrDist = fB1*fT+fC;
-							}
-						}
-					}
-					else if ( fT < (Real)0.0 )  // region 6
-					{
-						fTmp0 = fA01 + fB1;
-						fTmp1 = fA00 + fB0;
-						if ( fTmp1 > fTmp0 )
-						{
-							fNumer = fTmp1 - fTmp0;
-							fDenom = fA00-((Real)2.0)*fA01+fA11;
-							if ( fNumer >= fDenom )
-							{
-								fT = (Real)1.0;
-								fS = (Real)0.0;
-								fSqrDist = fA11+((Real)2.0)*fB1+fC;
-							}
-							else
-							{
-								fT = fNumer/fDenom;
-								fS = (Real)1.0 - fT;
-								fSqrDist = fS*(fA00*fS+fA01*fT+((Real)2.0)*fB0) +
-									fT*(fA01*fS+fA11*fT+((Real)2.0)*fB1)+fC;
-							}
-						}
-						else
-						{
-							fT = (Real)0.0;
-							if ( fTmp1 <= (Real)0.0 )
-							{
-								fS = (Real)1.0;
-								fSqrDist = fA00+((Real)2.0)*fB0+fC;
-							}
-							else if ( fB0 >= (Real)0.0 )
-							{
-								fS = (Real)0.0;
-								fSqrDist = fC;
-							}
-							else
-							{
-								fS = -fB0/fA00;
-								fSqrDist = fB0*fS+fC;
-							}
-						}
-					}
-					else  // region 1
-					{
-						fNumer = fA11 + fB1 - fA01 - fB0;
-						if ( fNumer <= (Real)0.0 )
-						{
-							fS = (Real)0.0;
-							fT = (Real)1.0;
-							fSqrDist = fA11+((Real)2.0)*fB1+fC;
-						}
-						else
-						{
-							fDenom = fA00-2.0f*fA01+fA11;
-							if ( fNumer >= fDenom )
-							{
-								fS = (Real)1.0;
-								fT = (Real)0.0;
-								fSqrDist = fA00+((Real)2.0)*fB0+fC;
-							}
-							else
-							{
-								fS = fNumer/fDenom;
-								fT = (Real)1.0 - fS;
-								fSqrDist = fS*(fA00*fS+fA01*fT+((Real)2.0)*fB0) +
-									fT*(fA01*fS+fA11*fT+((Real)2.0)*fB1)+fC;
-							}
-						}
-					}
-				}
-
-				// Uncomment this if you want the minimal to get the closest point in the
-				// triangle (barycentric coordinates)
-				//if ( pfSParam ) outSParam = fS;
-				//if ( pfTParam ) outTParam = fT;
-
-				return Math::Abs(fSqrDist);
-			}
+			Real squaredDistance( const Vector3& point ) const;
 			
 			/** Computes the distance from this triangle to a given point
 			 */
