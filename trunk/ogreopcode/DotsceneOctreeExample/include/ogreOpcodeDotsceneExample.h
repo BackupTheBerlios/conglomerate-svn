@@ -64,7 +64,7 @@ private:
 	Overlay* hotTargetSight;
 	CollisionContext* collideContext;
 	CollisionObject* mRobotCollObj;
-	MeshCollisionShape* mRobotCollShape;
+	EntityCollisionShape* mRobotCollShape;
 	PtrCollisionShape* mDotSceneShape;
 	Ray ray;
 	bool mPlayAnimation;

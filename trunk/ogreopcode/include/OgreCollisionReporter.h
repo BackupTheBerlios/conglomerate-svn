@@ -57,16 +57,16 @@ namespace OgreOpcode
 			numPrimPrimTests(0)
 		{};
 		
-		CollisionObject *co_this; ///< the first object involved in the collision
-		CollisionObject *co_other; ///< the second object involved in the collision
-		Real tstamp; ///< the timestamp at which the collision occurred
-		Vector3 contact; ///< the point of contact
-		Real distance; ///< distance to point of contact (for ray checks)
-		Vector3 co_this_normal; ///< First objects collision plane normal
-		Vector3 co_other_normal; ///< Second objects collision plane normal
-		unsigned int numBVBVTests;
-		unsigned int numBVPrimTests;
-		unsigned int numPrimPrimTests;
+		CollisionObject *co_this;		///< the first object involved in the collision
+		CollisionObject *co_other;		///< the second object involved in the collision
+		Real tstamp;					///< the timestamp at which the collision occurred
+		Vector3 contact;				///< the point of contact
+		Real distance;					///< distance to point of contact (for ray checks)
+		Vector3 co_this_normal;			///< First objects collision plane normal
+		Vector3 co_other_normal;		///< Second objects collision plane normal
+		unsigned int numBVBVTests;		///<
+		unsigned int numBVPrimTests;	///<
+		unsigned int numPrimPrimTests;	///<
 	};
 
 	/// Collect and manage CollisionPair%s.
@@ -75,20 +75,19 @@ namespace OgreOpcode
 	/// the CollisionContext avoid redundant checks.
 	class _OgreOpcode_Export CollisionReporter
 	{
-		static const int max_reports_per_object = 256;
-
-		typedef std::set<unsigned int> UIntSet;
-		typedef std::map<unsigned int, CollisionPair> CollPairMap;
-		UIntSet test_pairs;
-		CollPairMap coll_pairs;
-		CollisionPair *report_array[max_reports_per_object];
+		static const int max_reports_per_object = 256; ///<
+		typedef std::set<unsigned int> UIntSet; ///<
+		typedef std::map<unsigned int, CollisionPair> CollPairMap; ///<
+		UIntSet test_pairs;	///<
+		CollPairMap coll_pairs;	///<
+		CollisionPair *report_array[max_reports_per_object]; ///<
 
 	public:
 		// Misc stats
-		unsigned int mTotalObjObjTests;
-		unsigned int mTotalBVBVTests;
-		unsigned int mTotalBVPrimTests;
-		unsigned int mTotalPrimPrimTests;
+		unsigned int mTotalObjObjTests; ///<
+		unsigned int mTotalBVBVTests; ///<
+		unsigned int mTotalBVPrimTests; ///<
+		unsigned int mTotalPrimPrimTests; ///<
 
 	private:
 
@@ -180,8 +179,9 @@ namespace OgreOpcode
 		};
 
 		/// report collisions for a specific object.
-		/// returns number of collisions and pointer to an array of collision report
-		/// pointers into the nKeyArray.
+		/// @param co [in] pointer to CollisionObject
+		/// @param cr_ptr [out] pointer to collide report pointer array
+		/// @return number of collisions this object is involved in
 		int getCollisions(CollisionObject *co, CollisionPair **& cr_ptr)
 		{
 			// fill report array with all collisions which this
@@ -208,7 +208,8 @@ namespace OgreOpcode
 		}
 
 		/// report collisions for a specific object.
-		/// returns number of collisions only
+		/// @param co [in] pointer to CollisionObject
+		/// @return number of collisions this object is involved in
 		int getCollisions(CollisionObject *co)
 		{
 			// fill report array with all collisions which this
@@ -234,6 +235,8 @@ namespace OgreOpcode
 		}
 
 		/// get all recorded collisions.
+		/// @param cr_ptr [out] pointer to collide report pointer array
+		/// @return number of collisions
 		int getAllCollisions(CollisionPair **& cr_ptr) 
 		{
 			int num = coll_pairs.size();

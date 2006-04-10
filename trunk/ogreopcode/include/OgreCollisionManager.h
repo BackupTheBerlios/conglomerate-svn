@@ -33,8 +33,8 @@
 #include "OgreCollisionTypes.h"
 #include "OgreNodes.h"
 #include "OgreCollisionContext.h"
-#include "OgreCollisionShape.h"
 #include "Opcode.h"
+#include "IOgreCollisionShape.h"
 
 #include <list>
 #include <map>
@@ -52,26 +52,30 @@ namespace OgreOpcode
 	/// Shape types
 	enum ShapeType
 	{
-		SHAPETYPE_MESH		= 0,    ///< mesh based shape
-		SHAPETYPE_PTR		= 1,    ///< raw ptr based shape
-		SHAPETYPE_BOX		= 2,    ///< box shape
-		SHAPETYPE_SPHERE	= 3,    ///< sphere shape
-		SHAPETYPE_CAPSULE	= 4,    ///< capsule shape
+		SHAPETYPE_ENTITY	= 0,    ///< entity based shape
+		SHAPETYPE_MESH		= 1,    ///< mesh based shape
+		SHAPETYPE_PTR		= 2,    ///< raw ptr based shape
+		SHAPETYPE_BOX		= 3,    ///< box shape
+		SHAPETYPE_SPHERE	= 4,    ///< sphere shape
+		SHAPETYPE_CAPSULE	= 5,    ///< capsule shape
+		SHAPETYPE_TERRAIN	= 6		///< terrain shape
 	};
+
+	class MeshCollisionShape;
+	class EntityCollisionShape;
+	class BoxCollisionShape;
+	class SphereMeshCollisionShape;
+	class PtrCollisionShape;
+	class TerrainCollisionShape;
 
 	/// Collision manager.
 	/// The CollisionManager object serves as factory object of the
 	/// different classes of the collision system, namely
-	/// CollisionContext and MeshCollisionShape. A CollisionContext
+	/// CollisionContext and EntityCollisionShape. A CollisionContext
 	/// serves as factory for CollisionObject%s.
-	class BoxCollisionShape;
-	class SphereMeshCollisionShape;
-	class PtrCollisionShape;
-	
-	
 	class _OgreOpcode_Export CollisionManager : public Singleton<CollisionManager>
 	{
-		//friend class MeshCollisionShape;
+		//friend class EntityCollisionShape;
 	public:
 		///TODO: Put these back into the private section!!
 		Opcode::AABBTreeCollider opcTreeCollider;
@@ -94,9 +98,11 @@ namespace OgreOpcode
 		void destroyContext(CollisionContext *);
 
 		MeshCollisionShape* createMeshCollisionShape(const String&);
+		EntityCollisionShape* createEntityCollisionShape(const String&);
 		BoxCollisionShape* createBoxCollisionShape(const String&);
 		SphereMeshCollisionShape* createSphereMeshCollisionShape(const String&);
 		PtrCollisionShape* createPtrCollisionShape(const String&);
+		TerrainCollisionShape* createTerrainCollisionShape(const String&);
 
 		void destroyShape(ICollisionShape *);
 
@@ -188,7 +194,7 @@ namespace OgreOpcode
 		// Merge the 2 object id's into 1 32 bit id,
 		// order them, so that any combination of 2 id's
 		// results in the same merged id. Return true
-		// a swap happend (because other attributes
+		// a swap happened (because other attributes
 		// may have to be swapped as well).
 		bool get_merged_id(int id1, int id2, int& mrg)
 		{

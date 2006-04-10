@@ -14,6 +14,7 @@ mVisualizeObjects(false),
 mDoABBVisualization(false),
 mDoLocalVisualization(true),
 mDoGlobalVisualization(true),
+mSkipLevelRayCheck(true),
 mRobotEntity(0)
 {
 }
@@ -134,6 +135,12 @@ bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 		mTimeUntilNextToggle = 0.5;
 	}
 
+	if (mInputDevice->isKeyDown(KC_2) && mTimeUntilNextToggle <= 0)
+	{
+		mSkipLevelRayCheck = !mSkipLevelRayCheck;	
+		mTimeUntilNextToggle = 0.5;
+	}
+	
 	return OgreOpcodeExample::processUnbufferedKeyInput(evt);
 }
 //-------------------------------------------------------------------------------------
@@ -163,10 +170,14 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 
 	mRay = mCamera->getCameraToViewportRay(0.5, 0.5);
 
-      // remove level from context - we don't care when ray testing against entities..
-      //CollisionManager::getSingletonPtr()->getDefaultContext()->removeObject(mCollObj1);
+	CollisionObject* tempCollObj = mCollideContext->getAttachedObject("TestLevel");  
+	
+	if(mSkipLevelRayCheck)
+	{
+		// remove level from context - we don't care when ray testing against entities..
+		CollisionManager::getSingletonPtr()->getDefaultContext()->removeObject(tempCollObj);
+	}
 
-      // Do ray testing against everything but the level
 	CollisionPair **pick_report;
 	int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(mRay, 2000.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
 
@@ -192,6 +203,12 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 		mHotTargetSight->hide();
 	}
 
+	if(mSkipLevelRayCheck)
+	{
+		// Add the level back into the CollisionContext
+		CollisionManager::getSingletonPtr()->getDefaultContext()->addObject(tempCollObj);
+	}
+
 	// Check Robot for collisions
 	if(mRobotEntity->hasCollisions())
 	{
@@ -211,14 +228,14 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* entity, bool makeStatic)
 {
-	MeshCollisionShape* tempCollShape;
+	EntityCollisionShape* tempCollShape;
 	CollisionObject* tempCollObject;
-	tempCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape(shapeName);
+	tempCollShape = CollisionManager::getSingletonPtr()->createEntityCollisionShape(shapeName);
 	if(makeStatic)
 		tempCollShape->setStatic();
 	entity->setNormaliseNormals(true);
 	tempCollShape->load(entity);
-	tempCollObject = mCollideContext->newObject("dotsceneObject");
+	tempCollObject = mCollideContext->newObject(shapeName);
 	if(makeStatic)
 	{
 		tempCollObject->setCollClass("level");
@@ -227,6 +244,7 @@ void OgreOpcodeExampleApp::addCollisionShape(const String& shapeName, Entity* en
 		tempCollObject->setCollClass("ogrerobot");
 	tempCollObject->setShape(tempCollShape);
 	mCollideContext->addObject(tempCollObject);
+	LogManager::getSingleton().logMessage("[addCollisionShape] Added : " + tempCollObject->getName() + " to the context.");
 }
 //-------------------------------------------------------------------------------------
 void OgreOpcodeExampleApp::parseDotScene( const String &SceneName)

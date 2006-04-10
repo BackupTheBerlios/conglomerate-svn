@@ -34,10 +34,12 @@
 #include "OgreCollisionContext.h"
 #include "OgreCollisionObject.h"
 #include "OgreCollisionTypes.h"
-#include "OgreCollisionShape.h"
+#include "OgreMeshCollisionShape.h"
+#include "OgreEntityCollisionShape.h"
 #include "OgrePtrCollisionShape.h"
 #include "OgreBoxCollisionShape.h"
 #include "OgreSphereMeshCollisionShape.h"
+#include "OgreTerrainCollisionShape.h"
 #include "OgreCollisionReporter.h"
 
 #endif // __OgreOpcode_h__

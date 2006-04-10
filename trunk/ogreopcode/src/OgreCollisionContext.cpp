@@ -40,7 +40,7 @@ namespace OgreOpcode
 			//  a's max less than b's min, or a's min greater than b's max.
 			// Otherwise they overlap.
 			// return !(a1<b0 || a0>b1);
-			// I just applyied the De Morgan's law here in order to obtain short-circuit
+			// I just applied the De Morgan's law here in order to obtain short-circuit
 			return (a1>=b0) && (a0<=b1);
 		}
 	} // Details
@@ -147,6 +147,16 @@ namespace OgreOpcode
 			cpPtr = 0;
 			return 0;
 		}
+	}
+
+	CollisionObject* CollisionContext::getAttachedObject(String name)
+	{
+		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+		{
+			if( (*i)->getName() == name )
+				return (*i);
+		}
+		return 0;
 	}
 
 	/// get reporter for for last collide() call.

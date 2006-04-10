@@ -115,7 +115,7 @@ namespace OgreOpcode
 		/// Refits the collision tree to the currently cached vertex data.
 		/// This is an O(n) operation in the number of vertices in the mesh.
 		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the MeshCollisionShape's cached data and the actual mesh
+		/// updating both the EntityCollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like 
 		/// deformable body physics.
 	//virtual bool _refitToCachedData();
@@ -124,7 +124,7 @@ namespace OgreOpcode
 		/// like topology changing deformations, or a change in the number of tris.
 		/// In most cases _RefitToCachedGeometry() is sufficient, and much faster.
 		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the MeshCollisionShape's cached data and the actual mesh
+		/// updating both the EntityCollisionShape's cached data and the actual mesh
 		/// hardware buffers.  Mostly useful for implementing something like
 		/// deformable body physics.
 	//virtual bool _rebuildFromCachedData();
@@ -185,11 +185,11 @@ namespace OgreOpcode
 		return mParentNode;
 	}
 
-	//inline Entity* MeshCollisionShape::getEntity()
+	//inline Entity* EntityCollisionShape::getEntity()
 	//{
 	//	return mEntity;
 	//}
-	//inline const Entity* MeshCollisionShape::getEntity() const
+	//inline const Entity* EntityCollisionShape::getEntity() const
 	//{
 	//	return mEntity;
 	//}

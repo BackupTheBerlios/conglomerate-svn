@@ -86,6 +86,8 @@ namespace OgreOpcode
 
 		virtual const String& getName() { return mName; };
 
+		virtual CollisionObject* getAttachedObject(String name);
+		
 		virtual const std::list<CollisionObject*> getAttachedObjects()
 		{
 			return attached_list;

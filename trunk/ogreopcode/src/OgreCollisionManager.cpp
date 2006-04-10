@@ -26,9 +26,12 @@
 #include "OgreCollisionManager.h"
 #include "OgreCollisionReporter.h"
 
+#include "OgreMeshCollisionShape.h"
+#include "OgreEntityCollisionShape.h"
 #include "OgrePtrCollisionShape.h"
 #include "OgreBoxCollisionShape.h"
 #include "OgreSphereMeshCollisionShape.h"
+#include "OgreTerrainCollisionShape.h"
 
 template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionManager>::ms_Singleton = 0;
 
@@ -136,6 +139,12 @@ namespace OgreOpcode
 				shape_list.erase(i->first);
 			}
 		}
+		if(shpType == SHAPETYPE_ENTITY)
+		{
+			EntityCollisionShape* cs = new EntityCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
+		}
 		if(shpType == SHAPETYPE_MESH)
 		{
 			MeshCollisionShape* cs = new MeshCollisionShape(new_id);
@@ -160,9 +169,15 @@ namespace OgreOpcode
 			shape_list.insert(ShapeList::value_type(new_id,cs));
 			return cs;
 		}
+		if(shpType == SHAPETYPE_TERRAIN)
+		{
+			TerrainCollisionShape* cs = new TerrainCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
+		}
 
 		// hacky way of returning a default ..
-		MeshCollisionShape* cs = new MeshCollisionShape(new_id);
+		EntityCollisionShape* cs = new EntityCollisionShape(new_id);
 		shape_list.insert(ShapeList::value_type(new_id,cs));
 		return cs;
 	}
@@ -170,6 +185,11 @@ namespace OgreOpcode
 	MeshCollisionShape* CollisionManager::createMeshCollisionShape(const String& name)
 	{
 		return static_cast<MeshCollisionShape*>(createShape(name, SHAPETYPE_MESH));
+	}
+
+	EntityCollisionShape* CollisionManager::createEntityCollisionShape(const String& name)
+	{
+		return static_cast<EntityCollisionShape*>(createShape(name, SHAPETYPE_ENTITY));
 	}
 
 	BoxCollisionShape* CollisionManager::createBoxCollisionShape(const String& name)
@@ -187,6 +207,11 @@ namespace OgreOpcode
 		return static_cast<PtrCollisionShape*>(createShape(name, SHAPETYPE_PTR));
 	}
 	
+	TerrainCollisionShape* CollisionManager::createTerrainCollisionShape(const String& name)
+	{
+		return static_cast<TerrainCollisionShape*>(createShape(name, SHAPETYPE_TERRAIN));
+	}
+
 	void CollisionManager::attachContext(CollisionContext *cc)
 	{
 		String contextName = cc->getName();

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-///  @file OgreSphereMeshCollisionShape.cpp
+///  @file OgreMeshCollisionShape.cpp
 ///  @brief <TODO: insert file description here>
 ///
 ///  @author The OgreOpcode Team @date 28-05-2005
@@ -26,7 +26,7 @@
 ///
 ///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeExports.h"
-#include "OgreSphereMeshCollisionShape.h"
+#include "OgreMeshCollisionShape.h"
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
@@ -35,13 +35,13 @@
 namespace OgreOpcode
 {
 	//------------------------------------------------------------------------
-	SphereMeshCollisionShape::SphereMeshCollisionShape(const String& name)
+	MeshCollisionShape::MeshCollisionShape(const String& name)
 		: ICollisionShape(name)
 	{
 	}
 
 	//------------------------------------------------------------------------
-	SphereMeshCollisionShape::~SphereMeshCollisionShape()
+	MeshCollisionShape::~MeshCollisionShape()
 	{
 		if (mEntity && mEntity->hasSkeleton())
 		{
@@ -59,11 +59,12 @@ namespace OgreOpcode
 	/// @param[out] vertex_count Number of vertices.
 	/// @author Yavin from the Ogre4J team
 	///////////////////////////////////////////////////////////////////////////////
-	void SphereMeshCollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
+	void MeshCollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
 	{
 		Mesh * mesh = entity->getMesh().getPointer();
 
 		bool hwSkinning = entity->isHardwareAnimationEnabled();
+
 		bool added_shared = false;
 		index_count  = 0;
 		vertex_count = 0;
@@ -104,7 +105,7 @@ namespace OgreOpcode
 	/// @param[int] index_count         Number of indices.
 	/// @author Yavin from the Ogre4J team
 	//////////////////////////////////////////////////////////////////////////
-	void SphereMeshCollisionShape::convertMeshData(Entity * entity,
+	void MeshCollisionShape::convertMeshData(Entity * entity,
 		float * vertexBuf, size_t vertex_count,
 		int * faceBuf, size_t index_count)
 	{
@@ -165,43 +166,17 @@ namespace OgreOpcode
 					//  comiled/typedefed as double:
 					float* pReal;
 
-					if (useSoftwareBlendingVertices) {
-						// Blended bone data is computed in world space.
-						// Opcode expects data in local coordinates.
-						Matrix4 xform = entity->_getParentNodeFullTransform().inverse();
+					for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
+					{
+						posElem->baseVertexPointerToElement(vertex, &pReal);
 
-						for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
-						{
-							posElem->baseVertexPointerToElement(vertex, &pReal);
+						size_t n = current_offset*3 + j*3;
 
-							Vector3 v = Vector3(pReal[0],pReal[1],pReal[2]);
-							
-							//v *= entity->getParentSceneNode()->getScale();
-							
-							v = xform * v;
-							size_t n = current_offset*3 + j*3;
-							vertexBuf[n + 0] = v[0];
-							vertexBuf[n + 1] = v[1];
-							vertexBuf[n + 2] = v[2];
-						}
+						vertexBuf[n + 0] = pReal[0];
+						vertexBuf[n + 1] = pReal[1];
+						vertexBuf[n + 2] = pReal[2];
 					}
-					else {
-						for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
-						{
-							posElem->baseVertexPointerToElement(vertex, &pReal);
 
-							//Vector3 v = Vector3(pReal[0],pReal[1],pReal[2]);
-							//v *= entity->getParentSceneNode()->getScale();
-
-							size_t n = current_offset*3 + j*3;
-							//vertexBuf[n + 0] = v[0];
-							//vertexBuf[n + 1] = v[1];
-							//vertexBuf[n + 2] = v[2];
-							vertexBuf[n + 0] = pReal[0];
-							vertexBuf[n + 1] = pReal[1];
-							vertexBuf[n + 2] = pReal[2];
-						}
-					}
 					vbuf->unlock();
 					next_offset += vertex_data->vertexCount;
 				}
@@ -246,118 +221,34 @@ namespace OgreOpcode
 		}
 	}
 
-void SphereMeshCollisionShape::createSphere(const std::string& strName, const float r, const int nRings, const int nSegments)
-{
-	MeshPtr pSphere = MeshManager::getSingleton().createManual(strName, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	SubMesh *pSphereVertex = pSphere->createSubMesh();
-
-	pSphere->sharedVertexData = new VertexData();
-	VertexData* vertexData = pSphere->sharedVertexData;
-
-	// define the vertex format
-	VertexDeclaration* vertexDecl = vertexData->vertexDeclaration;
-	size_t currOffset = 0;
-	// positions
-	vertexDecl->addElement(0, currOffset, VET_FLOAT3, VES_POSITION);
-	currOffset += VertexElement::getTypeSize(VET_FLOAT3);
-	// normals
-	vertexDecl->addElement(0, currOffset, VET_FLOAT3, VES_NORMAL);
-	currOffset += VertexElement::getTypeSize(VET_FLOAT3);
-	// two dimensional texture coordinates
-	vertexDecl->addElement(0, currOffset, VET_FLOAT2, VES_TEXTURE_COORDINATES, 0);
-	currOffset += VertexElement::getTypeSize(VET_FLOAT2);
-
-	// allocate the vertex buffer
-	vertexData->vertexCount = (nRings + 1) * (nSegments+1);
-	HardwareVertexBufferSharedPtr vBuf = HardwareBufferManager::getSingleton().createVertexBuffer(vertexDecl->getVertexSize(0), vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
-	VertexBufferBinding* binding = vertexData->vertexBufferBinding;
-	binding->setBinding(0, vBuf);
-	float* pVertex = static_cast<float*>(vBuf->lock(HardwareBuffer::HBL_DISCARD));
-
-	// allocate index buffer
-	pSphereVertex->indexData->indexCount = 6 * nRings * (nSegments + 1);
-	pSphereVertex->indexData->indexBuffer = HardwareBufferManager::getSingleton().createIndexBuffer(HardwareIndexBuffer::IT_16BIT, pSphereVertex->indexData->indexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
-	HardwareIndexBufferSharedPtr iBuf = pSphereVertex->indexData->indexBuffer;
-	unsigned short* pIndices = static_cast<unsigned short*>(iBuf->lock(HardwareBuffer::HBL_DISCARD));
-
-	float fDeltaRingAngle = (PI / nRings);
-	float fDeltaSegAngle = (2 * PI / nSegments);
-	unsigned short wVerticeIndex = 0 ;
-
-	// Generate the group of rings for the sphere
-	for( int ring = 0; ring <= nRings; ring++ ) {
-		float r0 = r * sinf (ring * fDeltaRingAngle);
-		float y0 = r * cosf (ring * fDeltaRingAngle);
-
-		// Generate the group of segments for the current ring
-		for(int seg = 0; seg <= nSegments; seg++) {
-			float x0 = r0 * sinf(seg * fDeltaSegAngle);
-			float z0 = r0 * cosf(seg * fDeltaSegAngle);
-
-			// Add one vertex to the strip which makes up the sphere
-			*pVertex++ = x0;
-			*pVertex++ = y0;
-			*pVertex++ = z0;
-
-			Vector3 vNormal = Vector3(x0, y0, z0).normalisedCopy();
-			*pVertex++ = vNormal.x;
-			*pVertex++ = vNormal.y;
-			*pVertex++ = vNormal.z;
-
-			*pVertex++ = (float) seg / (float) nSegments;
-			*pVertex++ = (float) ring / (float) nRings;
-
-			if (ring != nRings) {
-                               // each vertex (except the last) has six indices pointing to it
-				*pIndices++ = wVerticeIndex + nSegments + 1;
-				*pIndices++ = wVerticeIndex;               
-				*pIndices++ = wVerticeIndex + nSegments;
-				*pIndices++ = wVerticeIndex + nSegments + 1;
-				*pIndices++ = wVerticeIndex + 1;
-				*pIndices++ = wVerticeIndex;
-				wVerticeIndex ++;
-			}
-		}; // end for seg
-	} // end for ring
-
-	// Unlock
-	vBuf->unlock();
-	iBuf->unlock();
-	// Generate face list
-	pSphereVertex->useSharedVertices = true;
-
-	// the original code was missing this line:
-	pSphere->_setBounds( AxisAlignedBox( Vector3(-r, -r, -r), Vector3(r, r, r) ), false );
-	pSphere->_setBoundingSphereRadius(r);
-        // this line makes clear the mesh is loaded (avoids memory leaks)
-        pSphere->load();
- }
 	//------------------------------------------------------------------------
-	/// <TODO: insert function description here>
-	/// @param [in, out]  ent Entity *    <TODO: insert parameter description here>
-	/// @return bool <TODO: insert return value description here>
-	bool SphereMeshCollisionShape::load(const String& name, SceneNode* scnNode, const float r, const int nRings, const int nSegments)
+	/// load collide geometry from mesh, and build a collision tree
+	/// @param ent [in]  pointer to Entity
+	/// @return bool boolean value indicating success or failure
+	bool MeshCollisionShape::load(Entity* ent)
 	{
+		assert(ent);
 		assert(!mVertexBuf && !mFaceBuf);
-
-		createSphere(name , r, nRings, nSegments);
-
-		mEntity = CollisionManager::getSingletonPtr()->getSceneManager()->createEntity(name,name);
+		mEntity = ent;
 
 		if (mEntity->hasSkeleton()) {
 			mEntity->addSoftwareAnimationRequest(false);
 		}
 
-		mParentNode = scnNode;
+		mParentNode = mEntity->getParentSceneNode();
 		//mFullTransform = mEntity->getParentSceneNode()->_getFullTransform();
 		mParentNode->getWorldTransforms(&mFullTransform);
 		return rebuild();
 	}
 
 	//------------------------------------------------------------------------
-	/// <TODO: insert function description here>
-	/// @return bool <TODO: insert return value description here>
-	bool SphereMeshCollisionShape::rebuild()
+	/// Reload the collision geometry from mesh, rebuild collision tree from scratch. 
+	/// Potentially very slow. Only necessary if the mesh has drastically changed,
+	/// like topology changing deformations, or a change in the number of tris.
+	/// In most cases RefitToMesh() is sufficient, and much faster.
+	/// Under usual circumstances there is no need to call this method.
+	/// @return bool Whether the rebuild operation was successful or not
+	bool MeshCollisionShape::rebuild()
 	{
 		assert(mEntity);
 
@@ -397,9 +288,10 @@ void SphereMeshCollisionShape::createSphere(const std::string& strName, const fl
 	}
 
 	//------------------------------------------------------------------------
-	/// <TODO: insert function description here>
-	/// @return bool <TODO: insert return value description here>
-	bool SphereMeshCollisionShape::refit()
+	/// Retrieve current vertex data from mesh and refit collision tree.
+	/// This is an O(n) operation in the number of vertices in the mesh.
+	/// @return bool Whether the operation was successful or not.
+	bool MeshCollisionShape::refit()
 	{
 		// bail if we don't need to refit
 		if ( mShapeIsStatic )
@@ -421,9 +313,14 @@ void SphereMeshCollisionShape::createSphere(const std::string& strName, const fl
 
 
 	//------------------------------------------------------------------------
-	/// <TODO: insert function description here>
-	/// @return bool <TODO: insert return value description here>
-	bool SphereMeshCollisionShape::_refitToCachedData()
+	/// Refits the collision tree to the currently cached vertex data.
+	/// This is an O(n) operation in the number of vertices in the mesh.
+	/// This is an advanced method.  It assumes that the user is manually 
+	/// updating both the MeshCollisionShape's cached data and the actual mesh
+	/// hardware buffers.  Mostly useful for implementing something like 
+	/// deformable body physics.
+	/// @return bool
+	bool MeshCollisionShape::_refitToCachedData()
 	{
 		assert(mEntity && mVertexBuf);
 
@@ -431,7 +328,7 @@ void SphereMeshCollisionShape::createSphere(const std::string& strName, const fl
 		if (!opcModel.Refit())
 		{
 			LogManager::getSingleton().logMessage(
-				"OgreOpcode::SphereMeshCollisionShape::_refitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
+				"OgreOpcode::MeshCollisionShape::_refitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
 			// Backup plan -- rebuild full tree
 			opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
 			Opcode::OPCODECREATE opcc;
@@ -451,7 +348,7 @@ void SphereMeshCollisionShape::createSphere(const std::string& strName, const fl
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool SphereMeshCollisionShape::_rebuildFromCachedData()
+	bool MeshCollisionShape::_rebuildFromCachedData()
 	{
 		assert(mEntity && mVertexBuf && mFaceBuf);
 

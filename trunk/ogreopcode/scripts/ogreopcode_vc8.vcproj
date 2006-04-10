@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="ogreopcode"
 	ProjectGUID="{38E0EE4E-1D0C-4335-9968-412D376AB431}"
+	RootNamespace="ogreopcode"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -196,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\OgreCapsule.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\OgreCollisionContext.cpp"
 				>
 			</File>
@@ -204,7 +209,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\OgreCollisionShape.cpp"
+				RelativePath="..\src\OgreEntityCollisionShape.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\OgreMeshCollisionShape.cpp"
 				>
 			</File>
 			<File
@@ -219,6 +228,14 @@
 				RelativePath="..\src\OgreSphereMeshCollisionShape.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\OgreTerrainCollisionShape.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\OgreTriangle.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -231,6 +248,10 @@
 			</File>
 			<File
 				RelativePath="..\include\OgreBoxCollisionShape.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgreCapsule.h"
 				>
 			</File>
 			<File
@@ -250,11 +271,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\OgreCollisionShape.h"
+				RelativePath="..\include\OgreCollisionTypes.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\OgreCollisionTypes.h"
+				RelativePath="..\include\OgreEntityCollisionShape.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgreMeshCollisionShape.h"
 				>
 			</File>
 			<File
@@ -291,6 +316,10 @@
 			</File>
 			<File
 				RelativePath="..\include\OgreSphereMeshCollisionShape.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgreTerrainCollisionShape.h"
 				>
 			</File>
 			<File

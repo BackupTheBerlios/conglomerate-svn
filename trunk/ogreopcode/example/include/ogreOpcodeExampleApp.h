@@ -95,7 +95,7 @@ class GameEntity
 class RobotEntity : public GameEntity
 {
 protected:
-	MeshCollisionShape* mRobotCollShape;
+	EntityCollisionShape* mRobotCollShape;
 public:
     RobotEntity(SceneManager* sm)
       : GameEntity(sm) { }
@@ -105,7 +105,7 @@ public:
 	{
 		static int count = 0;
 
-		mRobotCollShape = CollisionManager::getSingletonPtr()->createMeshCollisionShape("ogrehead1" + StringConverter::toString(count));
+		mRobotCollShape = CollisionManager::getSingletonPtr()->createEntityCollisionShape("ogrehead1" + StringConverter::toString(count));
 		mRobotCollShape->load(mEntity);
 		mCollObj = mCollideContext->newObject("ogrerobot" + StringConverter::toString(count));
 		mCollObj->setCollClass("ogrerobot");
@@ -140,7 +140,7 @@ public:
       mSceneNode->translate(x, y, z);
     }
 
-	MeshCollisionShape* getCollisionShape(void)
+	EntityCollisionShape* getCollisionShape(void)
 	{
 		return mRobotCollShape;
 	}
@@ -164,6 +164,7 @@ private:
 	bool mDoABBVisualization;
 	bool mDoLocalVisualization;
 	bool mDoGlobalVisualization;
+	bool mSkipLevelRayCheck;
 	Overlay* mTargetSight;
 	Overlay* mHotTargetSight;
 	Overlay* mInfoOverlay;
@@ -172,7 +173,7 @@ private:
 	CollisionContext* mCollideContext;
 	CollisionObject* mRobotCollObj;
 	CollisionObject* mTestCollObj;
-	MeshCollisionShape* mRobotCollShape;
+	EntityCollisionShape* mRobotCollShape;
 	SphereMeshCollisionShape* mTestCollShape;
 	Ray mRay;
 	bool mPlayAnimation;

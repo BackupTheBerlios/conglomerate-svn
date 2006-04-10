@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-///  @file OgreCollisionShape.cpp
+///  @file OgreEntityCollisionShape.cpp
 ///  @brief <TODO: insert file description here>
 ///
 ///  @author The OgreOpcode Team @date 28-05-2005
@@ -26,7 +26,7 @@
 ///
 ///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeExports.h"
-#include "OgreCollisionShape.h"
+#include "OgreEntityCollisionShape.h"
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionManager.h"
 #include "OgreOpcodeMath.h"
@@ -35,13 +35,13 @@
 namespace OgreOpcode
 {
 	//------------------------------------------------------------------------
-	MeshCollisionShape::MeshCollisionShape(const String& name)
+	EntityCollisionShape::EntityCollisionShape(const String& name)
 		: ICollisionShape(name)
 	{
 	}
 
 	//------------------------------------------------------------------------
-	MeshCollisionShape::~MeshCollisionShape()
+	EntityCollisionShape::~EntityCollisionShape()
 	{
 		if (mEntity && mEntity->hasSkeleton())
 		{
@@ -59,7 +59,7 @@ namespace OgreOpcode
 	/// @param[out] vertex_count Number of vertices.
 	/// @author Yavin from the Ogre4J team
 	///////////////////////////////////////////////////////////////////////////////
-	void MeshCollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
+	void EntityCollisionShape::countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count)
 	{
 		Mesh * mesh = entity->getMesh().getPointer();
 
@@ -105,7 +105,7 @@ namespace OgreOpcode
 	/// @param[int] index_count         Number of indices.
 	/// @author Yavin from the Ogre4J team
 	//////////////////////////////////////////////////////////////////////////
-	void MeshCollisionShape::convertMeshData(Entity * entity,
+	void EntityCollisionShape::convertMeshData(Entity * entity,
 		float * vertexBuf, size_t vertex_count,
 		int * faceBuf, size_t index_count)
 	{
@@ -225,7 +225,7 @@ namespace OgreOpcode
 	/// <TODO: insert function description here>
 	/// @param [in, out]  ent Entity *    <TODO: insert parameter description here>
 	/// @return bool <TODO: insert return value description here>
-	bool MeshCollisionShape::load(Entity* ent)
+	bool EntityCollisionShape::load(Entity* ent)
 	{
 		assert(ent);
 		assert(!mVertexBuf && !mFaceBuf);
@@ -244,7 +244,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool MeshCollisionShape::rebuild()
+	bool EntityCollisionShape::rebuild()
 	{
 		assert(mEntity);
 
@@ -286,7 +286,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool MeshCollisionShape::refit()
+	bool EntityCollisionShape::refit()
 	{
 		// bail if we don't need to refit
 		if ( mShapeIsStatic )
@@ -310,7 +310,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool MeshCollisionShape::_refitToCachedData()
+	bool EntityCollisionShape::_refitToCachedData()
 	{
 		assert(mEntity && mVertexBuf);
 
@@ -318,7 +318,7 @@ namespace OgreOpcode
 		if (!opcModel.Refit())
 		{
 			LogManager::getSingleton().logMessage(
-				"OgreOpcode::MeshCollisionShape::_refitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
+				"OgreOpcode::EntityCollisionShape::_refitToCachedData(): OPCODE Quick refit not possible with the given tree type.");
 			// Backup plan -- rebuild full tree
 			opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
 			Opcode::OPCODECREATE opcc;
@@ -338,7 +338,7 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	/// @return bool <TODO: insert return value description here>
-	bool MeshCollisionShape::_rebuildFromCachedData()
+	bool EntityCollisionShape::_rebuildFromCachedData()
 	{
 		assert(mEntity && mVertexBuf && mFaceBuf);
 

@@ -113,7 +113,7 @@ namespace OgreOpcode
 	/// Collision system object.
 	/// CollisionObject is an actual collision system object which can
 	/// be positioned and oriented in space. It points to an
-	/// MeshCollisionShape which describes the actual shape of the
+	/// EntityCollisionShape which describes the actual shape of the
 	/// object.
 	/// CollisionObject%s are kept in sorted list (one for each dimension)
 	/// by the CollisionContext they belong to.
@@ -178,7 +178,6 @@ namespace OgreOpcode
 		void setId(int i)
 		{
 			id = i;
-			mName = mName + StringConverter::toString(id);
 		};
 
 		/// <TODO: insert function description here>
@@ -224,7 +223,7 @@ namespace OgreOpcode
 		};
 
 		/// <TODO: insert function description here>
-		/// @param [in, out]  s MeshCollisionShape *    <TODO: insert parameter description here>
+		/// @param [in, out]  s EntityCollisionShape *    <TODO: insert parameter description here>
 		/// @return void <TODO: insert return value description here>
 		void setShape(ICollisionShape *s)
 		{
@@ -240,7 +239,7 @@ namespace OgreOpcode
 		};
 
 		/// <TODO: insert function description here>
-		/// @return MeshCollisionShape * <TODO: insert return value description here>
+		/// @return EntityCollisionShape * <TODO: insert return value description here>
 		ICollisionShape *getShape(void)
 		{
 			return mShape;
@@ -453,7 +452,7 @@ namespace OgreOpcode
 							cr.co_this_normal = d;
 							cr.co_other_normal = -d;
 
-							// compute the timestamp where the collision happended
+							// compute the timestamp where the collision happened
 							cr.tstamp = m_tdelta*u0;
 							has_contact = true;
 						}
@@ -464,7 +463,7 @@ namespace OgreOpcode
 			case COLLTYPE_EXACT:
 			case COLLTYPE_CONTACT:
 				{
-					// If distance travelled is more then 1/8 then each of the object's
+					// If distance traveled is more then 1/8 then each of the object's
 					// radii, then we do several tests along the line
 					// of movements.
 
