@@ -43,7 +43,7 @@ namespace OgreOpcode
 
 			Vector3 kDiff = e0 - point;
 			Real fA00 = e0.squaredLength();
-			Real fA01 = e0.dotProduct(e1);
+			Real fA01 = e0 | e1;
 			Real fA11 = e1.squaredLength();
 			Real fB0 = kDiff.dotProduct(e0);
 			Real fB1 = kDiff.dotProduct(e1);

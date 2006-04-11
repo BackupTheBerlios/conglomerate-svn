@@ -35,6 +35,27 @@ namespace OgreOpcode
 {
 	namespace Details
 	{
+		// -----------------------------------------------------------------------
+		// Overridden operators
+
+		/// Dot product operator
+		inline Real operator | ( const Vector3& u,  const Vector3& v ) 
+		{
+			return (u.x*v.x + u.y*v.y + u.z*v.z);
+		}
+
+		/// Cross product operator
+		inline Vector3 operator ^ ( const Vector3& u,  const Vector3& v ) 
+		{
+			return u.crossProduct( v );
+		}
+
+		// forward declarations
+		class Capsule;
+		class Line;
+		class OrientedBox;
+		class Ray;
+
 		class line3
 		{
 		public:
@@ -586,6 +607,9 @@ namespace OgreOpcode
 			}
 		};
 
+		/// Just for ease of use, let bbox be an AABB. :P
+		typedef bbox3 Aabb;
+
 		class sphere
 		{
 		public:
@@ -679,6 +703,6 @@ namespace OgreOpcode
 }
 
 // includes the OBB header. looks strange, huh ? :P 
-#include "OgreOrientedBox.h"
+//#include "OgreOrientedBox.h"
 
 #endif // __OgreOpcodeMath_h__

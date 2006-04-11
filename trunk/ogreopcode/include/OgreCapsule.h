@@ -29,7 +29,7 @@
 #ifndef __OgreOpcodeCapsule_h__
 #define __OgreOpcodeCapsule_h__
 
-#include "OgreOpcodeMath.h"
+#include "OgreOpcodeLine.h"
 
 namespace OgreOpcode
 {
@@ -40,6 +40,33 @@ namespace OgreOpcode
 		class _OgreOpcode_Export Capsule
 		{
 		public:
+
+			/** Default constructor: degenerated as an unitary sphere at origin
+			 */
+			Capsule():start(),end(),radius(1.0)
+			{
+			}
+
+			/** Copy-constructor
+			 */
+			Capsule(const Capsule& c):start(c.start),end(c.end),radius(c.radius)
+			{
+			}
+
+			/** Complete constructor
+			 */
+			Capsule(const Vector3& s, const Vector3& e, Real r ):start(s),end(e),radius(r)
+			{
+			}
+
+			/** Complete, headache constructor
+			 */
+			Capsule( Real sx, Real sy, Real sz,
+				     Real ex, Real ey, Real ez, 
+					 Real r
+				   ):start(sx,sy,sz),end(ex,ey,ez),radius(r)
+			{
+			}
 
 			/// Gets the length of this line segment
 			Real length() const {  return (start - end).length(); }
@@ -57,6 +84,25 @@ namespace OgreOpcode
 			{
 				return Math::PI*radius*radius*( 1.333333333333333*length() );
 			}
+// --------------------------------------------------------------------
+// intersection tests
+
+			/** Tests intersection between this capsule and the given Axis-Aligned
+			 *  Bounding Box
+             */
+			bool intersects( const Aabb& aabb ) const;
+
+			/** Tests intersection between this capsule and the given sphere
+			 */
+			bool intersects( const sphere& s ) const;
+
+			/** Tests intersection between this capsule and the given Oriented Bounding Box
+			 */
+			bool intersects( const OrientedBox& obb ) const;
+
+			/** Tests intersection between this capsule and the given one
+			 */
+			bool intersects( const Capsule& cap ) const;
 
 
 			/** The start point of this capsule.

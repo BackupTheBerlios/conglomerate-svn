@@ -387,7 +387,7 @@ namespace OgreOpcode
 	/// @return                 true if line intersects shape
 	bool ICollisionShape::rayCheck(CollisionType collType,
 		const Matrix4& ownMatrix,
-		const Ray& line,
+		const Ogre::Ray& line,
 		const Real dist,
 		CollisionPair& collPair)
 	{

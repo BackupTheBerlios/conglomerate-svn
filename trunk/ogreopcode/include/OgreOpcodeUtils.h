@@ -33,12 +33,8 @@ namespace OgreOpcode
 {
 	namespace Details
 	{
-		/// Defines an Oriented Bounding Box (OBB). Courtesy from Gilvan Maia :P
-		/// Diferently from AABB's (Axis-Aligned Bounding-Boxes), OBBs are not
-		/// limited to be aligned with the coordinate axes. Thus, it can fit objects
-		/// much more tighly just because it is adaptative to the object's orientation,
-		/// ie, its orientation can be adjusted in order to reduce its volume - this is.
-		/// why it would be preferred for collision detection.
+		/// This utility class is used to convert types from/to Ogre, OgreOpcode and Opcode.
+		/// Thus, it contributes for better, cleaner code and ease of maintenance in the project.
 		class _OgreOpcode_Export OgreOpcodeUtils
 		{
 		public:
@@ -64,7 +60,7 @@ namespace OgreOpcode
 			}
 
 			/// Converts from an Ogre's ray into an IceMaths' one
-			static void ogreToIceRay(  const Ray& from, IceMaths::Ray& opcRay )
+			static void ogreToIceRay(  const Ogre::Ray& from, IceMaths::Ray& opcRay )
 			{
 				opcRay.mOrig.x = from.getOrigin().x;
 				opcRay.mOrig.y = from.getOrigin().y;

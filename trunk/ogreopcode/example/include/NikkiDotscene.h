@@ -358,6 +358,8 @@ namespace nikkiloader
 	   }
 	   if (could == false)
 		  return " ";
+	   
+	   return "";
 	}
 
 }; // namespace

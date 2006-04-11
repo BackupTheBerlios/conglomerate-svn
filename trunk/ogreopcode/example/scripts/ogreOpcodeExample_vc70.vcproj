@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding = "Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
@@ -57,13 +57,7 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -119,23 +113,33 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
-	<References>
-	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
 				RelativePath="..\src\main.cpp">
+			</File>
+			<File
+				RelativePath="..\src\ogreOpcodeExample.cpp">
+			</File>
+			<File
+				RelativePath="..\src\ogreOpcodeExampleApp.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinystr.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinyxml.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinyxmlerror.cpp">
+			</File>
+			<File
+				RelativePath="..\src\tinyxmlparser.cpp">
 			</File>
 		</Filter>
 		<Filter

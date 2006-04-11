@@ -85,7 +85,7 @@
 				AdditionalDependencies="OgreMain.lib"
 				OutputFile="$(OutDir)/ogreopcode.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\Opcode132\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;$(OGRE_HOME)\lib\&quot;;&quot;..\Opcode132\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="0"
@@ -129,6 +129,9 @@
 				RelativePath="..\src\OgreBoxCollisionShape.cpp">
 			</File>
 			<File
+				RelativePath="..\src\OgreCapsule.cpp">
+			</File>
+			<File
 				RelativePath="..\src\OgreCollisionContext.cpp">
 			</File>
 			<File
@@ -141,10 +144,22 @@
 				RelativePath="..\src\OgreOpcodeDebugObject.cpp">
 			</File>
 			<File
+				RelativePath="..\src\OgreOpcodeLine.cpp">
+			</File>
+			<File
+				RelativePath="..\src\OgreOpcodeRay.cpp">
+			</File>
+			<File
+				RelativePath="..\src\OgreOrientedBox.cpp">
+			</File>
+			<File
 				RelativePath="..\src\OgrePtrCollisionShape.cpp">
 			</File>
 			<File
 				RelativePath="..\src\OgreSphereMeshCollisionShape.cpp">
+			</File>
+			<File
+				RelativePath="..\src\OgreTriangle.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -156,6 +171,9 @@
 			</File>
 			<File
 				RelativePath="..\include\OgreBoxCollisionShape.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreCapsule.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreCollisionContext.h">
@@ -194,7 +212,13 @@
 				RelativePath="..\include\OgreOpcodeExports.h">
 			</File>
 			<File
+				RelativePath="..\include\OgreOpcodeLine.h">
+			</File>
+			<File
 				RelativePath="..\include\OgreOpcodeMath.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreOpcodeRay.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreOpcodeUtils.h">
