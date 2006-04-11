@@ -27,6 +27,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "OgreCapsule.h"
+#include "OgreOrientedBox.h"
 
 namespace OgreOpcode
 {
@@ -35,8 +36,9 @@ namespace OgreOpcode
 		//------------------------------------------------------------------------
 		bool Capsule::intersects( const Aabb& aabb ) const
 		{
-			// TODO:
-			return false;
+			// TODO: optimize this code for the AABB case.
+			OrientedBox obb( aabb );
+			return intersects( obb );
 		}
 		//------------------------------------------------------------------------
 		bool Capsule::intersects( const sphere& s ) const
