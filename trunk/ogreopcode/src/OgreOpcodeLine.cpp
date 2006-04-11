@@ -1207,7 +1207,7 @@ namespace OgreOpcode
 		// --------------------------------------------------------------------
 		bool Line::intersect( const Capsule& capsule ) const
 		{
-			Real fSqrDist = squaredDistance( capsule );
+			Real fSqrDist = squaredDistance( Line(capsule.start, capsule.end) );
 			return fSqrDist <= capsule.radius*capsule.radius;
 		}
 		// --------------------------------------------------------------------
@@ -1420,7 +1420,7 @@ namespace OgreOpcode
 		// --------------------------------------------------------------------
 		bool Ray::intersect( const Capsule& capsule ) const
 		{
-			Real squaredDist = squaredDistance( capsule );
+			Real squaredDist = squaredDistance( Line(capsule.start, capsule.end) );
 			return squaredDist <= capsule.radius*capsule.radius;
 		}
 		// --------------------------------------------------------------------
