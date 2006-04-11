@@ -175,7 +175,7 @@ private:
 	CollisionObject* mTestCollObj;
 	EntityCollisionShape* mRobotCollShape;
 	SphereMeshCollisionShape* mTestCollShape;
-	Ray mRay;
+	Ogre::Ray mRay;
 	bool mPlayAnimation;
 	String mDbgMsg1;
 	String mDbgMsg2;

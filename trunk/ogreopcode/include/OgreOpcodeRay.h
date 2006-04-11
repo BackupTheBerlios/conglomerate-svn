@@ -170,7 +170,7 @@ namespace OgreOpcode
 
 			/** Intersection test between this line and the given Sphere.
 			 */
-			bool intersect( const sphere& sphere ) const;
+			bool intersect( const Sphere& sphere ) const;
 
 			/** Intersection test between this line and the given Capsule.
 			 */

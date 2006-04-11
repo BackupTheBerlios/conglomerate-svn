@@ -138,7 +138,10 @@
 				RelativePath="..\src\OgreCollisionManager.cpp">
 			</File>
 			<File
-				RelativePath="..\src\OgreCollisionShape.cpp">
+				RelativePath="..\src\OgreEntityCollisionShape.cpp">
+			</File>
+			<File
+				RelativePath="..\src\OgreMeshCollisionShape.cpp">
 			</File>
 			<File
 				RelativePath="..\src\OgreOpcodeDebugObject.cpp">
@@ -157,6 +160,9 @@
 			</File>
 			<File
 				RelativePath="..\src\OgreSphereMeshCollisionShape.cpp">
+			</File>
+			<File
+				RelativePath="..\src\OgreTerrainCollisionShape.cpp">
 			</File>
 			<File
 				RelativePath="..\src\OgreTriangle.cpp">

@@ -158,6 +158,23 @@ namespace OgreOpcode
 				}
 			}
 
+			/// Gets the extents of this oriented box
+			const Vector3& getExtents() const
+			{
+				return extents;
+			}
+
+			/// Gets the center of this oriented box
+			const Vector3& getCenter() const
+			{
+				return center;
+			}
+
+			const Matrix3& getOrientation() const
+			{
+				return rot;
+			}
+
 
 		public:
 

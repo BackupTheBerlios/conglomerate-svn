@@ -92,34 +92,34 @@ namespace OgreOpcode
 			}
 
 			/** Computes the <em>squared</em> distance from this line to the given point.
-				*  The linear delta will be stored in t, if not null.
-				*/
+			 *  The linear delta will be stored in t, if not null.
+			 */
 			Real squaredDistance( const Vector3& point, Real *t =NULL ) const;
 
 			/** Computes the distance from this line to the given point.
-				*  The linear delta will be stored in t, if not null.
-				*/
+			 *  The linear delta will be stored in t, if not null.
+			 */
 			Real distance( const Vector3& point, Real *t =NULL ) const;
 
 			/** Computes the <em>squared</em> distance from this line to the given one.
-				*  The vector pointers p0 and p1 will hold the linear deltas to obtain the
-				*  closest points in the respective line segments.
-				*/
+			 *  The vector pointers p0 and p1 will hold the linear deltas to obtain the
+			 *  closest points in the respective line segments.
+			 */
 			Real squaredDistance( const Line& line, Real* p0 = NULL, Real* p1 = NULL ) const;
 
 			/** Computes the distance from this line to the given one.
-				*  The vector pointers p0 and p1 will hold the linear deltas to obtain the
-				*  closest points in the respective line segments.
-				*/
+			 *  The vector pointers p0 and p1 will hold the linear deltas to obtain the
+			 *  closest points in the respective line segments.
+			 */
 			Real distance( const Line& line, Real* p0 = NULL, Real* p1 = NULL ) const;
 
 
 			/** Computes the <em>squared</em> distance from this line segment to the given Oriented Bounding Box.				 
-				*/
+			 */
 			Real squaredDistance( const OrientedBox& obb ) const;
 
 			/** Computes the distance from this line segment to the given Oriented Bounding Box.				 
-				*/
+			 */
 			Real distance( const OrientedBox& obb ) const;
 
 			///Sets the starting point

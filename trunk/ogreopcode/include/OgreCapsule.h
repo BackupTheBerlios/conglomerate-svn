@@ -37,7 +37,7 @@ namespace OgreOpcode
     {
 		/// Represents a Capsule defined by 2 endpoints and a radius
 		/// TODO: add methods to this capsule.
-		class _OgreOpcode_Export Capsule
+		class _OgreOpcode_Export Capsule : public Line
 		{
 		public:
 
