@@ -1284,9 +1284,9 @@ namespace OgreOpcode
 			}
 		}
 		// --------------------------------------------------------------------
-		// Ray implementation
+		// Ray3 implementation
 		// --------------------------------------------------------------------
-		Real Ray::squaredDistance( const Vector3& point ) const
+		Real Ray3::squaredDistance( const Vector3& point ) const
 		{
 			Vector3 delta = point - origin;
 			Real proj = direction | delta;
@@ -1302,12 +1302,12 @@ namespace OgreOpcode
 			return delta.squaredLength();
 		}
 		// --------------------------------------------------------------------
-		Real Ray::distance( const Vector3& point ) const
+		Real Ray3::distance( const Vector3& point ) const
 		{
 			return Math::Sqrt( squaredDistance(point) );
 		}
 		// --------------------------------------------------------------------
-		Real Ray::squaredDistance( const Line& line ) const
+		Real Ray3::squaredDistance( const Line& line ) const
 		{
 			Vector3 lineDir = line.getDirection();
 			Vector3 kDiff = line.start - origin;
@@ -1352,18 +1352,18 @@ namespace OgreOpcode
 			return Math::Abs(fSqrDist);
 		}
 		// --------------------------------------------------------------------
-		Real Ray::distance( const Line& line ) const
+		Real Ray3::distance( const Line& line ) const
 		{
 			return Math::Sqrt( squaredDistance(line) );
 		}
 		// --------------------------------------------------------------------
-		bool Ray::intersect( const Aabb& aabb ) const
+		bool Ray3::intersect( const Aabb& aabb ) const
 		{
 			OBB obb(aabb);
 			return intersect(obb);
 		}			
 		// --------------------------------------------------------------------
-		bool Ray::intersect( const OBB& rkBox ) const
+		bool Ray3::intersect( const OBB& rkBox ) const
 		{
 			Real fWdU[3], fAWdU[3], fDdU[3], fADdU[3], fAWxDdU[3], fRhs;
 
@@ -1412,25 +1412,25 @@ namespace OgreOpcode
 			return true;
 		}
 		// --------------------------------------------------------------------
-		bool Ray::intersect( const Sphere& sphere ) const
+		bool Ray3::intersect( const Sphere& sphere ) const
 		{
 			Real squaredDist = squaredDistance( sphere.getCenter() );
 			return squaredDist <= sphere.getRadius()*sphere.getRadius();
 		}
 		// --------------------------------------------------------------------
-		bool Ray::intersect( const Capsule& capsule ) const
+		bool Ray3::intersect( const Capsule& capsule ) const
 		{
 			Real squaredDist = squaredDistance( Line(capsule.start, capsule.end) );
 			return squaredDist <= capsule.radius*capsule.radius;
 		}
 		// --------------------------------------------------------------------
-		bool Ray::pick( const Aabb& aabb, Real& dist ) const
+		bool Ray3::pick( const Aabb& aabb, Real& dist ) const
 		{
 			OBB obb(aabb);
 			return pick(obb, dist);
 		}			
 		// --------------------------------------------------------------------
-		bool Ray::pick( const OBB& obb, Real& dist ) const
+		bool Ray3::pick( const OBB& obb, Real& dist ) const
 		{
 			dist = 0.0f;				
 
@@ -1467,7 +1467,7 @@ namespace OgreOpcode
 			return ret;				
 		}
 		// --------------------------------------------------------------------
-		bool Ray::pick( const Sphere& sphere, Real& dist ) const
+		bool Ray3::pick( const Sphere& sphere, Real& dist ) const
 		{
 			// set up quadratic Q(t) = a*t^2 + 2*b*t + c
 			Vector3 kDiff = origin - sphere.getCenter();

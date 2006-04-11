@@ -33,7 +33,8 @@ namespace OgreOpcode
 	namespace Details
     {
 		//------------------------------------------------------------------------
-		
+		// This class is implemented together with Line in 'OgreOpcodeLine.cpp'
+		// because they share internal, supporting C functions.
 		//------------------------------------------------------------------------
 	}
 }

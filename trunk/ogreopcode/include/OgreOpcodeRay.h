@@ -36,35 +36,35 @@ namespace OgreOpcode
     {
 		/// Represents a Ray (semi-line) defined by a starting point and a direction.
 		/// TODO: add methods to this class.
-		class _OgreOpcode_Export Ray
+		class _OgreOpcode_Export Ray3
 		{
 		public:
 
 			/// Default constructor: ray from origin looking at -Z
-			Ray():origin(),direction(-Vector3::UNIT_Z)
+			Ray3():origin(),direction(-Vector3::UNIT_Z)
 			{
 			}
 
 			/// Copy-constructor
-			Ray( const Ray& ray ):origin(ray.origin),direction(ray.direction)
+			Ray3( const Ray3& ray ):origin(ray.origin),direction(ray.direction)
 			{
 			}
 
 			/// Full constructor
-			Ray( const Vector3& ori, const Vector3& dir ):origin(ori),direction(dir)
+			Ray3( const Vector3& ori, const Vector3& dir ):origin(ori),direction(dir)
 			{
 				direction.normalise();
 			}
 
 			/// Full constructor
-			Ray( Real ox, Real oy, Real oz,
+			Ray3( Real ox, Real oy, Real oz,
 				Real dx, Real dy, Real dz ):origin(ox,oy,oz),direction(dx,dy,dz)
 			{
 				direction.normalise();
 			}
 
 			/// Setups this ray
-			void set( const Ray& ray )
+			void set( const Ray3& ray )
 			{
 				origin = ray.origin;
 				direction = ray.direction;
