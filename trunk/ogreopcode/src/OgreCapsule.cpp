@@ -34,6 +34,13 @@ namespace OgreOpcode
 	namespace Details
     {
 		//------------------------------------------------------------------------
+		bool Capsule::contains( const Vector3& point ) const
+		{
+			Line line( start, end );
+
+			return line.squaredDistance(point) <= (radius*radius);
+		}
+		//------------------------------------------------------------------------
 		bool Capsule::intersects( const Aabb& aabb ) const
 		{
 			// TODO: optimize this code for the AABB case.
@@ -43,7 +50,8 @@ namespace OgreOpcode
 		//------------------------------------------------------------------------
 		bool Capsule::intersects( const sphere& s ) const
 		{
-			Real sqrDist = 0.0;//Line::squaredDistance( s.p );
+			Line line( start, end);
+			Real sqrDist = line.squaredDistance( s.p );
 			Real rsum = radius + s.r;
 				
 			return sqrDist <= (rsum*rsum);
@@ -51,14 +59,20 @@ namespace OgreOpcode
 		//------------------------------------------------------------------------
 		bool Capsule::intersects( const OrientedBox& obb ) const
 		{
-			// TODO
-			return false;
+			Line line( start, end );
+
+			return line.squaredDistance(obb) <= (radius*radius);
 		}
 		//------------------------------------------------------------------------
 		bool Capsule::intersects( const Capsule& cap ) const
 		{
-			// TODO
-			return false;
+			Line me( start, end );
+			Line it( cap.start, cap.end );
+
+			Real sqrDist = me.squaredDistance( it );
+			Real rsum = radius + cap.radius;
+
+			return sqrDist <= (rsum*rsum);;
 		}		
 		//------------------------------------------------------------------------
 	}

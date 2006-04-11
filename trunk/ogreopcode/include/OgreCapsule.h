@@ -37,7 +37,7 @@ namespace OgreOpcode
     {
 		/// Represents a Capsule defined by 2 endpoints and a radius
 		/// TODO: add methods to this capsule.
-		class _OgreOpcode_Export Capsule : public Line
+		class _OgreOpcode_Export Capsule
 		{
 		public:
 
@@ -86,6 +86,10 @@ namespace OgreOpcode
 			}
 // --------------------------------------------------------------------
 // intersection tests
+
+			/** Does this capsule contain the given point?
+			 */
+			bool contains( const Vector3& point ) const;
 
 			/** Tests intersection between this capsule and the given Axis-Aligned
 			 *  Bounding Box
