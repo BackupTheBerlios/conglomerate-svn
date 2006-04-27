@@ -114,6 +114,10 @@ namespace OgreOpcode
 		CollisionContext *getDefaultContext(void);
 		CollisionContext *getContext(const String& name);
 		SceneManager *getSceneManager(void);
+		void setSceneManager(SceneManager* newSceneMgr)
+		{
+			mSceneMgr  = newSceneMgr;
+		}
 
 		const int getShapeCount()
 		{
