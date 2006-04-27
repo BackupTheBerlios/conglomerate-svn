@@ -221,6 +221,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\OgreOpcodeLine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\OgreOpcodeRay.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\OgreOrientedBox.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\OgrePtrCollisionShape.cpp"
 				>
 			</File>
@@ -299,7 +311,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\OgreOpcodeLine.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\OgreOpcodeMath.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\OgreOpcodeRay.h"
 				>
 			</File>
 			<File
