@@ -256,14 +256,75 @@ bool AABBCollisionTree::Build(AABBTree* tree)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  *	Refits the collision tree after vertices have been modified.
+ *
+ *	\remarks
+ *	        OPCODE 1.3 does not provide support for refitting 'normal' collision trees
+ *	        because they are much slower to update than no-leaf trees. This feature was
+ *              added in OPCODE 1.3.2 because we may want to compute between deformable models
+ *              using 'normal' AABB trees. The main problem here is that normal trees have twice
+ *              as nodes to refit than no-leaf trees.
+ *              The performance tests I've conduced in my engine points that normal trees are
+ *              roughly 2 times slower to refit than no-leaf trees. I recommend thge use of 'normal'
+ *              trees only when you absolutely need triangle-triangle intersections to be performed,
+ *              because no-leaf trees typically outperforms normal trees in just everything. Send me
+ *              any questions, comments or suggestions you have by mail {gilvanmaia@gmail.com}.
+ *
  *	\param		mesh_interface	[in] mesh interface for current model
  *	\return		true if success
  */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool AABBCollisionTree::Refit(const MeshInterface* mesh_interface)
 {
-	ASSERT(!"Not implemented since AABBCollisionTrees have twice as more nodes to refit as AABBNoLeafTrees!");
-	return false;
+	// (Commented because we support it now!)
+	// ASSERT(!"Not implemented since AABBCollisionTrees have twice as more nodes to refit as AABBNoLeafTrees!");
+
+	// Checkings
+	if(!mesh_interface)	return false;
+
+	// Bottom-up update
+	VertexPointers VP;
+	Point Min,Max;
+	Point Min_,Max_;
+	udword Index = mNbNodes;
+	while(Index--)
+	{
+		AABBCollisionNode& Current = mNodes[Index];		
+		
+		if( Current.IsLeaf() )
+		{
+			mesh_interface->GetTriangle(VP, Current.GetPrimitive() );
+			ComputeMinMax(Min, Max, VP);
+		}else
+		{
+			if( Current.GetPos() )
+			{
+				const CollisionAABB& CurrentBox = Current.GetPos()->mAABB;
+				CurrentBox.GetMin(Min);
+				CurrentBox.GetMax(Max);
+			}
+
+			if( Current.GetNeg() )
+			{
+				const CollisionAABB& CurrentBox = Current.GetNeg()->mAABB;
+				CurrentBox.GetMin(Min_);
+				CurrentBox.GetMax(Max_);
+			}
+		}
+
+#ifdef OPC_USE_FCOMI
+		Min.x = FCMin2(Min.x, Min_.x);
+		Max.x = FCMax2(Max.x, Max_.x);
+		Min.y = FCMin2(Min.y, Min_.y);
+		Max.y = FCMax2(Max.y, Max_.y);
+		Min.z = FCMin2(Min.z, Min_.z);
+		Max.z = FCMax2(Max.z, Max_.z);
+#else
+		Min.Min(Min_);
+		Max.Max(Max_);
+#endif
+		Current.mAABB.SetMinMax(Min, Max);
+	}
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
