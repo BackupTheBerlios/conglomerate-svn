@@ -54,7 +54,6 @@ namespace OgreOpcode
 		class Capsule;
 		class Line;
 		class OrientedBox;
-		class Ray;
 
 		class line3
 		{
