@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include;..\..\opcode132;..\..\..\..\ogreaddons\dotsceneoctree\plugins\DotSceneManager\include"
+				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include;..\..\opcode132;..\..\..\Tools\XMLConverter\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -63,9 +63,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib CEGUIBase_d.lib OgreGUIRenderer_d.lib OgreOpcode.lib Plugin_DotSceneManager.lib"
+				AdditionalDependencies="OgreMain_d.lib CEGUIBase_d.lib OgreGUIRenderer_d.lib OgreOpcode.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;;&quot;..\..\..\..\ogreaddons\dotsceneoctree\plugins\DotSceneManager\bin\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ogreOpcodeDotsceneExample.pdb"
 				SubSystem="2"
@@ -128,7 +128,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include;..\..\opcode132;..\..\..\..\ogreaddons\dotsceneoctree\plugins\DotSceneManager\include"
+				AdditionalIncludeDirectories="..\include;..\..\include;..\..\..\Samples\Common\include;..\..\..\OgreMain\include;..\..\..\Dependencies\include\CEGUI;..\..\..\samples\Common\CEGUIRenderer\include;..\..\..\Dependencies\include;..\..\opcode132;..\..\..\Tools\XMLConverter\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -151,9 +151,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib CEGUIBase.lib OgreGUIRenderer.lib OgreOpcode.lib Plugin_DotSceneManager.lib"
+				AdditionalDependencies="OgreMain.lib CEGUIBase.lib OgreGUIRenderer.lib OgreOpcode.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;;&quot;..\..\..\..\ogreaddons\dotsceneoctree\plugins\DotSceneManager\bin\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\opcode132\$(ConfigurationName)&quot;;&quot;..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Dependencies\lib\$(ConfigurationName)&quot;;..\..\..\samples\Common\CEGUIRenderer\lib;&quot;..\..\bin\$(ConfigurationName)&quot;"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

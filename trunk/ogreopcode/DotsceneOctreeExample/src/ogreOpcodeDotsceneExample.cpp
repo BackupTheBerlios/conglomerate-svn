@@ -112,7 +112,7 @@ bool OgreOpcodeDotsceneExample::processUnbufferedKeyInput(const FrameEvent& evt)
 	if(mInputDevice->isKeyDown(KC_O))
 	{
 		mShowOctree = !mShowOctree;
-		mDotSceneMgr->setOctreeVisible(mShowOctree);
+		mSceneMgr->setOption( "OctreeVisible" , &mShowOctree ); 
 		mTimeUntilNextToggle = 0.5;
 	}
 
@@ -125,16 +125,26 @@ bool OgreOpcodeDotsceneExample::frameStarted(const FrameEvent& evt)
 
 	if(!dotsceneobject_created)
 	{
-		int meshCount = mDotSceneMgr->getNumMeshes(NULL);
-		//int i = 12;
+		int meshCount;
+		mSceneMgr->getOption("NumMeshes", &meshCount);
 		for(int i = 0; i < meshCount; i++)
 		{
-			if(mDotSceneMgr->getNumIndex(NULL, i)>3)
+			int numIdx = 0;
+			mSceneMgr->getOption("NumIndex" + StringConverter::toString(i), &numIdx);
+			if(numIdx > 3)
 			{
 				PtrCollisionShape* tempCollShape;
 				CollisionObject* tempCollObject;
 				tempCollShape = CollisionManager::getSingletonPtr()->createPtrCollisionShape("dotscene_geom" + StringConverter::toString(i));
-				tempCollShape->load(mDotSceneMgr->getNumVertices(NULL, i), mDotSceneMgr->getNumIndex(NULL, i), mDotSceneMgr->getVerticesPtr(NULL, i),mDotSceneMgr->getIndexPtr(NULL, i) );
+				int numVerts = 0;
+				mSceneMgr->getOption("NumVertices" + StringConverter::toString(i), &numVerts);
+				int numIndices = 0;
+				mSceneMgr->getOption("NumIndex" + StringConverter::toString(i), &numIndices);
+				float* vertPtr = 0;
+				mSceneMgr->getOption("VerticesPtr" + StringConverter::toString(i), &vertPtr);
+				int* indicesPtr = 0;
+				mSceneMgr->getOption("IndexPtr" + StringConverter::toString(i), &indicesPtr);
+				tempCollShape->load(numVerts, numIndices, vertPtr, indicesPtr);
 				tempCollObject = collideContext->newObject("dotscene_object" + StringConverter::toString(i));
 				tempCollObject->setCollClass("ogrerobot");
 				tempCollObject->setShape(tempCollShape);
