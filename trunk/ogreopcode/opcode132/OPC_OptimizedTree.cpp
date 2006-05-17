@@ -253,6 +253,28 @@ bool AABBCollisionTree::Build(AABBTree* tree)
 	return true;
 }
 
+inline_ void ComputeMinMax(IceMaths::Point& min, IceMaths::Point& max, const VertexPointers& vp)
+{
+	// Compute triangle's AABB = a leaf box
+#ifdef OPC_USE_FCOMI	// a 15% speedup on my machine, not much
+	min.x = FCMin3(vp.Vertex[0]->x, vp.Vertex[1]->x, vp.Vertex[2]->x);
+	max.x = FCMax3(vp.Vertex[0]->x, vp.Vertex[1]->x, vp.Vertex[2]->x);
+
+	min.y = FCMin3(vp.Vertex[0]->y, vp.Vertex[1]->y, vp.Vertex[2]->y);
+	max.y = FCMax3(vp.Vertex[0]->y, vp.Vertex[1]->y, vp.Vertex[2]->y);
+
+	min.z = FCMin3(vp.Vertex[0]->z, vp.Vertex[1]->z, vp.Vertex[2]->z);
+	max.z = FCMax3(vp.Vertex[0]->z, vp.Vertex[1]->z, vp.Vertex[2]->z);
+#else
+	min = *vp.Vertex[0];
+	max = *vp.Vertex[0];
+	min.Min(*vp.Vertex[1]);
+	max.Max(*vp.Vertex[1]);
+	min.Min(*vp.Vertex[2]);
+	max.Max(*vp.Vertex[2]);
+#endif
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  *	Refits the collision tree after vertices have been modified.
@@ -283,8 +305,8 @@ bool AABBCollisionTree::Refit(const MeshInterface* mesh_interface)
 
 	// Bottom-up update
 	VertexPointers VP;
-	Point Min,Max;
-	Point Min_,Max_;
+	IceMaths::Point Min,Max;
+	IceMaths::Point Min_,Max_;
 	udword Index = mNbNodes;
 	while(Index--)
 	{
@@ -407,28 +429,6 @@ bool AABBNoLeafTree::Build(AABBTree* tree)
 	ASSERT(CurID==mNbNodes);
 
 	return true;
-}
-
-inline_ void ComputeMinMax(IceMaths::Point& min, IceMaths::Point& max, const VertexPointers& vp)
-{
-	// Compute triangle's AABB = a leaf box
-#ifdef OPC_USE_FCOMI	// a 15% speedup on my machine, not much
-	min.x = FCMin3(vp.Vertex[0]->x, vp.Vertex[1]->x, vp.Vertex[2]->x);
-	max.x = FCMax3(vp.Vertex[0]->x, vp.Vertex[1]->x, vp.Vertex[2]->x);
-
-	min.y = FCMin3(vp.Vertex[0]->y, vp.Vertex[1]->y, vp.Vertex[2]->y);
-	max.y = FCMax3(vp.Vertex[0]->y, vp.Vertex[1]->y, vp.Vertex[2]->y);
-
-	min.z = FCMin3(vp.Vertex[0]->z, vp.Vertex[1]->z, vp.Vertex[2]->z);
-	max.z = FCMax3(vp.Vertex[0]->z, vp.Vertex[1]->z, vp.Vertex[2]->z);
-#else
-	min = *vp.Vertex[0];
-	max = *vp.Vertex[0];
-	min.Min(*vp.Vertex[1]);
-	max.Max(*vp.Vertex[1]);
-	min.Min(*vp.Vertex[2]);
-	max.Max(*vp.Vertex[2]);
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

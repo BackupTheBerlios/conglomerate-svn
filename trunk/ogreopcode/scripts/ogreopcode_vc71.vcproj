@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="ogreopcode"
 	ProjectGUID="{38E0EE4E-1D0C-4335-9968-412D376AB431}"
+	RootNamespace="ogreopcode"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -200,10 +201,16 @@
 				RelativePath="..\include\OgreCollisionTypes.h">
 			</File>
 			<File
+				RelativePath="..\include\OgreEntityCollisionShape.h">
+			</File>
+			<File
 				RelativePath="..\include\OgreHash.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreKeyArray.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreMeshCollisionShape.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreNodes.h">
@@ -237,6 +244,9 @@
 			</File>
 			<File
 				RelativePath="..\include\OgreSphereMeshCollisionShape.h">
+			</File>
+			<File
+				RelativePath="..\include\OgreTerrainCollisionShape.h">
 			</File>
 			<File
 				RelativePath="..\include\OgreTriangle.h">
