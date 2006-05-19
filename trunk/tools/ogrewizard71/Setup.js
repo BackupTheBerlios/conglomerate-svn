@@ -1,5 +1,5 @@
 // Ogre Application Wizard
-// Copyright (C) 2004 jacmoe
+// Copyright (C) 2006 jacmoe
 //
 // This file is a part of the Ogre Application Wizard.
 // The code and information is provided "as-is" without

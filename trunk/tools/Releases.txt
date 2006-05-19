@@ -1,0 +1,12 @@
+Ogre Source 1.2.x Application Wizard v.1.2 for VC7.1
+This is the 1.2 release of the Ogre Source 1.2.x Application Wizard for VC7.1! Compatible with the Ogre Source only.
+
+Ogre SDK 1.2.x Application Wizard v.1.2 for VC7.1
+This is the 1.2 release of the Ogre SDK 1.2.x Application Wizard for VC7.1! Compatible with the Ogre SDK only.
+
+Ogre Source 1.2.x Application Wizard v.1.2 for VC8
+This is the 1.2 release of the Ogre Source 1.2.x Application Wizard! Compatible with the Ogre Source only.
+
+Ogre SDK 1.2.x Application Wizard v.1.2 for VC8.0
+This is the 1.2 release of the Ogre SDK 1.2.x Application Wizard! Compatible with the Ogre SDK only.
+

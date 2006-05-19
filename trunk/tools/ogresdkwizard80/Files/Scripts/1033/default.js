@@ -75,6 +75,7 @@ function AddSpecificConfig(proj, strProjectName, bEmptyProject)
 	var bPostbuildCopy = wizard.FindSymbol('POSTBUILD_COPY');
 	var sOgreFolder = wizard.FindSymbol('OGRE_FOLDER');
 	var bUseCEGUI = wizard.FindSymbol('CEGUI_YES');
+	var bExampleFramework = wizard.FindSymbol('FRAMEWORK_YES');
 	
 	strOgreMainDir = '$(OGRE_HOME)';
 	strCEGUIRendererDir = '$(OGRE_HOME)' + '\\samples\\include';
@@ -122,6 +123,9 @@ function AddSpecificConfig(proj, strProjectName, bEmptyProject)
 	if(bUseCEGUI)
 		strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\include\\CEGUI" + ";" + strCEGUIRendererDir;
 
+	if(bExampleFramework)
+		strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\samples\\include";
+	
 	CLTool.AdditionalIncludeDirectories = strAdditionalIncludeDirectories;
 
 
@@ -190,6 +194,9 @@ function AddSpecificConfig(proj, strProjectName, bEmptyProject)
 	if(bUseCEGUI)
 		strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\include\\CEGUI" + ";" + strCEGUIRendererDir;
 	
+	if(bExampleFramework)
+		strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\samples\\include";
+
 	CLTool.AdditionalIncludeDirectories = strAdditionalIncludeDirectories;
 
 

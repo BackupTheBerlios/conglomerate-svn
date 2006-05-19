@@ -106,6 +106,7 @@ function AddConfig(proj, strProjectName)
 		var bCommonFramework = wizard.FindSymbol('FRAMEWORK_YES');
 		var bPostbuildCopy = wizard.FindSymbol('POSTBUILD_COPY');
 		var bUseCEGUI = wizard.FindSymbol('CEGUI_YES');
+		var bExampleFramework = wizard.FindSymbol('FRAMEWORK_YES');
 
 		var strOgreMainDir = '';
 		strOgreMainDir = '$(OGRE_HOME)';
@@ -155,6 +156,9 @@ function AddConfig(proj, strProjectName)
 		
 		if(bUseCEGUI)
 			strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\include\\CEGUI" + ";" + strCEGUIRendererDir;
+		
+		if(bExampleFramework)
+			strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\samples\\include";
 
 		CLTool.AdditionalIncludeDirectories = strAdditionalIncludeDirectories;
 		
@@ -225,6 +229,9 @@ function AddConfig(proj, strProjectName)
 		if(bUseCEGUI)
 			strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\include\\CEGUI" + ";" + strCEGUIRendererDir;
 		
+		if(bExampleFramework)
+			strAdditionalIncludeDirectories = strAdditionalIncludeDirectories + ";" + strOgreMainDir + "\\samples\\include";
+
 		CLTool.AdditionalIncludeDirectories = strAdditionalIncludeDirectories;
 		
 		var LinkTool = config.Tools('VCLinkerTool');

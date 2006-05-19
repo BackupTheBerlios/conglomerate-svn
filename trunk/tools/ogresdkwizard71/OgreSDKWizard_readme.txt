@@ -1,4 +1,4 @@
-Ogre SDK 1.0.5 Application Wizard v.1.0
+Ogre SDK 1.2.x Application Wizard v.1.2 (May 2006)
 ------------------------------------------------------------------------------
 
 
@@ -32,6 +32,22 @@ or from the run box
 I personally used the first adding a new command "run" as the default thus still able to right click and edit with dreamweaver.[/quote]
 
 
+
+
+If you don't have JScript installed, get it from Microsoft - it's a free download.
+
+
+-------------------------------------------------------------------
+How to have the OGRE Application Wizard appear under Win32, instead of at the root of the project type selection tree?
+-------------------------------------------------------------------
+
+You need to correct the path to the vsz file in the vsdir file. Just prepend it with "..\" (without the quotes).
+Then move the vsdir file to vcprojects\Win32 - done!
+
+
+
+
+
 Costumizing  -------------------------------------------------------------------
 
 It is easy to costumize the Application Wizard. It is completely script driven. And you don't need to re-install anything after changing it.
@@ -47,6 +63,9 @@ enjoy!
 jacmoe
 
 jacmoe@users.berlios.de
+
+
+Visit the Ogre AppWizard Forum: http://conglomerate.berlios.de/phpBB2/viewforum.php?f=4
 
 
 

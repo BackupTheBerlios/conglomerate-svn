@@ -1,5 +1,5 @@
 // Ogre Application Wizard
-// Copyright (C) 2005 jacmoe
+// Copyright (C) 2006 jacmoe
 //
 // This file is a part of the Ogre Application Wizard.
 // The code and information is provided "as-is" without
@@ -35,17 +35,25 @@ function main()
 		return;
 	}
 
-	var strVC8Key = "HKLM\\Software\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir";
-	try
-	{
-		strValue = WSShell.RegRead(strVC8Key);
+	var strVC8Key = "HKLM\\Software\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"; 
+	try 
+	{ 
+		strValue = WSShell.RegRead(strVC8Key); 
+	} 
+	catch(e) 
+	{ 
+		var strVC8Key = "HKLM\\Software\\Wow6432Node\\Microsoft\\VisualStudio\\8.0\\Setup\\VC\\ProductDir"; 
+		try 
+		{ 
+			strValue = WSShell.RegRead(strVC8Key); 
+		} 
+		catch(e) 
+		{ 
+			WScript.Echo("ERROR: Cannot find where Visual Studio 8.0 is installed."); 
+			return; 
+		} 
 	}
-	catch(e)
-	{
-		WScript.Echo("ERROR: Cannot find where Visual Studio 8.0 is installed.");
-		return;
-	}
-
+	
 	var strDestFolder = strValue + "\vcprojects";
 	if(bDebug)
 		WScript.Echo("Destination: " + strDestFolder);
