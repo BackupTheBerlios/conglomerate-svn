@@ -199,7 +199,6 @@ namespace OgreOpcode
 		numFaces(0),
 		mVertexBuf(0),
 		mFaceBuf(0),
-		_debug_obj(0),
 		mFullTransform(Matrix4::IDENTITY),
 		mLocalTransform(Matrix4::IDENTITY)
 	{
@@ -212,10 +211,6 @@ namespace OgreOpcode
 	ICollisionShape::~ICollisionShape()
 	{
 		//assert(0 == refCount);
-
-		if(_debug_obj)
-			delete _debug_obj;
-
 	}
 
 	//------------------------------------------------------------------------
@@ -607,23 +602,33 @@ namespace OgreOpcode
 		Vector3 v12(center.x + extent.x, center.y + extent.y, center.z + extent.z);
 		Vector3 v13(center.x + extent.x, center.y + extent.y, center.z - extent.z);
 
-		// render ground rect
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
+		const Matrix4 &m = getFullTransform();
+		v00 = m * v00;
+		v01 = m * v01;
+		v02 = m * v02;
+		v03 = m * v03;
+		v10 = m * v10;
+		v11 = m * v11;
+		v12 = m * v12;
+		v13 = m * v13;
 
-		// render top rect
-		_debug_obj->addLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
-		_debug_obj->addLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+		//// render ground rect
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
 
-		// render vertical lines
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
+		//// render top rect
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+
+		//// render vertical lines
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
 
 		if (!node->IsLeaf())
 		{
@@ -656,23 +661,33 @@ namespace OgreOpcode
 		Vector3 v12(center.x + extent.x, center.y + extent.y, center.z + extent.z);
 		Vector3 v13(center.x + extent.x, center.y + extent.y, center.z - extent.z);
 
-		// render ground rect
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
+		const Matrix4 &m = getFullTransform();
+		v00 = m * v00;
+		v01 = m * v01;
+		v02 = m * v02;
+		v03 = m * v03;
+		v10 = m * v10;
+		v11 = m * v11;
+		v12 = m * v12;
+		v13 = m * v13;
 
-		// render top rect
-		_debug_obj->addLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
-		_debug_obj->addLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+		//// render ground rect
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
 
-		// render vertical lines
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
+		//// render top rect
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+
+		//// render vertical lines
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
+		Details::OgreOpcodeDebugger::getSingletonPtr()->addAABBLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
 
 		if (!node->HasNegLeaf())
 		{
@@ -701,61 +716,49 @@ namespace OgreOpcode
 			float* v1 = mVertexBuf + 3 * indexPtr[1];
 			float* v2 = mVertexBuf + 3 * indexPtr[2];
 
-			_debug_obj->addLine(v0[0], v0[1], v0[2], v1[0], v1[1], v1[2]);
-			_debug_obj->addLine(v1[0], v1[1], v1[2], v2[0], v2[1], v2[2]);
-			_debug_obj->addLine(v2[0], v2[1], v2[2], v0[0], v0[1], v0[2]);
-		}
+			const Matrix4 &m = getFullTransform();
 
-		if(mDoVisualizeAABBNodes)
-		{
-			// render the AABB tree
-			if (opcModel.HasLeafNodes())
-			{
-				const Opcode::AABBCollisionTree* tree = static_cast<const Opcode::AABBCollisionTree*>(opcModel.GetTree());
-				visualizeAABBCollisionNode(tree->GetNodes());
-			}
-			else
-			{
-				const Opcode::AABBNoLeafTree* tree = static_cast<const Opcode::AABBNoLeafTree*>(opcModel.GetTree());
-				visualizeAABBNoLeafNode(tree->GetNodes());
-			}
+			Vector3 vect0(v0[0],v0[1],v0[2]);
+			Vector3 vect1(v1[0],v1[1],v1[2]);
+			Vector3 vect2(v2[0],v2[1],v2[2]);
+			vect0 = m * vect0;
+			vect1 = m * vect1;
+			vect2 = m * vect2;
+
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addShapeLine(vect0.x, vect0.y, vect0.z, vect1.x, vect1.y, vect1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addShapeLine(vect1.x, vect1.y, vect1.z, vect2.x, vect2.y, vect2.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addShapeLine(vect2.x, vect2.y, vect2.z, vect0.x, vect0.y, vect0.z);
 		}
 	}
 
 
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
+	void ICollisionShape::visualizeAABBs()
+	{
+		// render the AABB tree
+		if (opcModel.HasLeafNodes())
+		{
+			const Opcode::AABBCollisionTree* tree = static_cast<const Opcode::AABBCollisionTree*>(opcModel.GetTree());
+			visualizeAABBCollisionNode(tree->GetNodes());
+		}
+		else
+		{
+			const Opcode::AABBNoLeafTree* tree = static_cast<const Opcode::AABBNoLeafTree*>(opcModel.GetTree());
+			visualizeAABBNoLeafNode(tree->GetNodes());
+		}
+	}
+
+	//------------------------------------------------------------------------
+	/// <TODO: insert function description here>
 	void ICollisionShape::createDebugObject()
 	{
-		_debug_obj = new DebugObject();
-
-		visualize();
-		_debug_obj->draw();
-
-		if(_debug_obj)
-		{
-			mParentNode->attachObject(_debug_obj);
-		}
-
-		if(_debug_obj)
-		{
-			if(mShapeIsStatic)
-				_debug_obj->setMode(DebugObject::Mode_Static);
-			else
-				_debug_obj->setMode(DebugObject::Mode_Enabled);
-		}
-
 	}
 
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
 	void ICollisionShape::destroyDebugObject()
 	{
-		if(_debug_obj)
-		{
-			delete _debug_obj;
-			_debug_obj = 0;
-		}
 	}
 
 	//------------------------------------------------------------------------

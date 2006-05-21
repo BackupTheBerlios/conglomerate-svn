@@ -163,7 +163,9 @@ private:
 	bool mVisualizeObjects;
 	bool mDoABBVisualization;
 	bool mDoLocalVisualization;
+	bool mDoContacts;
 	bool mDoGlobalVisualization;
+	bool mDoShapeVisualization;
 	bool mSkipLevelRayCheck;
 	Overlay* mTargetSight;
 	Overlay* mHotTargetSight;

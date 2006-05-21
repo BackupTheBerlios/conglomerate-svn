@@ -441,10 +441,6 @@ void SphereMeshCollisionShape::createSphere(const std::string& strName, const fl
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
-
 		return true;
 	}
 
@@ -460,10 +456,6 @@ void SphereMeshCollisionShape::createSphere(const std::string& strName, const fl
 		opcModel.Build(opcc);
 
 		calculateSize();
-
-		if (_debug_obj) {
-			setDebug(true);
-		}
 
 		return true;
 	}

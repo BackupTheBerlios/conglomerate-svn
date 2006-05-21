@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.h
 ///  @brief <TODO: insert file description here>
-///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
-///  @author The OgreOpcode Team @date 29-05-2005
+///  @remarks  Based directly on code from OgreNewt, by Walaber.
+///  @author The OgreOpcode Team
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
@@ -34,102 +34,54 @@ namespace OgreOpcode
 {
 	namespace Details
 	{
-		/// %Debug visualization line class.
-		class _OgreOpcode_Export DebugLines : public Ogre::SimpleRenderable
+		class _OgreOpcode_Export OgreOpcodeDebugger : public Singleton<OgreOpcodeDebugger>
 		{
 		public:
-			DebugLines(void);
-			~DebugLines(void);
+			OgreOpcodeDebugger(SceneManager* sceneMgr);
+			virtual ~OgreOpcodeDebugger() {};
+			
+			static OgreOpcodeDebugger& getSingleton(void);
+			static OgreOpcodeDebugger* getSingletonPtr(void);
 
-			void addLine(const Vector3 &start,const Vector3 &end)
-			{
-				clear();
+			void addRadiiLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2);
+			void addContactLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2);
+			void addBBLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2);
+			void addShapeLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2);
+			void addAABBLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2);
 
-				_points.push_back(start);
-				_points.push_back(end);
-			}
-			void addLine(Real start_x,Real start_y,Real start_z,Real end_x,Real end_y,Real end_z)
-			{
-				addLine(Vector3(start_x,start_y,start_z),Vector3(end_x,end_y,end_z));
-			}
-			void draw();
-			void clear();
+			void clearAll();
 
-			Real getSquaredViewDepth(const Camera *cam) const;
-			Real getBoundingRadius(void) const;
+			void clearRadii();
+			void beginRadii();
+			void endRadii();
+			void clearContacts();
+			void beginContacts();
+			void endContacts();
+			void clearBBs();
+			void beginBBs();
+			void endBBs();
+			void clearShapes();
+			void beginShapes();
+			void endShapes();
+			void clearAABBs();
+			void beginAABBs();
+			void endAABBs();
 
-		protected:
+		private:
 
-			std::vector<Vector3> _points;
-			bool _drawn;
+			SceneManager*	mSceneMgr;
 
-			static bool _materials_created;
-		};
+			SceneNode*		mRadiiDebugNode;
+			SceneNode*		mContactsDebugNode;
+			SceneNode*		mBBsDebugNode;
+			SceneNode*		mShapesDebugNode;
+			SceneNode*		mAABBsDebugNode;
 
-		/// %Debug visualization object class.
-		class _OgreOpcode_Export DebugObject : public DebugLines
-		{
-		public:
-			enum Mode
-			{
-				Mode_Unknown,
-				Mode_Enabled,
-				Mode_Disabled,
-				Mode_Static
-			};
-
-		public:
-			DebugObject(DebugObject::Mode mode = DebugObject::Mode_Enabled);
-			virtual ~DebugObject();
-
-			void setMode(DebugObject::Mode mode);
-
-		protected:
-			DebugObject::Mode _mode;
-		};
-
-		/// %Debug object to visualize a box.
-		class _OgreOpcode_Export BoxDebugObject : public DebugObject
-		{
-		public:
-			BoxDebugObject(const Vector3& size);
-			virtual ~BoxDebugObject();
-		};
-
-		/// %Debug object to visualize a sphere.
-		class _OgreOpcode_Export SphereDebugObject : public DebugObject
-		{
-		public:
-			SphereDebugObject(Real radius);
-			virtual ~SphereDebugObject();
-		};
-
-		/// %Debug object to visualize a capsule.
-		class _OgreOpcode_Export CapsuleDebugObject : public DebugObject
-		{
-		public:
-			CapsuleDebugObject(Real radius,Real length);
-			virtual ~CapsuleDebugObject();
-		};
-
-		/// %Debug object to visualize a mesh.
-		class _OgreOpcode_Export TriangleMeshDebugObject : public DebugObject
-		{
-		public:
-			TriangleMeshDebugObject(int vertex_count);
-			virtual ~TriangleMeshDebugObject();
-
-			void beginDefinition();
-			void setVertex(int index,const Vector3& vertex);
-			void endDefinition();
-		};
-
-		/// %Debug object to visualize a ray.
-		class _OgreOpcode_Export RayDebugObject : public DebugObject
-		{
-		public:
-			RayDebugObject(const Vector3& start,const Vector3& direction,Real length);
-			virtual ~RayDebugObject();
+			ManualObject*	mRadiiDebugObject;
+			ManualObject*	mContactsDebugObject;
+			ManualObject*	mBBsDebugObject;
+			ManualObject*	mShapesDebugObject;
+			ManualObject*	mAABBsDebugObject;
 		};
 
 	} // namespace Details

@@ -2,7 +2,7 @@
 ///  @file OgreCollisionManager.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 29-05-2005
+///  @author The OgreOpcode Team
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
@@ -93,6 +93,7 @@ namespace OgreOpcode
 		virtual ~CollisionManager();
 
 		static CollisionManager& getSingleton(void);
+		static CollisionManager* getSingletonPtr(void);
 
 		CollisionContext *createContext(const String&);
 		void destroyContext(CollisionContext *);

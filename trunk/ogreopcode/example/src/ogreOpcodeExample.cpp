@@ -55,10 +55,11 @@ void OgreOpcodeExample::createCamera(void)
 	mCamera = mSceneMgr->createCamera("PlayerCam");
 
 	// Position it at 500 in Z direction
-	mCamera->setPosition(Vector3(0,0,500));
+	mCamera->setPosition(Vector3(0,0,0));
 	// Look back along -Z
 	mCamera->lookAt(Vector3(0,0,-300));
-	mCamera->setNearClipDistance(5);
+	mCamera->setNearClipDistance(0.1);
+	mCamera->setFarClipDistance(10000);
 
 }
 //-------------------------------------------------------------------------------------
@@ -68,8 +69,8 @@ void OgreOpcodeExample::createFrameListener(void)
 	mUseBufferedInputKeys = false;
 	mUseBufferedInputMouse = false;
 	mInputTypeSwitchingOn = mUseBufferedInputKeys || mUseBufferedInputMouse;
-	mRotateSpeed = 36;
-	mMoveSpeed = 100;
+	mRotateSpeed = 18;
+	mMoveSpeed = 10;
 
 	if (mInputTypeSwitchingOn)
 	{

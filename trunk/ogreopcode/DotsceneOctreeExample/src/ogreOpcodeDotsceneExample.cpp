@@ -10,6 +10,8 @@ mVisualizeObjects(false),
 mDoABBVisualization(false),
 mDoLocalVisualization(true),
 mDoGlobalVisualization(true),
+mDoContacts(false),
+mDoShapeVisualization(true),
 mShowOctree(false)
 {
 }
@@ -74,46 +76,47 @@ void OgreOpcodeDotsceneExample::createScene(void)
 	mSceneMgr->setWorldGeometry( "MyScene.scene" );
 
 	parseDotScene( "MyScene.scene", "General" );
+
+	new Details::OgreOpcodeDebugger(mSceneMgr);
 }
 //-------------------------------------------------------------------------------------
 bool OgreOpcodeDotsceneExample::processUnbufferedKeyInput(const FrameEvent& evt)
 {
-	if (mInputDevice->isKeyDown(KC_V) && mTimeUntilNextToggle <=0)
+	if (mInputDevice->isKeyDown(KC_B) && mTimeUntilNextToggle <=0)
 	{
 		mVisualizeObjects = !mVisualizeObjects;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
-	if (mInputDevice->isKeyDown(KC_L) && mTimeUntilNextToggle <= 0)
+	if (mInputDevice->isKeyDown(KC_V) && mTimeUntilNextToggle <=0)
 	{
-		mPlayAnimation = !mPlayAnimation;
-		mSceneMgr->getEntity("theRobot")->getAnimationState("Walk")->setEnabled(true);
-		mTimeUntilNextToggle = 0.5;
+		mDoShapeVisualization = !mDoShapeVisualization;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_Z) && mTimeUntilNextToggle <= 0)
 	{
 		mDoABBVisualization = !mDoABBVisualization;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_X) && mTimeUntilNextToggle <= 0)
 	{
 		mDoLocalVisualization = !mDoLocalVisualization;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_C) && mTimeUntilNextToggle <= 0)
 	{
 		mDoGlobalVisualization = !mDoGlobalVisualization;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
-	if(mInputDevice->isKeyDown(KC_O))
+	if(mInputDevice->isKeyDown(KC_O) && mTimeUntilNextToggle <= 0)
 	{
 		mShowOctree = !mShowOctree;
 		mSceneMgr->setOption( "OctreeVisible" , &mShowOctree ); 
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	return OgreOpcodeExample::processUnbufferedKeyInput(evt);
@@ -165,7 +168,7 @@ bool OgreOpcodeDotsceneExample::frameStarted(const FrameEvent& evt)
 
 	// This has to be here - debug visualization needs to be updated each frame..
 	// but only after we update objects!
-	collideContext->visualize(mVisualizeObjects, mDoABBVisualization, mDoLocalVisualization, mDoGlobalVisualization);
+	collideContext->visualize(mVisualizeObjects, mDoLocalVisualization, mDoContacts, mDoGlobalVisualization, mDoShapeVisualization, mDoABBVisualization);
 
 	CollisionManager::getSingletonPtr()->getDefaultContext()->collide();
 

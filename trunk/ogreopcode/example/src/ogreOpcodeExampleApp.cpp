@@ -14,6 +14,8 @@ mVisualizeObjects(false),
 mDoABBVisualization(false),
 mDoLocalVisualization(true),
 mDoGlobalVisualization(true),
+mDoContacts(false),
+mDoShapeVisualization(true),
 mSkipLevelRayCheck(true),
 mRobotEntity(0)
 {
@@ -30,10 +32,10 @@ OgreOpcodeExampleApp::~OgreOpcodeExampleApp(void)
 void OgreOpcodeExampleApp::createScene(void)
 {
 	// Set ambient light
-	mSceneMgr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
+	mSceneMgr->setAmbientLight(ColourValue(1.0, 0.8, 0.8));
 
-	// Create a skydome
-	mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+	//// Create a skydome
+	//mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
 	mTargetSight = (Overlay*)OverlayManager::getSingleton().getByName("gunTarget");
 	mTargetSight->show();
@@ -91,39 +93,47 @@ void OgreOpcodeExampleApp::createScene(void)
 	parseDotScene("scene.xml");
 
 	mCollideContext->reset();
+
+	new Details::OgreOpcodeDebugger(mSceneMgr);
 }
 //-------------------------------------------------------------------------------------
 bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 {
-	if (mInputDevice->isKeyDown(KC_V) && mTimeUntilNextToggle <=0)
+	if (mInputDevice->isKeyDown(KC_B) && mTimeUntilNextToggle <=0)
 	{
 		mVisualizeObjects = !mVisualizeObjects;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
+	}
+
+	if (mInputDevice->isKeyDown(KC_V) && mTimeUntilNextToggle <=0)
+	{
+		mDoShapeVisualization = !mDoShapeVisualization;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_L) && mTimeUntilNextToggle <= 0)
 	{
 		mPlayAnimation = !mPlayAnimation;
 		mSceneMgr->getEntity("theRobot")->getAnimationState("Walk")->setEnabled(true);
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_Z) && mTimeUntilNextToggle <= 0)
 	{
 		mDoABBVisualization = !mDoABBVisualization;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_X) && mTimeUntilNextToggle <= 0)
 	{
 		mDoLocalVisualization = !mDoLocalVisualization;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_C) && mTimeUntilNextToggle <= 0)
 	{
 		mDoGlobalVisualization = !mDoGlobalVisualization;
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_1) && mTimeUntilNextToggle <= 0)
@@ -132,13 +142,13 @@ bool OgreOpcodeExampleApp::processUnbufferedKeyInput(const FrameEvent& evt)
 		CollisionManager::getSingletonPtr()->destroyShape(mRobotEntity->getCollisionShape());
 		mRobotEntity->reinit();
 		mRobotEntity->getCollisionShape()->refit();
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 
 	if (mInputDevice->isKeyDown(KC_2) && mTimeUntilNextToggle <= 0)
 	{
 		mSkipLevelRayCheck = !mSkipLevelRayCheck;	
-		mTimeUntilNextToggle = 0.5;
+		mTimeUntilNextToggle = 1.0;
 	}
 	
 	return OgreOpcodeExample::processUnbufferedKeyInput(evt);
@@ -164,19 +174,19 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 
 	// This has to be here - debug visualization needs to be updated each frame..
 	// but only after we update objects!
-	mCollideContext->visualize(mVisualizeObjects, mDoABBVisualization, mDoLocalVisualization, mDoGlobalVisualization);
+	mCollideContext->visualize(mVisualizeObjects, mDoLocalVisualization, mDoContacts, mDoGlobalVisualization, mDoShapeVisualization, mDoABBVisualization);
 
 	CollisionManager::getSingletonPtr()->getDefaultContext()->collide(evt.timeSinceLastFrame);
 
 	mRay = mCamera->getCameraToViewportRay(0.5, 0.5);
 
-	CollisionObject* tempCollObj = mCollideContext->getAttachedObject("TestLevel");  
+	//CollisionObject* tempCollObj = mCollideContext->getAttachedObject("TestLevel");  
 	
-	if(mSkipLevelRayCheck)
-	{
-		// remove level from context - we don't care when ray testing against entities..
-		CollisionManager::getSingletonPtr()->getDefaultContext()->removeObject(tempCollObj);
-	}
+	//if(mSkipLevelRayCheck)
+	//{
+	//	// remove level from context - we don't care when ray testing against entities..
+	//	CollisionManager::getSingletonPtr()->getDefaultContext()->removeObject(tempCollObj);
+	//}
 
 	CollisionPair **pick_report;
 	int num_picks = CollisionManager::getSingletonPtr()->getDefaultContext()->rayCheck(mRay, 2000.0f, COLLTYPE_CONTACT, COLLTYPE_ALWAYS_CONTACT, pick_report);
@@ -203,11 +213,11 @@ bool OgreOpcodeExampleApp::frameStarted(const FrameEvent& evt)
 		mHotTargetSight->hide();
 	}
 
-	if(mSkipLevelRayCheck)
-	{
-		// Add the level back into the CollisionContext
-		CollisionManager::getSingletonPtr()->getDefaultContext()->addObject(tempCollObj);
-	}
+	//if(mSkipLevelRayCheck)
+	//{
+	//	// Add the level back into the CollisionContext
+	//	CollisionManager::getSingletonPtr()->getDefaultContext()->addObject(tempCollObj);
+	//}
 
 	// Check Robot for collisions
 	if(mRobotEntity->hasCollisions())
@@ -357,8 +367,8 @@ void OgreOpcodeExampleApp::parseDotScene( const String &SceneName)
 				String EntityName, EntityMeshFilename, IamStatic;
 				EntityName = XMLEntity->Attribute( "name" );
 				EntityMeshFilename = XMLEntity->Attribute( "meshFile" );
-				IamStatic = XMLEntity->Attribute( "static" );
-				bool makeStatic = StringConverter::parseBool(IamStatic);
+				//IamStatic = XMLEntity->Attribute( "static" );
+				bool makeStatic = false;//= StringConverter::parseBool(IamStatic);
 
 				// Create entity
 				Entity* NewEntity = mSceneMgr->createEntity(EntityName, EntityMeshFilename);

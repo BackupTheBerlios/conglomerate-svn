@@ -136,10 +136,6 @@ namespace OgreOpcode
 			client_data(0),
 			is_attached(false),
 			num_colls(0),
-			_debug_node(0),
-			_debug_obj(0),
-			_global_debug_node(0),
-			_global_debug_obj(0),
 			old_matrix(Matrix4::IDENTITY),
 			new_matrix(Matrix4::IDENTITY)
 		{
@@ -149,11 +145,6 @@ namespace OgreOpcode
 
 		virtual ~CollisionObject()
 		{
-			if(_debug_obj)
-				delete _debug_obj;
-			if(_global_debug_obj)
-				delete _global_debug_obj;
-		
 		}
 		
 		/// <TODO: insert function description here>
@@ -300,7 +291,7 @@ namespace OgreOpcode
 		};
 
 		/// Return the 'time' between the current and previous transforms
-		/// @return Real The elapsted 'time' (actually just whatever the user
+		/// @return Real The elapsed 'time' (actually just whatever the user
 		///         told us it was when calling update()).  Negative if no
 		///         update()'s have been performed since the last reset()
 		Real getTimeDelta(void)
@@ -600,116 +591,35 @@ namespace OgreOpcode
 
 		void createDebugObject()
 		{
-			_debug_obj = new DebugObject();
-
-			visualizeLocal();
-			_debug_obj->draw();
-
-			if(!_debug_node)
-			{
-				SceneNode* parent = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode();
-				_debug_node = static_cast<SceneNode*>(parent->createChildSceneNode("collDebugNode" + Ogre::StringConverter::toString(getId())));
-
-				if(_debug_obj)
-				{
-					static_cast<SceneNode*>(_debug_node)->attachObject(_debug_obj);
-				}
-
-				if(_debug_obj) _debug_obj->setMode(DebugObject::Mode_Static);
-
-			}
-			if(_debug_node)
-			{
-				_debug_node->setPosition(getShape()->getParentSceneNode()->_getDerivedPosition());
-				_debug_node->setOrientation(getShape()->getParentSceneNode()->_getDerivedOrientation());
-			}
 		}
 
 
 		void createGlobalDebugObject()
 		{
-			_global_debug_obj = new DebugObject();
-
-			visualizeGlobal();
-			_global_debug_obj->draw();
-
-			if(!_global_debug_node)
-			{
-				SceneNode* parent = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode();
-				_global_debug_node = static_cast<SceneNode*>(parent->createChildSceneNode("collGlobalDebugNode" + Ogre::StringConverter::toString(getId())));
-
-				if(_global_debug_obj)
-				{
-					static_cast<SceneNode*>(_global_debug_node)->attachObject(_global_debug_obj);
-				}
-
-				if(_global_debug_obj) _global_debug_obj->setMode(DebugObject::Mode_Enabled);
-
-			}
 		}
 
 		void destroyGlobalDebugObject()
 		{
-			if(_global_debug_node)
-			{
-				SceneNode* sn = static_cast<SceneNode*>(_global_debug_node->getParent());
-				sn->removeAndDestroyChild(_global_debug_node->getName());
-				_global_debug_node = 0;
-			}
-
-			if(_global_debug_obj)
-			{
-				delete _global_debug_obj;
-				_global_debug_obj = 0;
-			}
 		}
 
 		/// <TODO: insert function description here>
 		void destroyDebugObject()
 		{
-			if(_debug_node)
-			{
-				SceneNode* sn = static_cast<SceneNode*>(_debug_node->getParent());
-				sn->removeAndDestroyChild(_debug_node->getName());
-				_debug_node = 0;
-			}
-
-			if(_debug_obj)
-			{
-				delete _debug_obj;
-				_debug_obj = 0;
-			}
 		}
 
 		/// <TODO: insert function description here>
 		/// @param [in]       debug bool     <TODO: insert parameter description here>
 		void setDebug(bool doVisualize, bool doAABBs, bool doLocal, bool doGlobal)
 		{
-			destroyDebugObject();
-			destroyGlobalDebugObject();
-			if(doVisualize)
-			{
-				if (doLocal)
-					createDebugObject();
-				if (doGlobal)
-					createGlobalDebugObject();
-			}
-
-			// optionally, render the object's shape
-			if (mShape)
-			{
-				mShape->showAABB(doAABBs);
-				mShape->setDebug(doVisualize);
-			}
 		}
 
 		/// visualize stuff in local coordinate space.
-		void visualizeLocal()
+		void visualizeRadii()
 		{
 			// render the objects radii
 			int dim;
 			Real dr = Ogre::Math::DegreesToRadians(5.0f);
-			Vector3 ctr = getShape()->getLocalCenter();
+			Vector3 ctr = getShape()->getCenter();
 			for (dim=0; dim<3; dim++)
 			{
 				Real r;
@@ -726,15 +636,15 @@ namespace OgreOpcode
 					Vector3 v0_z(sin_r0*mRadius, cos_r0*mRadius, 0.0f); v0_z+=ctr;
 					Vector3 v1_z(sin_r1*mRadius, cos_r1*mRadius, 0.0f); v1_z+=ctr;
 
-					_debug_obj->addLine(v0_x.x,v0_x.y,v0_x.z, v1_x.x,v1_x.y,v1_x.z);
-					_debug_obj->addLine(v0_y.x,v0_y.y,v0_y.z, v1_y.x,v1_y.y,v1_y.z);
-					_debug_obj->addLine(v0_z.x,v0_z.y,v0_z.z, v1_z.x,v1_z.y,v1_z.z);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addRadiiLine(v0_x.x,v0_x.y,v0_x.z, v1_x.x,v1_x.y,v1_x.z);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addRadiiLine(v0_y.x,v0_y.y,v0_y.z, v1_y.x,v1_y.y,v1_y.z);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addRadiiLine(v0_z.x,v0_z.y,v0_z.z, v1_z.x,v1_z.y,v1_z.z);
 				}
 			}
 		};
 
 		/// visualize stuff in global space.
-		void visualizeGlobal()
+		void visualizeContacts()
 		{
 			// render any collision contact points
 			if (num_colls > 0)
@@ -746,37 +656,40 @@ namespace OgreOpcode
 				{
 					CollisionPair *cr = pcr[i];
 					Vector3& cnt = cr->contact;
-					_global_debug_obj->addLine(cnt.x-0.5f,cnt.y,cnt.z, cnt.x+0.5f,cnt.y,cnt.z);
-					_global_debug_obj->addLine(cnt.x,cnt.y-0.5f,cnt.z, cnt.x,cnt.y+0.5f,cnt.z);
-					_global_debug_obj->addLine(cnt.x,cnt.y,cnt.z-0.5f, cnt.x,cnt.y,cnt.z+0.5f);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addContactLine(cnt.x-0.5f,cnt.y,cnt.z, cnt.x+0.5f,cnt.y,cnt.z);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addContactLine(cnt.x,cnt.y-0.5f,cnt.z, cnt.x,cnt.y+0.5f,cnt.z);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addContactLine(cnt.x,cnt.y,cnt.z-0.5f, cnt.x,cnt.y,cnt.z+0.5f);
 
 					Vector3& n = cr->co_this_normal;
 
-					_global_debug_obj->addLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addContactLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
 
 					n = cr->co_other_normal;
-					_global_debug_obj->addLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
+					Details::OgreOpcodeDebugger::getSingletonPtr()->addContactLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
 				}
 			}
-
-
+		}
+	
+		void visualizeBoundingBoxes()
+		{
 			// render the objects bounding boxes (stretched by their movement)
 			Vector3& v0 = minv;
 			Vector3& v1 = maxv;
 
-			_global_debug_obj->addLine(v0.x,v0.y,v0.z, v1.x,v0.y,v0.z);
-			_global_debug_obj->addLine(v1.x,v0.y,v0.z, v1.x,v1.y,v0.z);
-			_global_debug_obj->addLine(v1.x,v1.y,v0.z, v0.x,v1.y,v0.z);
-			_global_debug_obj->addLine(v0.x,v1.y,v0.z, v0.x,v0.y,v0.z);
-			_global_debug_obj->addLine(v0.x,v0.y,v1.z, v1.x,v0.y,v1.z);
-			_global_debug_obj->addLine(v1.x,v0.y,v1.z, v1.x,v1.y,v1.z);
-			_global_debug_obj->addLine(v1.x,v1.y,v1.z, v0.x,v1.y,v1.z);
-			_global_debug_obj->addLine(v0.x,v1.y,v1.z, v0.x,v0.y,v1.z);
-			_global_debug_obj->addLine(v0.x,v0.y,v0.z, v0.x,v0.y,v1.z);
-			_global_debug_obj->addLine(v1.x,v0.y,v0.z, v1.x,v0.y,v1.z);
-			_global_debug_obj->addLine(v1.x,v1.y,v0.z, v1.x,v1.y,v1.z);
-			_global_debug_obj->addLine(v0.x,v1.y,v0.z, v0.x,v1.y,v1.z);
-		};
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v0.x,v0.y,v0.z, v1.x,v0.y,v0.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v1.x,v0.y,v0.z, v1.x,v1.y,v0.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v1.x,v1.y,v0.z, v0.x,v1.y,v0.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v0.x,v1.y,v0.z, v0.x,v0.y,v0.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v0.x,v0.y,v1.z, v1.x,v0.y,v1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v1.x,v0.y,v1.z, v1.x,v1.y,v1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v1.x,v1.y,v1.z, v0.x,v1.y,v1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v0.x,v1.y,v1.z, v0.x,v0.y,v1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v0.x,v0.y,v0.z, v0.x,v0.y,v1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v1.x,v0.y,v0.z, v1.x,v0.y,v1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v1.x,v1.y,v0.z, v1.x,v1.y,v1.z);
+			Details::OgreOpcodeDebugger::getSingletonPtr()->addBBLine(v0.x,v1.y,v0.z, v0.x,v1.y,v1.z);
+		}
+
 	protected:
 		int id;                     ///< a unique 32 bit id for this object
 		String mName;
@@ -805,11 +718,6 @@ namespace OgreOpcode
 
 		int num_colls;              ///< number of collisions this object is involved in
 
-	private:
-		DebugObject* _debug_obj;
-		SceneNode* _debug_node;
-		DebugObject* _global_debug_obj;
-		SceneNode* _global_debug_node;
 	};
 };
 

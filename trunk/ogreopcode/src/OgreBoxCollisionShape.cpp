@@ -84,10 +84,6 @@ namespace OgreOpcode
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
-		
 		return true;
 	}
 

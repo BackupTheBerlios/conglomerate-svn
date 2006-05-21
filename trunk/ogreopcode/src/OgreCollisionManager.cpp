@@ -2,7 +2,7 @@
 ///  @file OgreCollisionManager.cpp
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 28-05-2005
+///  @author The OgreOpcode Team
 ///
 ///  This file is part of OgreOpcode.
 ///
@@ -38,9 +38,14 @@ template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionMa
 namespace OgreOpcode
 {
 
-	CollisionManager& CollisionManager::getSingleton(void)
+	CollisionManager* CollisionManager::getSingletonPtr(void)
 	{
-		return Singleton<CollisionManager>::getSingleton();
+		return ms_Singleton;
+	}
+	
+	CollisionManager& CollisionManager::getSingleton(void)
+	{  
+		assert( ms_Singleton );  return ( *ms_Singleton );  
 	}
 
 	CollisionManager::CollisionManager(SceneManager* sMgr)

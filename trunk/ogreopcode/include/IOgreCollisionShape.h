@@ -69,10 +69,7 @@ namespace OgreOpcode
 		{
 			mShapeIsStatic = true;
 		}
-		virtual void showAABB(bool showThis)
-		{
-			mDoVisualizeAABBNodes = showThis;
-		}
+		virtual void visualizeAABBs();
 		/// return current center in world space
 		virtual Vector3 getCenter() const;
 		/// return current center in object space
@@ -153,7 +150,6 @@ namespace OgreOpcode
 		int refCount;
 		mutable Matrix4 mFullTransform;
 		mutable Matrix4 mLocalTransform;
-		DebugObject* _debug_obj;
 	};
 	inline
 		bool

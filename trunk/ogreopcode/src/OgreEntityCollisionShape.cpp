@@ -328,10 +328,6 @@ namespace OgreOpcode
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
-
 		return true;
 	}
 
@@ -347,10 +343,6 @@ namespace OgreOpcode
 		opcModel.Build(opcc);
 
 		calculateSize();
-
-		if (_debug_obj) {
-			setDebug(true);
-		}
 
 		return true;
 	}

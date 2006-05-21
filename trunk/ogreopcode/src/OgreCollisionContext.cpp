@@ -172,14 +172,64 @@ namespace OgreOpcode
 	}
 
 	/// visualize all objects in the context.
-	void CollisionContext::visualize(bool doVisualize, bool doAABBs, bool doLocal, bool doGlobal)
+	void CollisionContext::visualize(bool doVisualize, bool doRadii, bool doContacts, bool doBBs, bool doShapes, bool doAABBs)
 	{
-		if (!attached_list.empty())
+		Details::OgreOpcodeDebugger::getSingletonPtr()->clearAll();
+
+		if(doVisualize)
 		{
-			// for each object in the system...
-			for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+			if (!attached_list.empty())
 			{
-				(*i)->setDebug(doVisualize, doAABBs, doLocal, doGlobal);
+				// for each object in the system...
+				if(doRadii)
+				{
+					Details::OgreOpcodeDebugger::getSingletonPtr()->beginRadii();
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						(*i)->visualizeRadii();
+					}
+					Details::OgreOpcodeDebugger::getSingletonPtr()->endRadii();
+				}
+				if(doContacts)
+				{
+					Details::OgreOpcodeDebugger::getSingletonPtr()->beginContacts();
+					// for each object in the system...
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						(*i)->visualizeContacts();
+					}
+					Details::OgreOpcodeDebugger::getSingletonPtr()->endContacts();
+				}
+				if(doBBs)
+				{
+					Details::OgreOpcodeDebugger::getSingletonPtr()->beginBBs();
+					// for each object in the system...
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						(*i)->visualizeBoundingBoxes();
+					}
+					Details::OgreOpcodeDebugger::getSingletonPtr()->endBBs();
+				}
+				if(doShapes)
+				{
+					Details::OgreOpcodeDebugger::getSingletonPtr()->beginShapes();
+					// for each object in the system...
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						(*i)->getShape()->visualize();
+					}
+					Details::OgreOpcodeDebugger::getSingletonPtr()->endShapes();
+				}
+				if(doAABBs)
+				{
+					Details::OgreOpcodeDebugger::getSingletonPtr()->beginAABBs();
+					// for each object in the system...
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						(*i)->getShape()->visualizeAABBs();
+					}
+					Details::OgreOpcodeDebugger::getSingletonPtr()->endAABBs();
+				}
 			}
 		}
 	}
